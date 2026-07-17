@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 4 · Reasoning: from chain-of-thought to thinking models - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 4 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 4 of 10</div>
+    <h1>Reasoning: from <span class="accent">chain-of-thought</span> to thinking models</h1>
+    <p class="sub">In 2022 you had to teach models to think by showing worked examples. In 2026 the thinking got pulled inside the model, and the old tricks can actively hurt. This session covers the lineage honestly, the inversion, and when hand-rolled CoT still earns its keep.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Builder track</span>
+      <span class="chip audience">Practitioners</span>
+      <span class="chip audience">Any model or API</span>
+      <span class="chip time">45 min live · build-along inside</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-20 · Lineage + inversion</span>
+      <span class="a3" style="flex:7">20-42 · Build-along</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where TriageBot stands</h2>
+    </div>
+    <p class="lede">By the end of session 3, TriageBot - Meridian Retail's ticket-triage prompt - emits schema-valid JSON, carries few-shot examples, and separates data from instructions with delimiters. It handles routine tickets beautifully and faceplants on the weird ones: multi-issue tickets, ambiguous refund requests. Today we fix the hard tail by understanding how models learned to reason - and why the prompt that made v2 great is the wrong prompt for a thinking model.</p>
+    <div class="legend">
+      <span class="pill solid">Live</span>
+      <span class="pill light">Self-study</span>
+      <span class="pill peach">★ Build-along - bring a laptop</span>
+      <span class="pill inkpill">Any model · any API</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The honest 2026 status of the four famous reasoning papers (which survived, which got absorbed), the inversion rule for prompting reasoning models (simpler prompt, explicit criteria, no step-by-step), the effort and thinking knobs on Claude, OpenAI, and Gemini, a manual-CoT fallback recipe for small models, and a TriageBot escalation design: easy tickets to a small fast model, hard tickets to a reasoning model with a deliberately simpler prompt.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE LINEAGE ============ -->
+  <section class="section" id="lineage">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the lineage, honestly</span>
+      <h2>Four papers that became model features <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Between 2022 and 2023, four papers defined how practitioners squeezed reasoning out of models. All four still matter - but as history and architecture, not as phrases you type. Here is each one with its real 2026 status, so you never cargo-cult a dead trick or dismiss a live one.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 404" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline: four reasoning papers from the prompt-tricks era and where each lives in the model-feature era">
+        <style>
+          .b4tW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .b4tT { font: 800 18px Inter, sans-serif; fill: #1C1917; }
+          .b4tX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .b4tXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .b4tH { font: 700 13px Inter, sans-serif; fill: #6E655C; }
+          .b4tN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="b4tArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+          </marker>
+        </defs>
+        <text class="b4tH" x="20" y="30">2022-2023 · the paper</text>
+        <text class="b4tH" x="470" y="30">2026 · where it lives</text>
+        <rect x="20" y="44" width="330" height="70" rx="12" fill="#78350F"/>
+        <text class="b4tW" x="40" y="70">Chain-of-thought · Wei et al. 2022</text>
+        <text class="b4tX" x="40" y="90">Exemplars with reasoning steps</text>
+        <text class="b4tX" x="40" y="106">unlock multi-step reasoning.</text>
+        <line x1="358" y1="79" x2="460" y2="79" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="44" width="390" height="70" rx="12" fill="#F59E0B"/>
+        <text class="b4tT" x="490" y="70">PARTIAL</text>
+        <text class="b4tXd" x="490" y="90">Absorbed into reasoning models via RL.</text>
+        <text class="b4tXd" x="490" y="106">Still works on small, non-reasoning models.</text>
+        <rect x="20" y="130" width="330" height="70" rx="12" fill="#B45309"/>
+        <text class="b4tW" x="40" y="156">Self-consistency · Wang et al.</text>
+        <text class="b4tX" x="40" y="176">Sample many reasoning paths,</text>
+        <text class="b4tX" x="40" y="192">take the majority vote.</text>
+        <line x1="358" y1="165" x2="460" y2="165" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="130" width="390" height="70" rx="12" fill="#FCD34D"/>
+        <text class="b4tT" x="490" y="156">MOSTLY HISTORICAL</text>
+        <text class="b4tXd" x="490" y="176">The earliest test-time compute. Now runs</text>
+        <text class="b4tXd" x="490" y="192">model-side. Still a cheap reliability trick.</text>
+        <rect x="20" y="216" width="330" height="70" rx="12" fill="#78350F"/>
+        <text class="b4tW" x="40" y="242">Tree of Thoughts · Yao et al. 2023</text>
+        <text class="b4tX" x="40" y="262">Explore branches, score them,</text>
+        <text class="b4tX" x="40" y="278">backtrack when stuck.</text>
+        <line x1="358" y1="251" x2="460" y2="251" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="216" width="390" height="70" rx="12" fill="#F59E0B"/>
+        <text class="b4tT" x="490" y="242">HISTORICAL</text>
+        <text class="b4tXd" x="490" y="262">Lineage of model-internal search.</text>
+        <text class="b4tXd" x="490" y="278">Practitioners no longer prompt this.</text>
+        <rect x="20" y="302" width="330" height="70" rx="12" fill="#B45309"/>
+        <text class="b4tW" x="40" y="328">ReAct · Yao et al. 2022</text>
+        <text class="b4tX" x="40" y="348">Reason + act loops, with tool</text>
+        <text class="b4tX" x="40" y="364">calls between the thoughts.</text>
+        <line x1="358" y1="337" x2="460" y2="337" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="302" width="390" height="70" rx="12" fill="#FCD34D"/>
+        <text class="b4tT" x="490" y="328">ARCHITECTURE, NOT PROMPT</text>
+        <text class="b4tXd" x="490" y="348">Native tool calling took over. But every</text>
+        <text class="b4tXd" x="490" y="364">agent harness still runs the loop inside.</text>
+        <rect x="20" y="384" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="b4tN" x="44" y="396">Every trick that worked got pulled inside the model. The prompt's job shrank to goals and criteria.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the four reasoning papers and their honest 2026 status</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Chain-of-thought: the trick that became a feature<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Wei et al. (2022) showed that giving a model exemplars containing intermediate reasoning steps - not just question and answer - unlocked multi-step reasoning that the same model failed at cold. The insight was real and it stuck: labs trained the behaviour in with reinforcement learning, and "reasoning models" were born.</p>
+        <p>That is why the status is <strong>partial</strong>, not dead. The concept is foundational - reasoning models are chain-of-thought internalized. But the <em>prompt phrase</em> is now redundant on models that already think, and still genuinely useful on small ones that do not. Same paper, two opposite instructions, depending on which model class you are holding.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Meridian's data team hit this exactly.</strong> Their v2 TriageBot prompt says "reason through each issue before deciding". On the cheap small model handling routine tickets: helps. Ported unchanged to the reasoning model they trialed for hard tickets: longer, costlier answers, no accuracy gain, and occasionally worse. Nobody had told them the advice had inverted.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Self-consistency and ToT: early test-time compute<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Self-consistency</strong> (Wang et al.): sample the same prompt many times at nonzero temperature, let the reasoning paths diverge, take the majority-vote answer. Look at what that is - spending more inference compute to buy more reliability. It was test-time compute before the term existed, and the labs absorbed the idea into the models themselves. It survives as a cheap reliability trick you can still run from the outside when you need one.</p>
+        <p><strong>Tree of Thoughts</strong> (Yao et al. 2023) went further: generate candidate "thoughts", evaluate them, expand the promising branches, backtrack from dead ends. As a prompting pattern it is largely historical for practitioners - but it is the direct ancestor of the search that thinking models now run internally. Teach it as lineage, not as a recipe.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>ReAct: the loop moved into the harness<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>ReAct (Yao et al. 2022) interleaved reasoning traces with actions - call a tool, observe, reason, act again. You used to hand-write this loop into the prompt: <em>Thought / Action / Observation</em>, round and round.</p>
+        <p>The honest status is <strong>architecture yes, prompt no</strong>. Native tool calling killed the hand-rolled version: you define tools, the model decides when to call them. But peel open any agent harness - Claude Code, an OpenAI agent, a LangChain agent - and a ReAct loop is running inside. The paper won so completely that it disappeared into infrastructure. Session 6 (agentic prompting) picks this thread up properly.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE INVERSION ============ -->
+  <section class="section" id="inversion">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the inversion</span>
+      <h2>Prompting a model that already thinks <span class="tag concept">9 min live</span></h2>
+    </div>
+    <p class="lede">Here is the part that breaks 2023 habits: on reasoning models, do NOT say "think step by step". This is OpenAI's official guidance, not folklore - it can hurt performance, and few-shot examples make o1-class models measurably worse. The whole 2023 playbook inverts: keep prompts simple and direct, state explicit success criteria, start zero-shot and only add examples if outputs miss the format.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The four principles, and the anti-pattern<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>DeepLearning.AI's <em>Reasoning with o1</em> course distills reasoning-model prompting into four principles that generalize across vendors:</p>
+        <ul>
+          <li><strong>Simple and direct.</strong> Say what you want. The model plans its own method.</li>
+          <li><strong>No explicit CoT.</strong> Do not instruct step-by-step thinking; the model already does it, and the instruction can interfere.</li>
+          <li><strong>Structure and delimiters.</strong> Clean sections and delimiters still help - clarity never inverted, only method-coaching did.</li>
+          <li><strong>Show, don't tell.</strong> State criteria and constraints rather than narrating a procedure.</li>
+        </ul>
+        <p>Here is the anti-pattern in the wild - TriageBot v2 habits ported straight onto a reasoning model:</p>
+        <div class="prompt-box bad"><span class="label">Prompt A - v2 habits on a thinking model (do not do this)</span>You are TriageBot. Think step by step. First, read the ticket carefully and list every issue it mentions. Second, for each issue, reason about which category it belongs to. Third, weigh the categories against each other and explain your reasoning in detail before answering. Here are five worked examples showing the full reasoning:
+
+&lt;example&gt;Ticket: "Where is my order?" Reasoning: the customer mentions an order... step 1... step 2... Category: SHIPPING&lt;/example&gt;
+[+ 4 more worked examples]</div>
+        <p>Every line of that was best practice in 2023. On a reasoning model it micro-manages a planner that plans better than the script, and the worked examples drag accuracy down. Delete the method, keep the goal, state the bar.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Same task, two model classes - side by side<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Prompt element</th><th>Standard / small model</th><th>Reasoning model</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Method</strong></td><td>"Reason through each issue before deciding, inside &lt;thinking&gt; tags"</td><td>Omit entirely - state the goal, let it plan</td></tr>
+            <tr><td><strong>Examples</strong></td><td>3-5 few-shot examples with reasoning shown</td><td>Zero-shot first; examples only if the format keeps missing</td></tr>
+            <tr><td><strong>Criteria</strong></td><td>Implicit in the examples</td><td>Explicit: "a multi-issue ticket takes the category blocking the customer's money"</td></tr>
+            <tr><td><strong>Structure</strong></td><td>Delimiters + schema (keep)</td><td>Delimiters + schema (keep - this never changed)</td></tr>
+            <tr><td><strong>Compute knob</strong></td><td>None - it answers immediately</td><td>Effort / thinking parameter, not prompt words</td></tr>
+          </tbody>
+        </table>
+        <div class="callout tip">
+          <strong>The one-line rule</strong>
+          On standard models you supply the reasoning. On reasoning models you supply the standard the reasoning must meet. Ask "which model class am I prompting?" before writing a single word - that decision tree from session 1 starts paying rent today.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The knobs: effort, thinking, and "Think very hard"<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>How much a model thinks is now a parameter, not a phrase. Vendor by vendor:</p>
+        <ul>
+          <li><strong>Claude:</strong> adaptive thinking replaced the old extended-thinking <code>budget_tokens</code> control (deprecated, then removed). The budget control is now the <strong>effort parameter</strong>: low / medium / high / xhigh / max. Migrating old code? Delete the token budget, pick an effort level.</li>
+          <li><strong>OpenAI:</strong> reasoning models take a reasoning-effort parameter; the prompt stays simple and the knob carries the load.</li>
+          <li><strong>Gemini:</strong> thinking is built in. The documented lever is the phrase <strong>"Think very hard"</strong> for the deepest setting - and the guidance explicitly says do not request redundant planning the model already performs.</li>
+        </ul>
+        <p>The pattern across all three: depth of thought moved from prompt vocabulary to an API surface. Budget it like you budget tokens - deliberately, per task, and measured (sessions 8-9 give you the eval harness to measure with).</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: MANUAL COT FALLBACK ============ -->
+  <section class="section" id="manual-cot">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the fallback</span>
+      <h2>Manual CoT still earns its keep <span class="tag concept">3 min live</span></h2>
+    </div>
+    <p class="lede">None of the above means CoT prompting is dead. On small and non-reasoning models - the cheap workhorses handling your high-volume traffic, or anything at the edge - induced reasoning is still one of the highest-leverage tricks you have. You just have to hand-roll it properly.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The recipe: think first, answer after<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three rules, all boring, all load-bearing:</p>
+        <ul>
+          <li><strong>Reasoning before the answer, always.</strong> An answer emitted first is an answer the reasoning then rationalizes. Boonstra's whitepaper is explicit: put the answer after the reasoning, and run CoT at <strong>temperature 0</strong> - reasoning chains should be reproducible, not creative.</li>
+          <li><strong>Show the shape in your few-shot examples.</strong> Put the reasoning inside <code>&lt;thinking&gt;</code> tags in the exemplars, and the model will follow the pattern - which also lets you strip the tags before the output reaches anything downstream.</li>
+          <li><strong>Add a self-check when stakes justify it.</strong> "Before finalizing, verify your category against the ticket text; if they conflict, redo the reasoning." Crude, effective, costs a few tokens.</li>
+        </ul>
+        <div class="prompt-box good"><span class="label">Manual CoT for a small model - the induced-thinking shape</span>Reason inside &lt;thinking&gt; tags first: list each issue in the ticket and which category it points to. Then give your final answer inside &lt;answer&gt; tags as schema-valid JSON. Do not put anything outside these two tags.
+
+&lt;example&gt;
+Ticket: "Charged twice AND the parcel never arrived."
+&lt;thinking&gt;Two issues: duplicate charge (BILLING), missing parcel (SHIPPING). The duplicate charge blocks the customer's money, so BILLING wins.&lt;/thinking&gt;
+&lt;answer&gt;{"category": "BILLING", "priority": "P1"}&lt;/answer&gt;
+&lt;/example&gt;
+
+(Run at temperature 0.)</div>
+        <p><strong>When you would still hand-roll it:</strong> cheap small models on high-volume routes, edge deployments where a thinking model does not fit the latency or hardware budget, and anywhere you need the reasoning trace visible for audit. Everywhere else, reach for the effort knob instead.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="build-along">
+    <div class="section-kicker">
+      <span class="klabel">The build-along</span>
+      <h2>TriageBot learns to escalate <span class="tag demo">★ 22 min · laptops open</span></h2>
+    </div>
+    <p class="lede">The insight of the day, applied: not every ticket deserves the same brain. We split TriageBot into a routing decision - easy tickets keep the small fast model with the full engineered v2 prompt; hard tickets escalate to a reasoning model with a deliberately simpler prompt. Criteria, not procedure.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 332" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TriageBot escalation routing: easy tickets to a small fast model with the full v2 prompt, hard tickets to a reasoning model with a simpler prompt">
+        <style>
+          .b4rW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .b4rT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .b4rX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .b4rXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .b4rN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="b4rArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+          </marker>
+        </defs>
+        <rect x="20" y="94" width="200" height="100" rx="12" fill="#78350F"/>
+        <text class="b4rW" x="40" y="126">Incoming tickets</text>
+        <text class="b4rX" x="40" y="148">Meridian's full support</text>
+        <text class="b4rX" x="40" y="164">queue, all shapes.</text>
+        <line x1="224" y1="144" x2="272" y2="144" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4rArr)"/>
+        <rect x="280" y="94" width="184" height="100" rx="12" fill="#B45309"/>
+        <text class="b4rW" x="300" y="126">Escalation rule</text>
+        <text class="b4rX" x="300" y="148">Multi-issue? Ambiguous</text>
+        <text class="b4rX" x="300" y="164">refund? Then it is hard.</text>
+        <line x1="468" y1="120" x2="532" y2="76" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4rArr)"/>
+        <line x1="468" y1="168" x2="532" y2="212" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4rArr)"/>
+        <rect x="540" y="24" width="320" height="100" rx="12" fill="#F59E0B"/>
+        <text class="b4rT" x="560" y="56">Easy · small fast model</text>
+        <text class="b4rXd" x="560" y="78">Full engineered v2 prompt: few-shot</text>
+        <text class="b4rXd" x="560" y="94">+ delimiters + induced CoT + schema.</text>
+        <rect x="540" y="164" width="320" height="100" rx="12" fill="#FCD34D"/>
+        <text class="b4rT" x="560" y="196">Hard · reasoning model</text>
+        <text class="b4rXd" x="560" y="218">Simpler prompt: goal, categories,</text>
+        <text class="b4rXd" x="560" y="234">success criteria. No procedure.</text>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="b4rN" x="44" y="308">Cheap volume goes small. Expensive judgment goes deep. Route by difficulty, not by habit.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the escalation router: two model classes, two prompts, one queue</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step"><p><strong>Identify the hard tickets.</strong> Pull 10 real (or realistic) tickets and sort them: easy = one clear issue, obvious category. Hard = multi-issue tickets, ambiguous refund requests, anything where two reviewers might disagree. Meridian's data: roughly 85% easy, 15% hard - and the 15% caused nearly all the mis-routes.</p></div>
+      <div class="step"><p><strong>Write the escalation rule.</strong> Easy tickets keep the small fast model with the full engineered v2 prompt from sessions 2-3. Hard tickets go to a reasoning model with a simpler prompt. Write the rule as criteria a router can check: more than one issue detected, refund requested without an order number, sentiment above a threshold.</p></div>
+      <div class="step"><p><strong>Write the reasoning-model variant.</strong> Strip the method, keep the goal and the bar. Steal this shape:</p>
+        <div class="prompt-box good"><span class="label">TriageBot - reasoning-model variant (goal + criteria, no procedure)</span>You are TriageBot, the support-ticket triage system for Meridian Retail.
+
+Goal: assign the ticket below to exactly one category and set a priority.
+
+Categories: BILLING, SHIPPING, RETURNS, PRODUCT, ACCOUNT, OTHER.
+
+Success criteria:
+- Output schema-valid JSON matching the schema below, and nothing else.
+- A ticket with multiple issues takes the category of the issue blocking the customer's money or order.
+- An ambiguous refund request is RETURNS only if an order is identified; otherwise BILLING.
+- If the category is genuinely unclear, use OTHER and set "needs_human": true. Do not guess.
+
+Schema: {"category": "...", "priority": "P1|P2|P3", "needs_human": true|false, "reason": "one sentence"}
+
+Ticket:
+===
+{{TICKET}}
+===</div>
+      </div>
+      <div class="step"><p><strong>Compare on two hard tickets.</strong> Run the same two hard tickets through both setups: v2 prompt on the small model vs the simple variant on the reasoning model. Read the disagreements out loud - typically the reasoning model untangles the multi-issue ticket the small model flattened.</p></div>
+      <div class="step"><p><strong>Note the cost and latency tradeoff.</strong> The reasoning call costs more and takes longer - that is the price of the judgment. Write down both numbers per ticket. The router exists precisely so you pay it on 15% of traffic, not 100%. Sessions 8-9 turn this eyeball comparison into an eval you can rerun.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Keep both prompts</strong>
+      The v2 prompt is not deprecated - it is the right prompt for its model class. You now maintain two variants of TriageBot on purpose. Version them side by side; session 10 makes prompts-as-code official.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before session 5 <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>De-CoT one of your own prompts.</strong> Find a prompt you run on a reasoning model that still says "think step by step" or narrates a method. Strip it to goal + criteria, run both versions on 3 inputs, and keep the outputs side by side.</li>
+      <li><strong>Play the effort knob.</strong> Take one genuinely hard task and run it at a low and a high effort/thinking setting. Note quality, latency, and cost per run - you are building the intuition the router needs.</li>
+      <li><strong>Write your own escalation rule.</strong> For one workflow you own, define in 3 bullet points which inputs deserve the expensive brain. Bring it - session 5 adds a 50-page policy manual to TriageBot and your rule will meet real context pressure.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below. Papers are taught as lineage with their honest 2026 status, per the course map. Official vendor docs and course videos stay with the vendors; links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">CoT (Wei et al. 2022) + self-consistency (Wang et al.) + Tree of Thoughts (Yao et al. 2023)</span><span class="note">Part 1 · taught as lineage with 2026 status flags</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">OpenAI reasoning best practices - no "think step by step", few-shot can hurt, zero-shot first</span><span class="note">Part 2 · the inversion</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI Reasoning with o1 - the 4 principles</span><span class="note">Part 2 · simple+direct, no CoT, structure, show-don't-tell</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Claude adaptive thinking + effort parameter (budget_tokens removed)</span><span class="note">Part 2 · the knobs, migration note included</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Gemini thinking guidance - "Think very hard", no redundant planning requests</span><span class="note">Part 2 · the knobs</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Boonstra whitepaper - CoT with answer-after-reasoning + temperature 0</span><span class="note">Part 3 · the manual fallback recipe</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">ReAct (Yao et al. 2022) - architecture yes, prompt no</span><span class="note">Part 1 · status only; the agentic story is session 6</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · You port TriageBot's five worked few-shot examples to an o1-class reasoning model and accuracy drops. The most likely cause is...</p>
+      <button class="qopt" type="button">A · The examples were too short - reasoning models need longer exemplars</button>
+      <button class="qopt" type="button">B · Few-shot examples can measurably hurt reasoning models - go zero-shot first and add examples only if the format misses</button>
+      <button class="qopt" type="button">C · The temperature was set too low for the examples to take effect</button>
+      <p class="qwhy">OpenAI's reasoning guidance is explicit: few-shot can degrade o1-class models. The 2023 workhorse inverts - start zero-shot, state criteria, and only add examples to pin a stubborn output format.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · On current Claude models, the control for how much the model thinks is...</p>
+      <button class="qopt" type="button">A · The extended-thinking budget_tokens parameter</button>
+      <button class="qopt" type="button">B · Adding "think step by step" with increasing emphasis</button>
+      <button class="qopt" type="button">C · The effort parameter (low / medium / high / xhigh / max) - budget_tokens was deprecated and then removed</button>
+      <p class="qwhy">Adaptive thinking replaced extended thinking, and the effort parameter is the budget control now. Depth of thought moved from prompt vocabulary to an API surface - budget it deliberately, per task.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Hand-rolled chain-of-thought (thinking tags, answer after reasoning, temperature 0) is still the right tool when...</p>
+      <button class="qopt" type="button">A · You are on a small or non-reasoning model - cheap high-volume routes, edge deployments, or audit-visible reasoning</button>
+      <button class="qopt" type="button">B · You are on a reasoning model and want it to think even harder</button>
+      <button class="qopt" type="button">C · Never - manual CoT is fully obsolete in 2026</button>
+      <p class="qwhy">Manual CoT is alive and well on models that do not think by themselves. On reasoning models, reach for the effort knob instead - prompting the method there can interfere with a planner that plans better than your script.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The lineage</b><span>CoT partial · self-consistency mostly historical · ToT historical · ReAct architecture-not-prompt. Absorbed, not refuted.</span></div>
+      <div class="cheat-item"><b>The inversion</b><span>On reasoning models: no "think step by step" (official, can hurt), few-shot can degrade, zero-shot first.</span></div>
+      <div class="cheat-item"><b>The o1 four</b><span>Simple + direct · no explicit CoT · structure and delimiters · show, don't tell. Criteria over procedure.</span></div>
+      <div class="cheat-item"><b>The knobs</b><span>Claude: effort (low/medium/high/xhigh/max), budget_tokens gone. OpenAI: reasoning effort. Gemini: built-in, "Think very hard".</span></div>
+      <div class="cheat-item"><b>One-line rule</b><span>Standard model: you supply the reasoning. Reasoning model: you supply the standard the reasoning must meet.</span></div>
+      <div class="cheat-item"><b>Manual CoT recipe</b><span>Thinking tags in exemplars, answer after reasoning, temperature 0, optional self-check. For small models only.</span></div>
+      <div class="cheat-item"><b>Route by difficulty</b><span>Easy tickets: small model + full engineered prompt. Hard tickets: reasoning model + simpler prompt. Pay for judgment on the 15%.</span></div>
+      <div class="cheat-item"><b>What never inverted</b><span>Clarity, delimiters, schemas, explicit success criteria. Structure survived every model generation so far.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 4 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b5-long-context.html">Next: Long context + grounding →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

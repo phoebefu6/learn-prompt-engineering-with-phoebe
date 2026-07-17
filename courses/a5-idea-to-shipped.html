@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 5 · From idea to shipped - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Leader session 5 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Leader track · Session 5 of 6</div>
+    <h1>From idea to <span class="accent">shipped</span></h1>
+    <p class="sub">Your AI idea is worth nothing until it is specified. This session is the bridge between "we should use AI for this" and a data team that can actually build it - success criteria first, evals as acceptance tests, and the five questions that keep every AI project honest.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Leader track</span>
+      <span class="chip audience">C-level, boards &amp; managers</span>
+      <span class="chip audience">No tech required</span>
+      <span class="chip audience">Bring one AI idea</span>
+      <span class="chip time">30 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-25 · Specify, evals, five questions</span>
+      <span class="a3" style="flex:4">25-40 · The brief, live</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where this session sits</h2>
+    </div>
+    <p class="lede">Sessions 1-4 made you personally effective with AI: delegate well, ask well, think with it, judge what comes back. From here the track turns outward. Most of the AI value in your organisation will not come from your own chats - it will come from ideas you sponsor and a data team builds. This session teaches you to hand over an idea the way a good product manager would: specified, measurable, and testable. Session 6 adds the risk and strategy layer.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Try it in your next sitting</span>
+      <span class="pill inkpill">Any model · any chat app</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The order that makes AI projects succeed (success criteria before anyone writes a prompt), a plain-language grip on evals - the acceptance tests of AI - and the five questions to ask whenever a team proposes or demos an AI feature. Plus a one-page AI project brief for one of your own ideas, drafted live. Dana from Meridian Retail brings her complaint-handling idea to the data team, and it goes better than her first prompts did.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: SPECIFY LIKE A PM ============ -->
+  <section class="section" id="specify">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the order of work</span>
+      <h2>Specify like a PM <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Anthropic's own guidance to builders starts with a funnel, and the first stage is not a prompt. It is a definition of success: decide what good looks like, in measurable terms, before anyone writes a single line. Teams that skip this stage do not know when they are done - or worse, they think they are done when they are not.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The order of work: define success criteria, build the eval, draft the prompt, iterate to the bar">
+        <style>
+          .fuW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .fuT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .fuX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .fuXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .fuN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="fuArrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#78350F"/>
+          </marker>
+        </defs>
+        <rect x="20" y="40" width="180" height="110" rx="14" fill="#78350F"/>
+        <text class="fuW" x="40" y="72">1 · Define success</text>
+        <text class="fuX" x="40" y="98">What does good look</text>
+        <text class="fuX" x="40" y="116">like? In numbers,</text>
+        <text class="fuX" x="40" y="134">agreed up front.</text>
+        <rect x="240" y="40" width="180" height="110" rx="14" fill="#B45309"/>
+        <text class="fuW" x="260" y="72">2 · Build the eval</text>
+        <text class="fuX" x="260" y="98">Collect real examples</text>
+        <text class="fuX" x="260" y="116">and a way to grade</text>
+        <text class="fuX" x="260" y="134">every answer.</text>
+        <rect x="460" y="40" width="180" height="110" rx="14" fill="#F59E0B"/>
+        <text class="fuT" x="480" y="72">3 · Draft the prompt</text>
+        <text class="fuXd" x="480" y="98">Only now does anyone</text>
+        <text class="fuXd" x="480" y="116">write prompts, wire</text>
+        <text class="fuXd" x="480" y="134">data, build the tool.</text>
+        <rect x="680" y="40" width="180" height="110" rx="14" fill="#FCD34D"/>
+        <text class="fuT" x="700" y="72">4 · Iterate to the bar</text>
+        <text class="fuXd" x="700" y="98">Improve until the eval</text>
+        <text class="fuXd" x="700" y="116">score clears the bar</text>
+        <text class="fuXd" x="700" y="134">you set in step 1.</text>
+        <line x1="200" y1="95" x2="234" y2="95" stroke="#78350F" stroke-width="3" marker-end="url(#fuArrow)"/>
+        <line x1="420" y1="95" x2="454" y2="95" stroke="#78350F" stroke-width="3" marker-end="url(#fuArrow)"/>
+        <line x1="640" y1="95" x2="674" y2="95" stroke="#78350F" stroke-width="3" marker-end="url(#fuArrow)"/>
+        <text class="fuXd" x="480" y="176">⚠ where most teams wrongly start</text>
+        <rect x="20" y="204" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="fuN" x="44" y="216">Steps 1 and 2 are leadership work, not technical work. If you cannot say what good looks like, no prompt can.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - Anthropic's order of work: criteria and evals come before any prompt is written</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Dana's idea meets the data team<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Four sessions in, Dana is dangerous in the best way. Her complaint-summary prompt saves her an hour a week, so she walks into the data team's Monday stand-up with the obvious next step: <strong>"Let's use AI for complaint handling. Can you build that?"</strong></p>
+        <p>The team lead does not open a laptop. She asks three questions:</p>
+        <ul>
+          <li>"When it drafts a reply to an angry customer, <strong>what makes the draft good</strong>? Good enough to send?"</li>
+          <li>"On <strong>how many real complaints</strong> should we test it before a customer ever sees it?"</li>
+          <li>"When it gets one wrong - and it will - <strong>who catches it</strong>?"</li>
+        </ul>
+        <p>Dana cannot answer any of them yet. That is not a failure; it is the actual work. "AI for complaint handling" is a wish. "Drafts that agents approve without edits 80% of the time, tested on 100 real tickets, agent always reviews before send" is a specification. This session is about learning to bring the second thing.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The pattern in every company:</strong> AI projects rarely die because the model was too weak. They die because nobody defined success, so the pilot drifted for six months and was quietly cancelled. The fix costs one meeting - held at the start.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What good success criteria look like<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Anthropic's documentation asks builders for criteria that are <strong>specific, measurable, and achievable</strong> - and it names the dimensions worth measuring. None of them require code to understand:</p>
+        <table class="clean">
+          <thead><tr><th>Dimension</th><th>Plain-language question</th><th>Example bar</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Task fidelity</strong></td><td>Does it actually do the job right?</td><td>"Correct complaint category on 95 of 100 tickets"</td></tr>
+            <tr><td><strong>Consistency</strong></td><td>Does the same input get the same quality every time?</td><td>"Same ticket, three runs, same category all three"</td></tr>
+            <tr><td><strong>Tone</strong></td><td>Does it sound like us?</td><td>"9 in 10 drafts approved by a senior agent without tone edits"</td></tr>
+            <tr><td><strong>Latency</strong></td><td>Is it fast enough for the real workflow?</td><td>"Draft ready in under 10 seconds"</td></tr>
+            <tr><td><strong>Cost</strong></td><td>What does each answer cost at real volume?</td><td>"Under 4p per ticket at 3,000 tickets a week"</td></tr>
+          </tbody>
+        </table>
+        <p>Notice the shape: every bar is a number a non-technical person can check. "Make it good" is not a criterion. "80% approved without edits" is - and it turns every later argument into a measurement.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Weak wish vs real specification - side by side<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>The wish (what teams usually get)</th><th>The specification (what they can build)</th></tr></thead>
+          <tbody>
+            <tr><td>"Use AI to handle complaints"</td><td>"Draft replies to written complaints for agent review"</td></tr>
+            <tr><td>"It should be accurate"</td><td>"Right complaint category on 95% of a 100-ticket test set"</td></tr>
+            <tr><td>"It should sound professional"</td><td>"Matches these 5 example replies our best agent wrote"</td></tr>
+            <tr><td>"It should not make things up"</td><td>"Never promises a refund; escalates to a human instead"</td></tr>
+            <tr><td>"Soon, ideally"</td><td>"Pilot on one store's tickets by end of quarter, then review"</td></tr>
+          </tbody>
+        </table>
+        <p>The right column is the same skill you learned in Session 1 - the anatomy of a good ask - applied at project scale. Goal, context, constraints, format, example. A project brief is a prompt for your organisation.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: EVALS ============ -->
+  <section class="section" id="evals">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · acceptance tests for AI</span>
+      <h2>Evals: how you know it works <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">An eval is the least glamorous and most important word in applied AI. In business language: <strong>an eval is a set of real examples plus a way to grade the answers</strong>. It is the acceptance test of an AI feature - and whether your team has one is the single fastest tell of whether they will ship a product or just a demo.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The idea to shipped pipeline: idea, brief, prototype, eval, ship - with a loop back from eval to prototype">
+        <style>
+          .ppW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .ppT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .ppX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
+          .ppXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
+          .ppN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="ppArrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#78350F"/>
+          </marker>
+        </defs>
+        <rect x="20" y="40" width="140" height="90" rx="14" fill="#FCD34D"/>
+        <text class="ppT" x="38" y="70">Idea</text>
+        <text class="ppXd" x="38" y="92">"AI could draft</text>
+        <text class="ppXd" x="38" y="108">complaint replies"</text>
+        <rect x="192" y="40" width="140" height="90" rx="14" fill="#78350F"/>
+        <text class="ppW" x="210" y="70">Brief</text>
+        <text class="ppX" x="210" y="92">Success criteria,</text>
+        <text class="ppX" x="210" y="108">data, owner, cost</text>
+        <rect x="364" y="40" width="140" height="90" rx="14" fill="#B45309"/>
+        <text class="ppW" x="382" y="70">Prototype</text>
+        <text class="ppX" x="382" y="92">Prompt + data,</text>
+        <text class="ppX" x="382" y="108">rough but real</text>
+        <rect x="536" y="40" width="140" height="90" rx="14" fill="#F59E0B"/>
+        <text class="ppT" x="554" y="70">Eval</text>
+        <text class="ppXd" x="554" y="92">Graded on 100</text>
+        <text class="ppXd" x="554" y="108">real tickets</text>
+        <rect x="708" y="40" width="140" height="90" rx="14" fill="#78350F"/>
+        <text class="ppW" x="726" y="70">Ship</text>
+        <text class="ppX" x="726" y="92">Pilot, monitor,</text>
+        <text class="ppX" x="726" y="108">keep measuring</text>
+        <line x1="160" y1="85" x2="186" y2="85" stroke="#78350F" stroke-width="3" marker-end="url(#ppArrow)"/>
+        <line x1="332" y1="85" x2="358" y2="85" stroke="#78350F" stroke-width="3" marker-end="url(#ppArrow)"/>
+        <line x1="504" y1="85" x2="530" y2="85" stroke="#78350F" stroke-width="3" marker-end="url(#ppArrow)"/>
+        <line x1="676" y1="85" x2="702" y2="85" stroke="#78350F" stroke-width="3" marker-end="url(#ppArrow)"/>
+        <path d="M606,130 L606,178 L434,178 L434,136" fill="none" stroke="#B45309" stroke-width="3" marker-end="url(#ppArrow)"/>
+        <text class="ppXd" x="450" y="198">misses the bar? fix the prototype, not the launch date</text>
+        <rect x="20" y="230" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="ppN" x="44" y="242">The loop between eval and prototype is where quality is made. Teams that skip the eval box ship demos.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - idea to shipped, with the eval as the gate and the loop back to the prototype</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Vibes vs numbers<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every AI demo you will ever see was graded one of two ways. Learn to hear the difference:</p>
+        <table class="clean">
+          <thead><tr><th>Vibes</th><th>Numbers</th></tr></thead>
+          <tbody>
+            <tr><td>"We tried it on a few examples - looks good to me"</td><td>"Graded on 100 real tickets from last quarter"</td></tr>
+            <tr><td>Tested on the happy cases someone picked</td><td>Tested on real cases, including the ugly ones</td></tr>
+            <tr><td>"It feels much better after the last change"</td><td>"The change moved approval from 71% to 84%"</td></tr>
+            <tr><td>Quality argument = whoever is most senior wins</td><td>Quality argument = the score wins</td></tr>
+            <tr><td>No way to notice quiet degradation later</td><td>Re-run the eval any time; regressions show up as a number</td></tr>
+          </tbody>
+        </table>
+        <p>The grading itself can be simple: humans scoring answers, exact-match checks, or another AI grading against a rubric. Your team will pick the mechanics - the builder track spends two whole sessions there. What leaders must insist on is that grading exists, uses <strong>real examples</strong>, and produces <strong>a number that can be tracked over time</strong>.</p>
+        <div class="callout tip">
+          <strong>The sentence that changes the meeting</strong>
+          When shown any AI demo, ask: "How many real examples has this been graded on?" If the answer is a number, you have a team building a product. If the answer is a story, you are watching a demo - which is fine, as long as nobody calls it done.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why demos are easy and products are hard<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A demo needs to work once, on an example the presenter chose. A product needs to work on Tuesday's weird ticket, the complaint written in all caps, the one that mentions a lawyer. That gap is where AI projects go to die, and evals are the only honest bridge across it:</p>
+        <ul>
+          <li><strong>Evals force realism.</strong> Building the test set means reading 100 real tickets - which surfaces the messy cases the idea never considered.</li>
+          <li><strong>Evals de-risk change.</strong> New model version? Prompt tweak? Re-run the eval, compare numbers. Without one, every change is a leap of faith. (Session 6 turns this into a governance habit.)</li>
+          <li><strong>Evals end quality theatre.</strong> "I do not like the tone" becomes a rubric item with a score, not a taste war between departments.</li>
+        </ul>
+        <p>The wider industry teaches the same lesson - courses on evaluating AI agents now grade not just final answers but each step an AI takes along the way. Your team will meet that depth in the builder track. The leader-level takeaway is one line: <strong>no eval, no launch</strong>.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: THE FIVE QUESTIONS ============ -->
+  <section class="section" id="five-questions">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · your side of the table</span>
+      <h2>The five questions to ask your team <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">You do not need to review prompts or read code. You need five questions - the same five, every time a team proposes or demos an AI feature. They are answerable in plain language, and together they cover context, quality, failure, data, and money.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The five, and why each matters<span class="mini">6 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>#</th><th>The question</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td><strong>What context does it see - and how does that stay current?</strong></td><td>From Session 1: context beats phrasing. An assistant answering from last year's price list fails politely and constantly. "Kept current how, by whom?" is a budget question wearing a technical costume.</td></tr>
+            <tr><td><strong>2</strong></td><td><strong>How do we measure it is good - on how many real examples?</strong></td><td>The eval question. A number means a product; a story means a demo. Also sets the launch bar everyone signs up to in advance.</td></tr>
+            <tr><td><strong>3</strong></td><td><strong>What happens when it is wrong - who catches it?</strong></td><td>It will be wrong sometimes. The design question is whether a human reviews before impact, or the error reaches a customer. "Agent approves each draft" and "auto-send" are different projects with different risk.</td></tr>
+            <tr><td><strong>4</strong></td><td><strong>What data goes in - and are we allowed?</strong></td><td>Customer complaints contain names, orders, sometimes health or payment details. Which system does it flow to, under which agreement? Cheaper to answer now than in a regulator's letter.</td></tr>
+            <tr><td><strong>5</strong></td><td><strong>What does it cost per answer at scale?</strong></td><td>Pennies per answer times 3,000 tickets a week times 52 weeks is a real line item. Latency and cost per answer decide whether the pilot economics survive contact with real volume.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Back at Meridian:</strong> Dana brings the five questions to the complaint-handling kickoff. Question 3 changes the project on the spot - the team had assumed auto-send; the room chooses agent-review-first. Question 5 kills a rival idea the same week: a chatbot whose per-answer cost at real volume was triple the support line it replaced.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>How to ask them without micromanaging<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>These questions are guardrails, not steering wheels. Three habits keep them useful:</p>
+        <ul>
+          <li><strong>Ask for the answers, not the mechanism.</strong> "How do we measure quality?" is your question. Which grading tool they use is theirs. Judge the bar, not the plumbing.</li>
+          <li><strong>Accept "not yet" as a good answer.</strong> "We have not built the eval set yet - that is next sprint" is a healthy team being honest. "We do not need one" is the answer that should worry you.</li>
+          <li><strong>Ask them of vendors too.</strong> An AI vendor who cannot answer question 2 about their own product is selling you a demo. The five questions work unchanged in procurement.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ WORK IT LIVE ============ -->
+  <section class="section" id="brief">
+    <div class="section-kicker">
+      <span class="klabel">The boardroom moment</span>
+      <h2>Work it live: your one-page AI project brief <span class="tag demo">★ 15 min · work it live</span></h2>
+    </div>
+    <p class="lede">Take the AI idea you brought - the one you have mentioned in meetings but never written down. In fifteen minutes you will turn it into a one-page brief a data team could actually pick up. The trick: do not write the brief yourself. Make the AI interview you first, like the data team lead did to Dana.</p>
+
+    <div class="prompt-box bad"><span class="label">Prompt A - the wish, as usually delivered</span>Can we get some AI for complaint handling? Other retailers are doing it and I keep hearing about it from the board.</div>
+
+    <div class="prompt-box good"><span class="label">Prompt B - the brief-drafting interview (steal this shape)</span>I want to write a one-page AI project brief for this idea: [describe your idea in one or two sentences].
+
+Act as the data team lead who will receive this brief. Ask me the 8 questions a data team would need answered before they could build this - one at a time, waiting for my answer before asking the next.
+
+Cover at least: who uses it, what task it does, what a good answer looks like, how we will measure success (on how many real examples), what data it needs and whether we may use that data, what happens when it is wrong, expected volume and cost per answer, and who owns it after launch.
+
+When the interview is done, draft the one-page brief with these sections: Goal, Users, Success criteria (specific and measurable), Eval plan (real examples + how we grade), Data needed, When it is wrong, Volume and cost, Owner. If any of my answers were vague, flag them at the bottom as open questions rather than papering over them.</div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Pick one real idea.</strong> The one you would actually sponsor. If you have three, pick the one closest to customers - the stakes make the answers honest.</p></div>
+      <div class="step"><p><strong>Run the interview prompt.</strong> Answer the questions one at a time, out loud if you are in the room. Notice which question you cannot answer - that is your homework, not a reason to stop.</p></div>
+      <div class="step"><p><strong>Check the criteria are numbers.</strong> Scan the drafted brief's success criteria. Every one should be checkable by a non-technical person: a percentage, a count, a time, a cost.</p></div>
+      <div class="step"><p><strong>Run the five questions against it.</strong> Context, measurement, failure, data, cost. The brief should answer all five. If one is missing, add it to the open questions.</p></div>
+      <div class="step"><p><strong>Golden-rule it.</strong> Show the page to the person next to you, cold. If they can say what is being built, how success is measured, and who catches errors - it is ready for a real data team.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Why the interview beats the blank page</strong>
+      Asked to "write a brief", the AI invents plausible answers to questions only you can answer - Session 4 taught you to spot exactly that. Asked to interview you first, it extracts the real answers and drafts around them. Same technique your team will use on you at kickoff; you are just getting there first.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before Session 6 <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Finish your one-page brief</strong> - close the open questions the interview flagged, then share it with someone on your data or tech team and ask one thing: "What is missing before you could scope this?"</li>
+      <li><strong>Ask the eval question once for real.</strong> Find one AI feature in flight or in a vendor pitch this week and ask: "How many real examples has this been graded on?" Bring the answer - number or story - to Session 6.</li>
+      <li><strong>Spot the missing owner.</strong> Pick one AI thing your organisation already uses and find out who owns its quality after launch. If the answer is "nobody, it just runs", you have found Session 6's subject in the wild.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Leader-level coverage of the sources below - working ideas in plain language, honestly flagged where the depth lives in the builder track. Official certificates and videos stay with the vendors; links are in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic success-criteria docs - specific, measurable, achievable</span><span class="note">Part 1 · dimensions in business terms: fidelity, consistency, tone, latency, cost</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic prompt-engineering overview - the funnel</span><span class="note">Part 1 · criteria and evals before any prompt (platform.claude.com docs)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Evals as acceptance tests - concept</span><span class="note">Part 2 · real examples + grading + a trackable number; mechanics in Builder sessions 8-9</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Evaluating AI Agents (DeepLearning.AI / Arize) - concept lessons</span><span class="note">Part 2 · one insight (grade the steps, not just the answer); full taxonomy in Builder session 9</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Cost, latency and monitoring at scale</span><span class="note">Part 3 · question level only; production depth in Builder session 10</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · According to Anthropic's own guidance, the first step of an AI project is...</p>
+      <button class="qopt" type="button">A · Drafting the prompt, so the team has something concrete to react to</button>
+      <button class="qopt" type="button">B · Defining success criteria - what good looks like, in measurable terms</button>
+      <button class="qopt" type="button">C · Choosing which AI model and vendor to build on</button>
+      <p class="qwhy">The funnel runs criteria, then evals, then the prompt. Most teams start at the prompt - which is why most pilots cannot say when they are done. Steps 1 and 2 are leadership work.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · In business language, an eval is...</p>
+      <button class="qopt" type="button">A · A demo of the AI feature in front of stakeholders</button>
+      <button class="qopt" type="button">B · A one-off audit performed by the vendor before launch</button>
+      <button class="qopt" type="button">C · A set of real examples plus a way to grade the answers - repeatable, producing a number</button>
+      <p class="qwhy">Real examples, graded, giving a score you can track over time. It is the acceptance test of AI: re-run it after every change, and quality arguments become measurements.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · A team demos an AI feature and says "we tried it on a few examples - looks good to us". The best leader response is...</p>
+      <button class="qopt" type="button">A · Ask "how many real examples has this been graded on?" - and treat a story-shaped answer as demo, not done</button>
+      <button class="qopt" type="button">B · Approve the launch - the team is closest to the work and their judgment counts</button>
+      <button class="qopt" type="button">C · Ask to personally review the prompts before it ships</button>
+      <p class="qwhy">Vibes vs numbers. You do not need to read prompts - you need to know the quality bar exists, uses real examples, and produces a trackable number. Teams that skip evals ship demos, not products.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Criteria first</b><span>Define success before anyone writes a prompt. If you cannot say what good looks like, no prompt can.</span></div>
+      <div class="cheat-item"><b>Good criteria</b><span>Specific, measurable, achievable - numbers a non-technical person can check. "Make it good" is not a criterion.</span></div>
+      <div class="cheat-item"><b>Five dimensions</b><span>Task fidelity, consistency, tone, latency, cost. Every AI feature has a bar on each, stated or not.</span></div>
+      <div class="cheat-item"><b>Eval = acceptance test</b><span>Real examples + a way to grade + a number you can track. Re-run after every change.</span></div>
+      <div class="cheat-item"><b>Vibes vs numbers</b><span>"Looks good to me" vs "graded on 100 real tickets". One ships products, the other ships demos.</span></div>
+      <div class="cheat-item"><b>The loop</b><span>Idea, brief, prototype, eval, ship - and the arrow back from eval to prototype. Fix the prototype, not the launch date.</span></div>
+      <div class="cheat-item"><b>The five questions</b><span>What context? Measured how, on how many examples? Wrong - who catches it? What data, allowed? Cost at scale?</span></div>
+      <div class="cheat-item"><b>Interview, then brief</b><span>Make the AI interview you before drafting - it extracts your real answers instead of inventing plausible ones.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 5 of 6 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="a6-risk-and-strategy.html">Next: Risk, safety, strategy →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 7 · Vendor deltas: Claude, GPT, Gemini side by side - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 7 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 7 of 10</div>
+    <h1>Vendor deltas: Claude, GPT, Gemini <span class="accent">side by side</span></h1>
+    <p class="sub">The core techniques are shared. The words, the placement rules, the sampling params, and the per-model quirks are not - and pretending a prompt is a drop-in across vendors is how good systems quietly degrade. Today: the honest diff.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Builder track</span>
+      <span class="chip audience">Practitioners</span>
+      <span class="chip audience">Any model or API</span>
+      <span class="chip time">35 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:6">3-20 · The deltas</span>
+      <span class="a3" style="flex:7">20-42 · Build-along: TriageBot x3</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Why a whole session on vendors</h2>
+    </div>
+    <p class="lede">Sessions 1-6 taught the shared core: clarity, structure, examples, grounding, chains, agents. Every vendor agrees on that core - then names it differently, places context differently, and ships per-model pages that change your prompts materially. Teams lose real weeks to this: one engineer quotes the OpenAI guide, another quotes Anthropic's, both are right, and the prompt ships wrong. Today we map the deltas and port TriageBot v4 across all three vendors to feel the portability tax first-hand.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Build-along - do it with me</span>
+      <span class="pill inkpill">Any model or API</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The terminology translation table that ends cross-vendor guide-quoting arguments, a tour of the per-model prompting pages (Fable 5, Sonnet 5, Opus 4.8, GPT-5.1, Gemini 3) and the habit of reading them before shipping, the real story of sampling params from whitepaper chapter to 400 error, a portability checklist, and three working variants of TriageBot v4 - Claude, GPT, and Gemini - with the delta list that IS your portability tax.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: TERMINOLOGY ============ -->
+  <section class="section" id="terminology">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · translation layer</span>
+      <h2>Same ideas, different words <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Most cross-vendor confusion is vocabulary, not substance. The same concept wears three names, and two teammates quoting different guides can argue for an hour while agreeing completely. Pin this table where your team argues.</p>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The divergence table<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Concept</th><th>Anthropic (Claude)</th><th>OpenAI (GPT)</th><th>Google (Gemini)</th></tr></thead>
+          <tbody>
+            <tr><td>The standing instructions</td><td>System prompt</td><td>Developer message</td><td>System instructions</td></tr>
+            <tr><td>AI that improves your prompt</td><td>Prompt improver (Console)</td><td>Metaprompting</td><td>APE (per the Boonstra whitepaper)</td></tr>
+            <tr><td>Answering from your documents</td><td>RAG</td><td>RAG</td><td>Grounding</td></tr>
+            <tr><td>Few-shot stance</td><td>3-5 examples, a core technique</td><td>Zero-shot first; examples can HURT reasoning models</td><td>Pushed hardest - "always include examples"</td></tr>
+            <tr><td>Long-context placement</td><td>Query AFTER the docs (up to +30%)</td><td>Instructions at BOTH ends (GPT-4.1)</td><td>Data first, question LAST</td></tr>
+            <tr><td>Preferred delimiters</td><td>XML tags as house idiom</td><td>Markdown headers first; XML fine</td><td>Flexible; headers or tags</td></tr>
+            <tr><td>Step-by-step on reasoning models</td><td>Do not prompt it - adaptive thinking + effort</td><td>Do not say "think step by step"</td><td>Do not - thinking is built in</td></tr>
+          </tbody>
+        </table>
+        <p>Read the last row twice: on reasoning-era models, all three vendors now agree you should NOT prompt step-by-step thinking. Where they still genuinely disagree - few-shot stance and long-context placement - the disagreement reflects how each model family was trained, which is exactly why prompts do not port cleanly.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Meridian's week-long argument:</strong> a platform engineer insisted context goes "data first, question last" (he had read the Gemini docs); the Claude-side engineer insisted the same thing was "query after docs" (Anthropic's phrasing). They escalated to an architecture review before noticing they agreed. The third engineer, quoting GPT-4.1's "instructions at both ends", actually disagreed - and nobody noticed that.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: MODEL PAGES ============ -->
+  <section class="section" id="model-pages">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · per-model reality</span>
+      <h2>The model-specific pages tour <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">The biggest shift since 2024: every vendor now ships prompting pages per MODEL, not just per company - and they change your prompts materially. A prompt tuned for one generation can be actively wrong on the next. The habit this part installs: before shipping on a new model, read its page, then re-test.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The drop-in illusion: the same unchanged prompt sent to Claude, GPT, and Gemini produces three different behaviors">
+        <style>
+          .diW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .diT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .diX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
+          .diXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
+          .diN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="b7diArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#78350F"/>
+          </marker>
+        </defs>
+        <rect x="230" y="20" width="420" height="64" rx="12" fill="#F59E0B"/>
+        <text class="diT" x="250" y="47">"One prompt, three vendors - it's a drop-in, right?"</text>
+        <text class="diXd" x="250" y="68">TriageBot v4, sent unchanged to all three APIs</text>
+        <line x1="330" y1="84" x2="170" y2="128" stroke="#78350F" stroke-width="2.5" marker-end="url(#b7diArr)"/>
+        <line x1="440" y1="84" x2="440" y2="128" stroke="#78350F" stroke-width="2.5" marker-end="url(#b7diArr)"/>
+        <line x1="550" y1="84" x2="710" y2="128" stroke="#78350F" stroke-width="2.5" marker-end="url(#b7diArr)"/>
+        <rect x="20" y="134" width="270" height="120" rx="12" fill="#78350F"/>
+        <text class="diW" x="40" y="164">Lane 1 · Claude Sonnet 5</text>
+        <text class="diX" x="40" y="188">Call REJECTED: temperature +</text>
+        <text class="diX" x="40" y="204">top_p now return a 400 error.</text>
+        <text class="diX" x="40" y="220">Query placed before the docs</text>
+        <text class="diX" x="40" y="236">quietly costs grounding accuracy.</text>
+        <rect x="305" y="134" width="270" height="120" rx="12" fill="#B45309"/>
+        <text class="diW" x="325" y="164">Lane 2 · GPT-5.1</text>
+        <text class="diX" x="325" y="188">Runs - but ignores your sampling</text>
+        <text class="diX" x="325" y="204">params and wants reasoning_effort.</text>
+        <text class="diX" x="325" y="220">Long-context instructions missing</text>
+        <text class="diX" x="325" y="236">from the top: adherence drifts.</text>
+        <rect x="590" y="134" width="270" height="120" rx="12" fill="#FCD34D"/>
+        <text class="diT" x="610" y="164">Lane 3 · Gemini 3</text>
+        <text class="diXd" x="610" y="188">Runs - but your tuned temperature</text>
+        <text class="diXd" x="610" y="204">works against the defaults the</text>
+        <text class="diXd" x="610" y="220">docs say to leave alone. Question</text>
+        <text class="diXd" x="610" y="236">buried mid-prompt, not last.</text>
+        <rect x="20" y="284" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="diN" x="44" y="296">Same prompt, three different behaviors - one hard error, two silent degradations. Models are not drop-in replacements.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the drop-in illusion: one unchanged prompt, three models, three different outcomes</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Claude's pages: Fable 5, Sonnet 5, Opus 4.8<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Fable 5:</strong> a brief, clear instruction now beats a long enumerated list - over-specified prompts constrain it. It is steered to ground progress claims (no "done!" without evidence), and you set effort levels instead of coaxing depth with words.</li>
+          <li><strong>Sonnet 5:</strong> the breaking change - <code>temperature</code> and <code>top_p</code> now return a 400 error. Adaptive thinking is the default; the old budget_tokens knob is gone in favor of effort. Prompts that shipped sampling params do not degrade, they crash.</li>
+          <li><strong>Opus 4.8:</strong> has its own page too. The point is not memorizing each delta - it is that Anthropic maintains one page per model, and the deltas are real. Also live from Session 3: prefill returns a 400 on Claude 4.6 and later; the migration patterns replace it.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>OpenAI's GPT-5.1 page and Gemini 3<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>GPT-5.1:</strong> adds a <em>none</em> reasoning mode (a reasoning model that can skip reasoning - your model-class decision tree from Session 1 now has a toggle inside one model), personality shaping in the developer message, and first-class metaprompting: you can hand GPT-5.1 its own prompt and ask it to diagnose contradictions and ambiguities before you ship them.</li>
+          <li><strong>Gemini 3:</strong> leave sampling defaults alone (the docs say it plainly), be precise and direct rather than persuasive or emotional, and control length with verbosity guidance. Long context stays data first, question last.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The habit that replaces memorizing this card</strong>
+          Before shipping on a new model: 1) read its model-specific page, 2) re-run your eval set. Twenty minutes, every migration. Everything in this card will be stale within a year; the habit will not.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: SAMPLING PARAMS ============ -->
+  <section class="section" id="sampling">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the dials</span>
+      <h2>Sampling params: a history lesson <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Google's Boonstra whitepaper - still the best single PDF on prompting - devotes a whole chapter to temperature, top-K, and top-P. Learn the concepts: they explain why outputs vary and what "randomness" means mechanically. Then learn the 2026 reality: the vendors took the dials away.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sampling params timeline: the whitepaper-era dials of temperature, top-K and top-P versus the 2026 reality per vendor">
+        <style>
+          .spW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .spT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .spX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
+          .spXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
+          .spN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="b7spArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+          </marker>
+        </defs>
+        <rect x="20" y="40" width="300" height="200" rx="14" fill="#78350F"/>
+        <text class="spW" x="40" y="72">The whitepaper era</text>
+        <text class="spX" x="40" y="98">Boonstra: a full chapter on</text>
+        <text class="spX" x="40" y="114">tuning three dials per task:</text>
+        <text class="spX" x="40" y="142">· temperature - randomness</text>
+        <text class="spX" x="40" y="162">· top-K - candidate pool size</text>
+        <text class="spX" x="40" y="182">· top-P - probability mass cutoff</text>
+        <text class="spX" x="40" y="210">Prompt engineering included</text>
+        <text class="spX" x="40" y="226">config engineering.</text>
+        <line x1="330" y1="140" x2="420" y2="140" stroke="#B45309" stroke-width="3" marker-end="url(#b7spArr)"/>
+        <rect x="430" y="40" width="430" height="58" rx="12" fill="#FCD34D"/>
+        <text class="spT" x="450" y="64">Gemini 3</text>
+        <text class="spXd" x="450" y="84">Docs say: leave sampling defaults alone.</text>
+        <rect x="430" y="110" width="430" height="58" rx="12" fill="#B45309"/>
+        <text class="spW" x="450" y="134">Claude Sonnet 5</text>
+        <text class="spX" x="450" y="154">temperature / top_p in the call = 400 error.</text>
+        <rect x="430" y="180" width="430" height="58" rx="12" fill="#F59E0B"/>
+        <text class="spT" x="450" y="204">OpenAI reasoning models</text>
+        <text class="spXd" x="450" y="224">Ignore them; the dials are reasoning_effort + verbosity.</text>
+        <rect x="20" y="262" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="spN" x="44" y="274">The dials did not disappear - they moved up a level: effort and verbosity, set per call, named per vendor.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - sampling params, then and now: from a whitepaper chapter to rejected, ignored, or left alone</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The portability checklist: what to re-verify when you switch vendors<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything this session covered, compressed into the checklist you run on every migration:</p>
+        <table class="clean">
+          <thead><tr><th>Surface</th><th>Re-verify</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Placement</strong></td><td>Where do instructions and documents go? Claude: query after docs. GPT-4.1: both ends. Gemini: data first, question last.</td></tr>
+            <tr><td><strong>Delimiters</strong></td><td>XML house idiom on Claude; markdown headers first on GPT. Re-check your tags survive.</td></tr>
+            <tr><td><strong>Few-shot stance</strong></td><td>Keep 3-5 on Claude, push more on Gemini, strip them for OpenAI reasoning models and re-test.</td></tr>
+            <tr><td><strong>Params</strong></td><td>Remove temperature/top_p (400 on Sonnet 5, ignored by OpenAI reasoning, leave-default on Gemini 3). Map to effort/verbosity equivalents.</td></tr>
+            <tr><td><strong>Tool-call format</strong></td><td>Each API's tools field differs in schema shape and naming rules. Re-declare, never string-replace.</td></tr>
+            <tr><td><strong>Evals</strong></td><td>Re-run the full set. The page tells you what changed; only your evals tell you what broke.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>One card on open models (and one pointer past text)<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything above assumed a hosted API. Run an open model - Llama and friends - and two more deltas appear. First, the <strong>chat format itself</strong> is yours to get right: Llama's chat template differs from hosted APIs, and a malformed template silently degrades output before your prompt is even read. Second, <strong>safety is a separate layer</strong>: hosted APIs bundle moderation; with open models you add it yourself, and Llama Guard is the standard classifier for filtering inputs and outputs. DeepLearning.AI's Prompt Engineering with Llama course covers both - self-study, not exam material.</p>
+        <p>And one pointer past text entirely: vision-model prompting (segmentation coordinates, diffusion negative prompts) is a real craft this course deliberately skips - see the course map's not-covered list.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="build">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>TriageBot goes multi-vendor <span class="tag demo">★ 22 min · build it with me</span></h2>
+    </div>
+    <p class="lede">Meridian's platform team wants vendor optionality: TriageBot must run on Claude, GPT, and Gemini. Naive plan: copy the prompt three times. Real plan: port it properly, and write down every change you had to make. That list is the portability tax, and it goes in the repo next to the prompts.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Start from TriageBot v4</strong> (Session 6): system prompt with agentic rules, lookup_order tool spec, policy manual, few-shot examples, JSON schema.</p></div>
+      <div class="step"><p><strong>Write the Claude variant.</strong> XML delimiters for the manual and examples, query after the docs (ticket last), effort medium, no sampling params - Sonnet 5 would 400 the call.</p></div>
+      <div class="step"><p><strong>Write the GPT variant.</strong> Markdown headers for structure, key instructions repeated at both ends of the long context, reasoning_effort set instead of any temperature, tools re-declared in OpenAI's schema.</p></div>
+      <div class="step"><p><strong>Write the Gemini variant.</strong> Data first, question last - manual and ticket up top, the ask at the very end. All sampling defaults untouched. Consider one extra few-shot example; Gemini's docs push examples hardest.</p></div>
+      <div class="step"><p><strong>Write down every delta.</strong> Placement, delimiters, example count, params, tool schema. That list is your portability tax - and your migration checklist for the next model generation.</p></div>
+    </div>
+
+    <div class="prompt-box good"><span class="label">TriageBot v4 - Claude variant (shown in full; deltas for the other two below)</span>You are TriageBot, the support-ticket triage system for Meridian Retail.
+
+&lt;policy_manual&gt;
+[full returns + refunds policy, unchanged, cache-shaped]
+&lt;/policy_manual&gt;
+
+&lt;examples&gt;
+[3 worked tickets with their exact output JSON]
+&lt;/examples&gt;
+
+Agentic rules:
+- Keep going until the ticket is fully triaged; do not stop early.
+- If order status could change routing, use lookup_order. Never guess
+  or invent an order status.
+- One-line plan before each tool call; reflect after each result.
+- At most 2 lookups per ticket, then set needs_human to true.
+
+Output: a single JSON object matching the schema in &lt;schema&gt; tags.
+Quote policy verbatim in the evidence field.
+
+&lt;ticket&gt;
+{{TICKET_TEXT}}
+&lt;/ticket&gt;
+
+Classify the ticket above. (Query AFTER the docs - Claude's placement.)</div>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The delta table - what actually changed per vendor<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Surface</th><th>Claude variant</th><th>GPT variant</th><th>Gemini variant</th></tr></thead>
+          <tbody>
+            <tr><td>Delimiters</td><td>XML tags</td><td>Markdown headers (## Policy manual)</td><td>Headers, kept simple</td></tr>
+            <tr><td>Placement</td><td>Query after docs (ticket last)</td><td>Key instructions at both ends</td><td>Data first, question literally last</td></tr>
+            <tr><td>Few-shot</td><td>3 examples</td><td>3 examples (standard model; strip and re-test if a reasoning variant)</td><td>4 examples - docs push them hardest</td></tr>
+            <tr><td>Params</td><td>effort: medium, nothing else</td><td>reasoning_effort, no temperature</td><td>All defaults untouched</td></tr>
+            <tr><td>Tools</td><td>tools field, Anthropic schema</td><td>tools field, OpenAI schema</td><td>tools field, Gemini schema</td></tr>
+          </tbody>
+        </table>
+        <p>Five rows of change for one identical business task. Multiply by every prompt in your system: that is the real cost of "we will just swap vendors" - not impossible, but never free, and only safe with the eval set from Sessions 8-9 to prove each variant still passes.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before Session 8 <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Port one of your own prompts</strong> to a second vendor using the portability checklist. Keep the delta list - bring it to Session 8, where it becomes eval cases.</li>
+      <li><strong>Read one model-specific page</strong> for a model you actually use, end to end. Note one thing your current prompts do that the page says to stop doing.</li>
+      <li><strong>Grep your codebase for temperature.</strong> Every hit is either a 400 waiting to happen (Sonnet 5), a silently ignored param (OpenAI reasoning), or a doc violation (Gemini 3). Decide the fate of each one.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below. Vendor docs move fast - re-check the model pages before you ship; links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Terminology divergence map</span><span class="note">Part 1 · system prompt / developer message / system instructions and friends</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Claude model-specific pages (Fable 5, Sonnet 5, Opus 4.8)</span><span class="note">Part 2 · brief-beats-enumerated, grounded claims, effort; temp/top_p 400</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">GPT-5.1 prompting guide</span><span class="note">Part 2 · none reasoning mode, personality shaping, metaprompting</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Gemini 3 prompting guidance</span><span class="note">Part 2 + 3 · leave defaults, precise + direct, verbosity control</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Boonstra whitepaper - sampling config chapter</span><span class="note">Part 3 · temperature / top-K / top-P as concepts, then the 2026 reality</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Prompt Engineering with Llama (Meta / DLAI)</span><span class="note">Part 3 · one card: chat format + Llama Guard; full course is self-study</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Vision-model prompting</span><span class="note">Part 3 · pointer only; deliberately out of scope for this course</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · A teammate says "put it in the developer message". In Anthropic and Google terms, they mean...</p>
+      <button class="qopt" type="button">A · The few-shot examples block and the grounding corpus</button>
+      <button class="qopt" type="button">B · The prompt improver and APE</button>
+      <button class="qopt" type="button">C · The system prompt (Anthropic) / system instructions (Google) - the standing instructions</button>
+      <p class="qwhy">One concept, three names: system prompt = developer message = system instructions. Half of cross-vendor arguments dissolve once the table is on the wall.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · Your prompt sets temperature=0.3. What happens across the 2026 model landscape?</p>
+      <button class="qopt" type="button">A · Sonnet 5 returns a 400 error, OpenAI reasoning models ignore it, and Gemini 3's docs say you should have left the defaults</button>
+      <button class="qopt" type="button">B · All three vendors respect it - temperature is a universal standard</button>
+      <button class="qopt" type="button">C · It only matters above 1.0; below that all models behave identically</button>
+      <p class="qwhy">The whitepaper-era dials moved: rejected on Sonnet 5, ignored by OpenAI reasoning models, leave-default on Gemini 3. Today you reach for effort and verbosity instead.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · Before shipping an existing prompt on a newly released model, the professional habit is...</p>
+      <button class="qopt" type="button">A · Ship it unchanged - models are drop-in replacements within a vendor</button>
+      <button class="qopt" type="button">B · Read that model's specific prompting page, run the portability checklist, and re-run your evals</button>
+      <button class="qopt" type="button">C · Rewrite the prompt from scratch - nothing ever carries over</button>
+      <p class="qwhy">Neither extreme. The core carries; the deltas (placement, delimiters, few-shot stance, params, tool format) need re-verification - and only your eval set proves what broke.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 7 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Translation table</b><span>System prompt = developer message = system instructions. Metaprompting = APE = prompt improver. RAG = grounding.</span></div>
+      <div class="cheat-item"><b>Placement wars</b><span>Claude: query after docs (+30%). GPT-4.1: instructions both ends. Gemini: data first, question last.</span></div>
+      <div class="cheat-item"><b>Few-shot stances</b><span>Claude: 3-5. Gemini: pushes hardest. OpenAI reasoning models: examples can hurt - strip and re-test.</span></div>
+      <div class="cheat-item"><b>Per-model pages</b><span>Fable 5: brief beats enumerated. Sonnet 5: temp/top_p = 400. GPT-5.1: none mode + metaprompting. Gemini 3: precise + direct.</span></div>
+      <div class="cheat-item"><b>Params, 2026</b><span>Temp/top-K/top-P are history-class concepts. The live dials: effort (Claude), reasoning_effort + verbosity (OpenAI), defaults (Gemini).</span></div>
+      <div class="cheat-item"><b>The migration habit</b><span>New model = read its page + re-run evals. Twenty minutes. Models are not drop-in replacements.</span></div>
+      <div class="cheat-item"><b>Portability checklist</b><span>Placement, delimiters, few-shot stance, params, tool-call format, evals. Run all six per switch.</span></div>
+      <div class="cheat-item"><b>Open models</b><span>Chat template correctness + your own safety layer (Llama Guard). Self-study pointer, not exam material.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 7 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b8-evals-vibes-to-numbers.html">Next: Evals I →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

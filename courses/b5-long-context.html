@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 5 · Long context, grounding, and caching - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 5 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 5 of 10</div>
+    <h1>Long context, <span class="accent">grounding</span>, and caching</h1>
+    <p class="sub">The day the 50-page policy manual lands in your prompt, three things start to matter that never did before: where things go, whether the answer actually comes from the documents, and what all those tokens cost per call. The vendors disagree on the first one - measurably. Let's be honest about it.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Builder track</span>
+      <span class="chip audience">Practitioners</span>
+      <span class="chip audience">Any model or API</span>
+      <span class="chip time">45 min live · build-along inside</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:5">3-20 · Placement, grounding, caching</span>
+      <span class="a3" style="flex:7">20-42 · Build-along</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>The manual arrives</h2>
+    </div>
+    <p class="lede">Session 4 gave TriageBot a router: small model for the easy 85%, reasoning model for the hard 15%. Then Meridian's legal team shipped a 50-page refund and returns policy that every triage decision must now respect. Suddenly TriageBot is a long-context system, and everything you learned about short prompts needs a supplement: document placement, grounding the answer in the actual policy, and caching so the manual does not bankrupt the ticket queue.</p>
+    <div class="legend">
+      <span class="pill solid">Live</span>
+      <span class="pill light">Self-study</span>
+      <span class="pill peach">★ Build-along - bring a laptop</span>
+      <span class="pill inkpill">Any model · any API</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The three vendors' conflicting placement rules and how to handle the disagreement like an adult (test on your task), the document-tag and quote-grounding patterns that keep long-doc answers honest, the context-reliance dial (docs-only vs blend), the static-first layout that makes prompts cache-friendly on every vendor, and TriageBot v3: policy-aware, quote-grounded, cache-shaped, and unwilling to improvise where the policy is silent.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE PLACEMENT WARS ============ -->
+  <section class="section" id="placement">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the placement wars</span>
+      <h2>Where things go: three vendors, three answers <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Ask the three big vendors where instructions and documents belong in a long prompt and you get three different official answers. Claude's docs: put long documents at the top and the query AFTER the docs - worth up to +30% response quality on long-document tasks. The GPT-4.1 guide: put instructions at BOTH the beginning and the end of long context. Gemini 3: data first, question LAST. These are not rumors; they are each vendor's published guidance.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 344" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three-lane diagram of long-prompt layouts: Claude docs-then-query, GPT-4.1 instructions at both ends, Gemini data first question last">
+        <style>
+          .b5pW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .b5pT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .b5pX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .b5pXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .b5pH { font: 700 14px Inter, sans-serif; fill: #6E655C; }
+          .b5pN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <text class="b5pH" x="20" y="30">Claude · query after docs</text>
+        <rect x="20" y="42" width="260" height="140" rx="12" fill="#78350F"/>
+        <text class="b5pW" x="40" y="70">Long documents</text>
+        <text class="b5pX" x="40" y="92">The 50-page manual,</text>
+        <text class="b5pX" x="40" y="108">tagged, at the top.</text>
+        <rect x="20" y="192" width="260" height="76" rx="12" fill="#F59E0B"/>
+        <text class="b5pT" x="40" y="220">Query + instructions</text>
+        <text class="b5pXd" x="40" y="242">After the docs. Up to +30%</text>
+        <text class="b5pXd" x="40" y="258">on long-document tasks.</text>
+        <text class="b5pH" x="310" y="30">GPT-4.1 · both ends</text>
+        <rect x="310" y="42" width="260" height="52" rx="12" fill="#F59E0B"/>
+        <text class="b5pT" x="330" y="66">Instructions</text>
+        <text class="b5pXd" x="330" y="84">Once at the top...</text>
+        <rect x="310" y="104" width="260" height="102" rx="12" fill="#B45309"/>
+        <text class="b5pW" x="330" y="132">Long documents</text>
+        <text class="b5pX" x="330" y="154">The same manual,</text>
+        <text class="b5pX" x="330" y="170">in the middle.</text>
+        <rect x="310" y="216" width="260" height="52" rx="12" fill="#FCD34D"/>
+        <text class="b5pT" x="330" y="240">Instructions again</text>
+        <text class="b5pXd" x="330" y="258">...repeated at the bottom.</text>
+        <text class="b5pH" x="600" y="30">Gemini 3 · question last</text>
+        <rect x="600" y="42" width="260" height="140" rx="12" fill="#78350F"/>
+        <text class="b5pW" x="620" y="70">Data first</text>
+        <text class="b5pX" x="620" y="92">All documents and data</text>
+        <text class="b5pX" x="620" y="108">before anything else.</text>
+        <rect x="600" y="192" width="260" height="76" rx="12" fill="#FCD34D"/>
+        <text class="b5pT" x="620" y="220">Question LAST</text>
+        <text class="b5pXd" x="620" y="242">The ask comes at the very</text>
+        <text class="b5pXd" x="620" y="258">end, after all the data.</text>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="b5pN" x="44" y="308">Dark = documents, amber = instructions/query. Three official layouts. Placement is measurable: A/B it on YOUR task.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the placement wars: three vendor-official layouts for the same long prompt</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>How to hold three contradicting truths<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The disagreement is not sloppiness - it reflects how each model family was trained to attend over long sequences. The honest takeaways:</p>
+        <ul>
+          <li><strong>Placement matters.</strong> Claude's +30% figure alone should end any "it doesn't matter where things go" argument. Position is one of the cheapest quality levers you have on long prompts.</li>
+          <li><strong>Know your vendor's guidance and start there.</strong> Claude: docs top, query after. GPT-4.1: instructions at both ends. Gemini 3: data first, question last. Defaults first, opinions later.</li>
+          <li><strong>Then test on YOUR task.</strong> Vendor guidance is a prior, not a law. A 20-minute A/B with your real documents beats any blog post, including this one. Sessions 8-9 make that A/B a repeatable eval.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The cross-vendor migration trap.</strong> Meridian's team drafted TriageBot v3 for Claude (manual at top, query after), then trialed the same string on a GPT model and quality dipped. Nothing was "broken" - the layout was tuned for one vendor's attention pattern. Multi-vendor systems need per-vendor layout variants, not one blessed string.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: GROUNDING ============ -->
+  <section class="section" id="grounding">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · grounding</span>
+      <h2>Making the answer come from the documents <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">A long document in the prompt does not guarantee the answer comes from it. Models happily blend the document with their training data and their imagination. Grounding is the set of patterns that force the answer back onto the page - and it is mostly three moves.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Move 1: document tags with metadata<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Wrap each document in tags that carry its identity, so instructions can refer to documents by name and the model can cite its source:</p>
+        <div class="prompt-box good"><span class="label">The document-tag pattern (Anthropic idiom, works everywhere)</span>&lt;documents&gt;
+  &lt;document index="1"&gt;
+    &lt;source&gt;meridian-refund-returns-policy-v4.pdf (2026-06, 50 pages)&lt;/source&gt;
+    &lt;document_contents&gt;
+    {{POLICY_MANUAL}}
+    &lt;/document_contents&gt;
+  &lt;/document&gt;
+&lt;/documents&gt;</div>
+        <p>The metadata is not decoration. "Quote the source you used" only works if the source has a name, and multi-document prompts collapse into soup without per-document boundaries. This is the same data/instruction separation from session 2, scaled up.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Move 2: extract quotes first, then answer<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The single most effective anti-hallucination move on long documents (tutorial Ch8, and the consolidated best-practices docs): make the model <strong>extract the relevant quotes before it answers</strong>. Two steps in one prompt: "First, pull the exact lines from the policy that bear on this ticket into quote tags. Then answer using only those lines."</p>
+        <ul>
+          <li>The quotes act as a checkable intermediate: if the quote step comes back empty, the honest answer is "the document does not cover this" - and the model is far more likely to say so.</li>
+          <li>You get an audit trail for free. When TriageBot approves a refund, the quoted policy line is right there in the output.</li>
+          <li>It composes with everything else: schemas, routing, reasoning models. Quote-grounding is a layer, not a fork.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Move 3: tune context reliance<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The GPT-4.1 guide makes explicit a dial most people never set: how much the model should rely on the provided context vs its own internal knowledge.</p>
+        <table class="clean">
+          <thead><tr><th>Mode</th><th>Instruction shape</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Docs only</strong></td><td>"Answer ONLY from the provided documents. If they do not contain the answer, say so."</td><td>Policy, legal, compliance, anything auditable - TriageBot v3 lives here</td></tr>
+            <tr><td><strong>Blend</strong></td><td>"Use the documents first; supplement with general knowledge and flag which is which."</td><td>Research assistants, drafting, exploratory work</td></tr>
+          </tbody>
+        </table>
+        <p>Leaving the dial unset means the model picks per answer, silently. Set it in writing, every long-context prompt.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Paste, RAG, or "grounding"? Plus two pointers<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Approach</th><th>What it is</th><th>When it fits</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Just paste it</strong></td><td>Whole document in the prompt, patterns from this session</td><td>Corpus fits in context and is stable - a 50-page manual qualifies easily</td></tr>
+            <tr><td><strong>RAG</strong></td><td>Retrieve relevant chunks per query, inject only those</td><td>Corpus too big for context, or per-query freshness needed</td></tr>
+            <tr><td><strong>Vendor "grounding"</strong></td><td>Google's term for retrieval-backed answers (e.g. grounding with Search); RAG by another name</td><td>You want the vendor's managed retrieval instead of building your own</td></tr>
+          </tbody>
+        </table>
+        <p>Two pointers to file away. First, when you do build RAG, the eval vocabulary is the <strong>RAG Triad</strong>: context relevance (did we retrieve the right chunks), groundedness (does the answer stick to them), answer relevance (does it answer the question). Sessions 8-9 put numbers on all three. Second, <strong>prompt compression</strong> - trimming long context algorithmically to save tokens - exists, and the honest read is that it is marginal: a dedicated course spends 17 minutes on it. Know the term, reach for caching and retrieval first.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: CACHING ============ -->
+  <section class="section" id="caching">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · caching</span>
+      <h2>Structure for speed and cost <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">TriageBot v3 will send the same 50-page manual with every single ticket. Unoptimized, that is the same tokens billed thousands of times a day. Prompt caching fixes it - but only if the prompt is shaped for it, and the shape rule is the one thing every vendor agrees on: static content first, variable content last.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cache-shaped prompt layout: static system instructions, policy manual, and examples first form the cached prefix; the variable ticket comes last">
+        <style>
+          .b5cW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .b5cT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .b5cX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .b5cXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .b5cH { font: 700 14px Inter, sans-serif; fill: #6E655C; }
+          .b5cN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <text class="b5cH" x="20" y="34">Static · identical every call · cached after the first request</text>
+        <text class="b5cH" x="660" y="34">Variable · last</text>
+        <rect x="20" y="70" width="200" height="110" rx="12" fill="#78350F"/>
+        <text class="b5cW" x="40" y="100">System</text>
+        <text class="b5cW" x="40" y="120">instructions</text>
+        <text class="b5cX" x="40" y="144">Role, categories,</text>
+        <text class="b5cX" x="40" y="160">rules, schema.</text>
+        <rect x="232" y="70" width="212" height="110" rx="12" fill="#B45309"/>
+        <text class="b5cW" x="252" y="100">Policy manual</text>
+        <text class="b5cX" x="252" y="124">50 pages in document</text>
+        <text class="b5cX" x="252" y="140">tags. The big, boring,</text>
+        <text class="b5cX" x="252" y="156">unchanging payload.</text>
+        <rect x="456" y="70" width="180" height="110" rx="12" fill="#78350F"/>
+        <text class="b5cW" x="476" y="100">Examples</text>
+        <text class="b5cX" x="476" y="124">Few-shot exemplars,</text>
+        <text class="b5cX" x="476" y="140">fixed across calls.</text>
+        <line x1="648" y1="60" x2="648" y2="196" stroke="#B45309" stroke-width="2.5" stroke-dasharray="6 5"/>
+        <rect x="660" y="70" width="200" height="110" rx="12" fill="#F59E0B"/>
+        <text class="b5cT" x="680" y="100">The ticket</text>
+        <text class="b5cXd" x="680" y="124">Changes every call.</text>
+        <text class="b5cXd" x="680" y="140">Everything before it</text>
+        <text class="b5cXd" x="680" y="156">stays byte-identical.</text>
+        <rect x="20" y="216" width="616" height="52" rx="12" fill="#FCD34D"/>
+        <text class="b5cT" x="40" y="240">Cached prefix</text>
+        <text class="b5cXd" x="40" y="258">Anthropic: cache breakpoints · OpenAI: automatic static-prefix caching. Same shape wins on both.</text>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="b5cN" x="44" y="308">One early variable token breaks the prefix. Keep everything that changes at the very end.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the cache-shaped prompt: static prefix first, the variable ticket dead last</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The shape rule, and why v1 already had it<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Caching works on prefixes: the provider reuses the processed form of the leading tokens if they are byte-identical to a previous call. <strong>Anthropic prompt caching</strong> lets you mark cache breakpoints explicitly; <strong>OpenAI caches static prefixes</strong> automatically and its prompt-engineering guide tells you to put static content first for exactly this reason. Either way the design rule is identical: static content first, variable content last - a timestamp or ticket ID at the top of the prompt silently kills the whole cache.</p>
+        <p>Here is the satisfying part: <strong>TriageBot v1 was already cache-shaped.</strong> Back in session 2 we put the fixed instructions first and the ticket last purely for clarity - data/instruction separation. That same layout is what caching rewards. Good structure keeps paying dividends you did not plan for.</p>
+        <div class="callout tip">
+          <strong>When NOT to bother</strong>
+          Caching earns nothing on short prompts (the prefix is too small to matter), one-off calls (nothing reuses the cache before it expires), or prompts you are actively rewriting every hour (each edit is a cache miss). Optimize the stable, high-volume paths - for Meridian that is exactly one prompt: TriageBot v3 with its 50-page prefix, hit thousands of times a day.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="build-along">
+    <div class="section-kicker">
+      <span class="klabel">The build-along</span>
+      <h2>TriageBot v3: the policy manual arrives <span class="tag demo">★ 22 min · laptops open</span></h2>
+    </div>
+    <p class="lede">Meridian ships the 50-page refund and returns policy, and every triage decision must now respect it. We rebuild TriageBot with everything from today: document tags, vendor-aware placement, quote-grounding, a context-reliance rule with a POLICY_GAP escape hatch, and a cache-shaped layout.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Wrap the policy in document tags.</strong> Source name, version, date, page count in the metadata - v4 of the policy will ship eventually, and you will want to know which version each decision quoted.</p></div>
+      <div class="step"><p><strong>Place it per your vendor's guidance.</strong> On Claude: manual at the top, instructions and ticket after (the skeleton below). On GPT-4.1: repeat the key instructions above AND below the manual. On Gemini: data first, question last. Note in a comment where you would A/B - placement is the first eval you will run in session 8.</p></div>
+      <div class="step"><p><strong>Add quote-grounding.</strong> "Before answering, extract the exact policy lines that apply into policy_quotes tags, then decide." The quotes become your audit trail and your hallucination brake in one move.</p></div>
+      <div class="step"><p><strong>Add the context-reliance rule.</strong> Docs-only mode, with an escape hatch: "If the policy does not cover this case, output POLICY_GAP - do not improvise." Every POLICY_GAP is routed to a human and logged; Meridian's policy team gets a weekly list of holes in their own manual. Everyone wins.</p></div>
+      <div class="step"><p><strong>Keep it cache-shaped.</strong> Instructions and manual and examples first, byte-identical on every call; the ticket dead last. Mark the cache breakpoint if your vendor uses explicit ones.</p></div>
+      <div class="step"><p><strong>Test both sides of the boundary.</strong> Run one ticket the policy clearly covers (expect a decision with quoted lines) and one it does not (expect POLICY_GAP, not a confident improvisation). The second test is the one that matters - it is the difference between a grounded system and a fluent one.</p></div>
+    </div>
+
+    <div class="prompt-box good"><span class="label">TriageBot v3 skeleton - grounded, gap-aware, cache-shaped (Claude layout)</span>You are TriageBot, the support-ticket triage system for Meridian Retail.
+
+&lt;documents&gt;
+  &lt;document index="1"&gt;
+    &lt;source&gt;meridian-refund-returns-policy-v4.pdf (2026-06, 50 pages)&lt;/source&gt;
+    &lt;document_contents&gt;
+    {{POLICY_MANUAL}}
+    &lt;/document_contents&gt;
+  &lt;/document&gt;
+&lt;/documents&gt;
+
+Categories: BILLING, SHIPPING, RETURNS, PRODUCT, ACCOUNT, OTHER.
+
+Instructions:
+1. Before answering, extract the exact policy lines that apply to this ticket into &lt;policy_quotes&gt; tags. If no lines apply, leave the tags empty.
+2. Then triage: category, priority, and whether any requested refund is allowed under the quoted lines.
+3. Answer ONLY from the policy above. If the policy does not cover the case, set "refund_allowed" to "POLICY_GAP" - do not improvise.
+4. Output schema-valid JSON: {"category": "...", "priority": "P1|P2|P3", "refund_allowed": true|false|"POLICY_GAP", "policy_basis": "quoted line, or POLICY_GAP"}
+
+Ticket:
+===
+{{TICKET}}
+===</div>
+
+    <div class="callout tip">
+      <strong>Everything above the === is static</strong>
+      Same instructions, same manual, same order, every call - that whole block is your cached prefix. Only the ticket changes. You built a grounded system and a cheap one in the same move.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before session 6 <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Run the placement A/B.</strong> Take one long-document task you actually have, build two layouts (your vendor's official one, plus one rival layout), run 5 inputs through each, and score which grounded better. Keep the numbers - session 8 turns this into a real eval.</li>
+      <li><strong>Add quote-grounding to one existing prompt.</strong> Any prompt of yours that answers from a document. Watch what happens on a question the document does not answer - before and after.</li>
+      <li><strong>Cache-audit your most-called prompt.</strong> Is anything variable (timestamp, user name, ID) sitting above the static content? Move it to the end and estimate the token savings at your call volume. Bring the number - it is usually the easiest cost win of the quarter.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below, including the honest cross-vendor disagreement on placement. Official vendor docs and course videos stay with the vendors; links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The placement wars: Claude query-after-docs (up to +30%) vs GPT-4.1 both-ends vs Gemini 3 data-first-question-last</span><span class="note">Part 1 · three-lane comparison + test-on-your-task rule</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Document tags with source metadata + quote-grounding (tutorial Ch8 + consolidated best-practices docs)</span><span class="note">Part 2 · moves 1 and 2, plus the v3 build</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Context reliance tuning - docs-only vs blend (GPT-4.1 guide)</span><span class="note">Part 2 · move 3 + the POLICY_GAP pattern</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">RAG vs Google "grounding" vs pasting - when each fits</span><span class="note">Part 2 · decision table</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Prompt caching: Anthropic cache breakpoints + OpenAI static-prefix caching, static-first layout</span><span class="note">Part 3 · shape rule + when not to bother</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">RAG Triad - context relevance / groundedness / answer relevance</span><span class="note">Part 2 · vocabulary only; measured in sessions 8-9</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Prompt compression</span><span class="note">Part 2 · one honest paragraph; deliberately not a pillar</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · You are building a long-document prompt for Claude. Per the vendor's own guidance, the layout is...</p>
+      <button class="qopt" type="button">A · Instructions at both the beginning and the end, documents in the middle</button>
+      <button class="qopt" type="button">B · Query first, then the documents - so the model knows what to look for</button>
+      <button class="qopt" type="button">C · Long documents at the top, query after the docs - worth up to +30% on long-document tasks</button>
+      <p class="qwhy">Claude: docs top, query after (+30%). Both-ends is GPT-4.1's guidance; data-first-question-last is Gemini's. Know your vendor's default, then A/B on your own task - the three officially disagree.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · The point of "extract the exact policy lines first, then answer" is...</p>
+      <button class="qopt" type="button">A · The quotes ground the answer in the document and give an honest failure mode - empty quotes means the doc does not cover it</button>
+      <button class="qopt" type="button">B · It compresses the prompt so the policy manual costs fewer tokens</button>
+      <button class="qopt" type="button">C · It makes the model read the document faster on the first pass</button>
+      <p class="qwhy">Quote-grounding is the anti-hallucination move for long docs: a checkable intermediate step, an audit trail, and a natural path to "the document does not cover this" instead of a confident improvisation.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · To make TriageBot v3 cache-friendly on any vendor, you put...</p>
+      <button class="qopt" type="button">A · The ticket first, so the model sees the fresh content before the boilerplate</button>
+      <button class="qopt" type="button">B · Static content first (instructions, manual, examples, byte-identical every call) and the variable ticket last</button>
+      <button class="qopt" type="button">C · A timestamp at the top of the prompt, so each call is uniquely identified</button>
+      <p class="qwhy">Caching works on identical prefixes - Anthropic via cache breakpoints, OpenAI automatically. One early variable token (like that timestamp) breaks the prefix and silently kills the entire cache.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Placement wars</b><span>Claude: docs top, query after (+30%). GPT-4.1: instructions both ends. Gemini 3: data first, question LAST.</span></div>
+      <div class="cheat-item"><b>The adult answer</b><span>Placement matters and vendors disagree. Start from your vendor's guidance, then A/B on your own task.</span></div>
+      <div class="cheat-item"><b>Document tags</b><span>Wrap each doc with source metadata (name, version, date). Citations and multi-doc prompts depend on it.</span></div>
+      <div class="cheat-item"><b>Quote-grounding</b><span>Extract exact lines first, answer from the quotes. Anti-hallucination + audit trail in one move.</span></div>
+      <div class="cheat-item"><b>Context reliance</b><span>Set the dial in writing: docs-only (with a POLICY_GAP escape hatch) or blend-and-flag. Never leave it implicit.</span></div>
+      <div class="cheat-item"><b>Paste vs RAG</b><span>Fits in context and stable? Paste it with today's patterns. Too big or needs freshness? RAG - "grounding" is Google's word for it.</span></div>
+      <div class="cheat-item"><b>Cache shape</b><span>Static first, variable last, everywhere. One early changing token kills the prefix. TriageBot v1's layout was already right.</span></div>
+      <div class="cheat-item"><b>Skip caching when</b><span>Short prompts, one-off calls, prompts under active edit. Optimize the stable, high-volume path.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 5 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b6-agentic-prompting.html">Next: Agentic prompting →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

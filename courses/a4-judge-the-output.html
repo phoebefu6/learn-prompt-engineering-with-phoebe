@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 4 · Judge the output - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Leader session 4 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Leader track · Session 4 of 6</div>
+    <h1>Judge the <span class="accent">output</span></h1>
+    <p class="sub">Session 3 taught you to make AI push back. This one is the other half of trust: what comes back can be fluent, confident, sourced-looking - and partly invented. Today you learn why it guesses, the habits that buy honesty, and how much checking each answer actually deserves.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Leader track</span>
+      <span class="chip audience">C-level, boards &amp; managers</span>
+      <span class="chip audience">No tech required</span>
+      <span class="chip audience">Works with any AI chat</span>
+      <span class="chip time">30 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-25 · The three ideas</span>
+      <span class="a3" style="flex:4">25-40 · The fact audit, live</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>The skill session 1 promised</h2>
+    </div>
+    <p class="lede">Back in session 1 you met the 4D framework: Delegation, Description, Discernment, Diligence. Sessions 2 and 3 were Description - asking well. This session is Discernment: judging what comes back. It is the skill that decides whether AI makes you faster or just confidently wrong at scale. The Meridian exec team learned it the uncomfortable way - the CFO's market-sizing numbers got within one meeting of a board deck.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Try it in your next sitting</span>
+      <span class="pill inkpill">Any model · any chat app</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A plain-language model of why AI invents things (and why confidence tells you nothing), four discernment habits that make any model more honest - including the one-line permission that stops most guessing, a verification budget that matches checking effort to stakes so you neither trust blindly nor audit everything, and a live fact audit of a real AI answer you almost trusted.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: WHY IT GUESSES ============ -->
+  <section class="section" id="why-it-guesses">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the mechanism</span>
+      <h2>Why it guesses <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">The technical word is hallucination, but the plain version is more useful: the model completes text plausibly. That is its whole job. When your ask leaves a gap - session 1's oldest lesson - it fills the gap with something that reads right. And it fills it in the same fluent, assured voice it uses when it is correct. Confident tone is the house style, not a quality signal.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="What the model does under uncertainty: completes plausibly, sounds sure, fills gaps with invented specifics, and rarely volunteers I do not know">
+        <style>
+          .hzW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .hzT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .hzX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .hzXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .hzN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="30" width="200" height="120" rx="14" fill="#78350F"/>
+        <text class="hzW" x="40" y="62">1 · It completes</text>
+        <text class="hzX" x="40" y="88">Trained to continue</text>
+        <text class="hzX" x="40" y="106">text plausibly - truth</text>
+        <text class="hzX" x="40" y="124">is not the test.</text>
+        <rect x="234" y="30" width="200" height="120" rx="14" fill="#B45309"/>
+        <text class="hzW" x="254" y="62">2 · It sounds sure</text>
+        <text class="hzX" x="254" y="88">Fluent confidence is</text>
+        <text class="hzX" x="254" y="106">the house style -</text>
+        <text class="hzX" x="254" y="124">right or wrong.</text>
+        <rect x="448" y="30" width="200" height="120" rx="14" fill="#F59E0B"/>
+        <text class="hzT" x="468" y="62">3 · It fills gaps</text>
+        <text class="hzXd" x="468" y="88">Missing facts get</text>
+        <text class="hzXd" x="468" y="106">invented: numbers,</text>
+        <text class="hzXd" x="468" y="124">names, citations.</text>
+        <rect x="662" y="30" width="198" height="120" rx="14" fill="#FCD34D"/>
+        <text class="hzT" x="682" y="62">4 · No self-doubt</text>
+        <text class="hzXd" x="682" y="88">It rarely volunteers</text>
+        <text class="hzXd" x="682" y="106">"I do not know" -</text>
+        <text class="hzXd" x="682" y="124">unless you invite it.</text>
+        <rect x="20" y="196" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="hzN" x="44" y="208">Highest-risk specifics: numbers, names, dates, citations. Confidence is a style, not a signal.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - what the model does under uncertainty: plausible, confident, specific, and never in doubt</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The near-miss: the CFO's board deck<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Remember the CFO from session 1? Asked for market sizing, got confident numbers, nearly put them in a board deck. Here is what the answer looked like up close - and why it almost worked:</p>
+        <ul>
+          <li><strong>It was specific.</strong> "The addressable market grew 14.2% to £3.8bn in 2025." Not "the market grew" - a decimal. Specificity reads as research.</li>
+          <li><strong>It looked sourced.</strong> It named a plausible industry report and a real consultancy. The report exists; the figure was not in it. Sourced-looking is not sourced.</li>
+          <li><strong>It was partly right.</strong> The narrative was sound, the segmentation sensible, two of the five figures checked out. The blend is what makes invention dangerous - a fully wrong answer would have been caught.</li>
+        </ul>
+        <p>The gap that got filled: the CFO never said which market definition, which geography, or which year. The model chose - silently - and then decorated its choices with numbers.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The pattern to burn in:</strong> invention concentrates in the specifics. Prose and frameworks are usually safe; numbers, names, dates, and citations are where the guessing lives. Audit those first, always.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What hallucination is - and what it is not<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two clarifications save a lot of confusion in exec discussions:</p>
+        <ul>
+          <li><strong>It is not lying.</strong> Lying needs an intent to deceive. The model is doing exactly what it was trained to do - produce the most plausible continuation. When the plausible and the true diverge, plausible wins. That is why "just tell it to be accurate" does not work: it already writes in the register of accuracy.</li>
+          <li><strong>It is not rare noise, it is gap-filling.</strong> The rate is not uniform: it climbs where your question outruns the model's knowledge - niche topics, recent events past its cutoff (session 3's gears), your company's internals it has never seen. Predictable terrain means you can budget for it, which is Part 3.</li>
+        </ul>
+        <p>The good news from the same mechanism: give it the facts to work with - paste the document, the data, the report - and the guessing surface shrinks dramatically. That habit is Part 2's third move.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE DISCERNMENT HABITS ============ -->
+  <section class="section" id="habits">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the habits</span>
+      <h2>The discernment habits <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">You cannot make a model humble by hoping. You make it honest the same way you made it critical in session 3: by making honesty the assignment. Four habits, each one sentence long, each usable in your next sitting.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The four honesty habits<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Habit</th><th>The sentence to add</th><th>What it buys</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1 · Demand quotes</strong></td><td>"For every claim, quote the exact line you used, in quotation marks"</td><td>Verbatim quotes are checkable in seconds; paraphrases hide inventions</td></tr>
+            <tr><td><strong>2 · Permit uncertainty</strong></td><td>"If you do not know, say so - do not guess"</td><td>Removes the pressure to fill every gap; the model takes the exit you built</td></tr>
+            <tr><td><strong>3 · Ground it</strong></td><td>"Answer ONLY from the document below - if it is not in there, say so"</td><td>Shrinks the guessing surface to material you can verify</td></tr>
+            <tr><td><strong>4 · Make it self-critique</strong></td><td>"Now list the weakest claims in your own answer and why"</td><td>The model is surprisingly good at rating its own confidence - if asked</td></tr>
+          </tbody>
+        </table>
+        <p>Habit 2 is the one Anthropic's own best-practices guidance singles out: give the model explicit permission to be uncertain. Without the exit, the training pushes it to answer; with the exit, "the document does not say" becomes an acceptable - and common - response.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The habits in one prompt - steal this shape<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Here is Dana's version, after the CFO's near-miss became a Meridian house rule. Grounding plus quotes plus the permission line, in one ask:</p>
+        <div class="prompt-box good"><span class="label">The grounded ask - habits 1, 2 and 3 together</span>Answer ONLY from the market report pasted below the ===.
+
+Question: what does the report say about our segment's growth in 2025, and what does it attribute the growth to?
+
+Rules:
+- For every claim, quote the exact sentence from the report, in quotation marks.
+- If the report does not answer part of the question, say "the report does not say" - do not fill the gap from general knowledge.
+- If you are uncertain how to read any figure, say so and say why.
+
+===
+[paste the report here]</div>
+        <p>Notice what changed versus "summarise this report": every claim now arrives with its own receipt, and the model has a dignified way to say nothing. Answers get slightly shorter and enormously more trustworthy.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why the permission line works so well<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Models are tuned on human feedback, and humans reward complete-sounding answers - so "I do not know" gets trained toward the exits. The permission line reverses the incentive inside your conversation: you have declared that uncertainty is a correct answer, so producing it no longer conflicts with being helpful. Same mechanism as session 3's sycophancy fix - you cannot wish the tendency away, but one sentence of reframing redirects it.</p>
+        <p>Make it standing policy, not a per-prompt effort: if you keep reusable prompts (a weekly summary ask, a drafting template), add the line once and it pays out on every future run. That is tonight's homework.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: THE VERIFICATION BUDGET ============ -->
+  <section class="section" id="verification-budget">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the budget</span>
+      <h2>The verification budget <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Checking everything is as unaffordable as checking nothing. The executive move is a budget: match verification effort to what the answer is for. Two questions set the level - how much is at stake, and how hard is it to undo?</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Verification budget two by two: stakes against reversibility - skim it, spot-check the specifics, independent source check, human expert sign-off">
+        <style>
+          .vbW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .vbT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .vbX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .vbXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .vbA { font: 700 14px Inter, sans-serif; fill: #1C1917; }
+          .vbN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <text class="vbA" x="255" y="30">Easy to undo</text>
+        <text class="vbA" x="630" y="30">Hard to undo</text>
+        <text class="vbA" x="30" y="94">Low</text>
+        <text class="vbA" x="30" y="112">stakes</text>
+        <text class="vbA" x="30" y="214">High</text>
+        <text class="vbA" x="30" y="232">stakes</text>
+        <rect x="130" y="44" width="355" height="112" rx="14" fill="#FCD34D"/>
+        <text class="vbT" x="152" y="76">Skim it</text>
+        <text class="vbXd" x="152" y="102">Drafts, brainstorms, internal notes.</text>
+        <text class="vbXd" x="152" y="120">Read it, sanity-check, move on.</text>
+        <rect x="505" y="44" width="355" height="112" rx="14" fill="#F59E0B"/>
+        <text class="vbT" x="527" y="76">Spot-check the specifics</text>
+        <text class="vbXd" x="527" y="102">Anything leaving your hands: check every</text>
+        <text class="vbXd" x="527" y="120">name, number, and date before it goes.</text>
+        <rect x="130" y="164" width="355" height="112" rx="14" fill="#B45309"/>
+        <text class="vbW" x="152" y="196">Independent source check</text>
+        <text class="vbX" x="152" y="222">Money, strategy, anything quoted upward:</text>
+        <text class="vbX" x="152" y="240">trace key claims to a primary source.</text>
+        <rect x="505" y="164" width="355" height="112" rx="14" fill="#78350F"/>
+        <text class="vbW" x="527" y="196">Human expert sign-off</text>
+        <text class="vbX" x="527" y="222">Board decks, filings, legal, medical: an</text>
+        <text class="vbX" x="527" y="240">expert reviews before anything ships.</text>
+        <rect x="20" y="300" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="vbN" x="44" y="312">Never forward AI numbers you have not traced. The byline on the deck is yours, not the model's.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the verification budget: stakes and reversibility set the checking level</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Spending the budget - worked examples<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>The answer is for...</th><th>Budget level</th><th>What that looks like</th></tr></thead>
+          <tbody>
+            <tr><td>Brainstorm options for Monday's discussion</td><td><strong>Skim it</strong></td><td>Ideas do not need citations; the meeting will filter them</td></tr>
+            <tr><td>An email to 80 store managers</td><td><strong>Spot-check</strong></td><td>Two minutes on every name, date, and figure - hard to unsend</td></tr>
+            <tr><td>The market numbers in the strategy paper</td><td><strong>Source check</strong></td><td>Open the actual report; find the actual figure on the actual page</td></tr>
+            <tr><td>Anything a board or regulator will see</td><td><strong>Expert sign-off</strong></td><td>AI drafts, a named human owns every claim before it ships</td></tr>
+          </tbody>
+        </table>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Dana's version of the rule:</strong> "the model can write the deck, but it cannot present it." Whoever forwards the number owns the number. Once Meridian's exec team said that out loud, checking stopped being optional politeness and became part of the job - and the CFO's near-miss never repeated.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The byline rule, and where the org-level version lives<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The byline rule generalises past decks: any artefact that leaves your hands carries your name, not the model's. "The AI said so" has exactly the standing that "my analyst said so" has - none, if you signed it. This is Diligence (the fourth D) arriving early; session 6 makes it policy.</p>
+        <p>And a preview of session 5: what you have been doing by hand today - checking answers against a bar - is what your data team calls evaluation, and they can automate it. When a team proposes an AI system, "how will we know the outputs are right?" is the verification budget question at organisational scale. The builder track spends two whole sessions (8 and 9) turning it into pipelines; you only need to know to ask it.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ THE FACT AUDIT ============ -->
+  <section class="section" id="fact-audit">
+    <div class="section-kicker">
+      <span class="klabel">The boardroom moment</span>
+      <h2>The fact audit: one real answer, checked live <span class="tag demo">★ 15 min · work it live</span></h2>
+    </div>
+    <p class="lede">Bring one recent AI answer you almost trusted - session 3's deep-research homework is perfect. We audit it together the way Meridian now audits anything headed upward: mark the specifics, make the model confess, verify the top claims.</p>
+
+    <div class="prompt-box good"><span class="label">The self-audit prompt - steal this template</span>Here is an answer you gave earlier, pasted below the ===.
+
+Audit it. Do not defend it.
+
+1. List every factual claim in it: each number, name, date, and citation.
+2. For each claim, rate your confidence high / medium / low, and say where it came from: the material I provided, general knowledge, or a pattern you completed.
+3. Tell me the 2 claims you are LEAST certain of, and why.
+4. For those 2, name the primary source I should check them against.
+
+If any citation may not exist exactly as stated, flag it first.
+
+===
+[paste the AI answer here]</div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Pick your answer.</strong> A real one you nearly acted on - a research summary, a market figure, a vendor comparison. The audit only teaches when something was genuinely at stake.</p></div>
+      <div class="step"><p><strong>Highlight the specifics.</strong> Go through it and mark every number, name, date, and citation. That highlighted list is your audit surface - Part 1's lesson made visible. Most people are surprised how many there are.</p></div>
+      <div class="step"><p><strong>Make the model confess.</strong> Run the self-audit prompt on its own answer. Watch which claims it rates low - models are notably candid about their own uncertainty when asked directly, and almost never when not.</p></div>
+      <div class="step"><p><strong>Verify the top 2.</strong> Take the two least-certain claims to a primary source - the actual report, the actual site, the actual filing. Not another AI chat: that is asking a second guesser to grade the first.</p></div>
+      <div class="step"><p><strong>Score it and set the budget.</strong> How did the answer do - clean, blemished, or busted? Then say which quadrant it belonged in. If the checking you just did was more than the quadrant demanded, relax; if less, you found the habit to change.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>What the wince teaches</strong>
+      Somewhere in step 4, most people find one claim that was invented - and it is usually the one they had already repeated to somebody. That sting is the point of doing this live once: after today, your eye snags on unsourced specifics automatically. The audit becomes a 3-minute reflex, not a project.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before session 5 <span class="tag exercise">◐ 20 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Catch one confident invention</strong> this week using the highlight-and-verify move. Numbers, names, dates, citations - trace one to its source and see if it survives.</li>
+      <li><strong>Add the permission line to your standing prompts:</strong> "if you do not know, say so - do not guess." Put it in every reusable ask you own. One minute now, honesty forever.</li>
+      <li><strong>Bring one "it was wrong but useful" story</strong> to session 5 - a time AI got something wrong and the wrongness itself told you something. Session 5 is about turning your judging skill into acceptance tests your data team can automate.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Leader-level coverage of the sources below - working ideas in plain language, honestly flagged where the depth lives in the builder track. Official certificates and videos stay with the vendors; links are in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic AI Fluency framework - Discernment</span><span class="note">All parts · the judging skill, promised in session 1 (anthropic.skilljar.com)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic interactive tutorial Ch8 - hallucination concepts, no code</span><span class="note">Parts 1-2 · gap-filling, quote-grounding, self-critique, exec version</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic best practices - practice 5, permission to be uncertain</span><span class="note">Part 2 · the one-line habit and why it works (claude.com/blog)</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Eval discipline - the org-level version of judging</span><span class="note">Session 5 turns it into acceptance tests; Builder sessions 8-9 build the pipelines</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · An AI answer is fluent, confident, and cites a named industry report. This tells you...</p>
+      <button class="qopt" type="button">A · The claims are probably reliable - citations mean it did research</button>
+      <button class="qopt" type="button">B · Nothing yet - confident tone is the house style, and sourced-looking is not sourced</button>
+      <button class="qopt" type="button">C · The prose is trustworthy but the citation should be removed</button>
+      <p class="qwhy">The model writes in the register of accuracy whether it is right or wrong, and it can invent citations as fluently as sentences. Judgment starts with the specifics - numbers, names, dates, citations - not the tone.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · The AI gave you market figures for tomorrow's leadership meeting. Before forwarding them, you should...</p>
+      <button class="qopt" type="button">A · Ask the model to double-check its own numbers and keep them if it confirms</button>
+      <button class="qopt" type="button">B · Re-run the question in a fresh chat and forward if the numbers match</button>
+      <button class="qopt" type="button">C · Trace the key figures to a primary source - never forward AI numbers you have not traced</button>
+      <p class="qwhy">Self-confirmation and re-rolls just sample the same guesser again. High stakes plus quoted-upward means the source-check quadrant at minimum - and once you forward it, the byline is yours.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · The uncertainty-permission technique means...</p>
+      <button class="qopt" type="button">A · Adding "if you do not know, say so - do not guess" so uncertainty becomes an acceptable answer</button>
+      <button class="qopt" type="button">B · Asking the model to attach a percentage confidence score to every sentence</button>
+      <button class="qopt" type="button">C · Telling the model to only answer questions it is completely certain about</button>
+      <p class="qwhy">Training pushes models to produce complete-sounding answers, so "I do not know" needs an explicit exit. One sentence builds the exit, and the model reliably takes it - Anthropic's own recommended practice.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Confident ≠ correct</b><span>Fluent assurance is the house style, right or wrong. Judge the claims, never the tone.</span></div>
+      <div class="cheat-item"><b>Audit the specifics</b><span>Invention concentrates in numbers, names, dates, and citations. Highlight them first, always.</span></div>
+      <div class="cheat-item"><b>Permission to be uncertain</b><span>"If you do not know, say so - do not guess." Add it to every standing prompt you own.</span></div>
+      <div class="cheat-item"><b>Ground it</b><span>"Answer ONLY from the document below." Pasted material shrinks the guessing surface to what you can verify.</span></div>
+      <div class="cheat-item"><b>Demand verbatim quotes</b><span>"Quote the exact line you used." Quotes are checkable in seconds; paraphrases hide inventions.</span></div>
+      <div class="cheat-item"><b>The self-audit ask</b><span>"Which claims are you least certain of, and why?" Models confess readily - but only when asked.</span></div>
+      <div class="cheat-item"><b>The verification budget</b><span>Stakes × reversibility: skim / spot-check / source check / expert sign-off. Budget, do not binge.</span></div>
+      <div class="cheat-item"><b>The byline rule</b><span>Never forward AI numbers you have not traced. Whoever forwards the number owns the number.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 4 of 6 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="a5-idea-to-shipped.html">Next: From idea to shipped →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

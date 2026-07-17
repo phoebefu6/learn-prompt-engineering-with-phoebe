@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 8 · Evals I: from vibes to numbers - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 8 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 8 of 10</div>
+    <h1>Evals I: from <span class="accent">vibes</span> to numbers</h1>
+    <p class="sub">You have spent seven sessions making TriageBot better. Better according to whom? Today the guessing stops: golden sets, grading methods, and your first eval harness. This is the skill that separates prompt tinkerers from prompt engineers.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Builder track</span>
+      <span class="chip audience">Practitioners</span>
+      <span class="chip audience">Any model or API</span>
+      <span class="chip time">35 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-20 · Vibes, grading, promptfoo</span>
+      <span class="a3" style="flex:5">20-42 · Build-along</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Why this session exists</h2>
+    </div>
+    <p class="lede">Back in session 1 you saw Anthropic's funnel: success criteria, then evals, then - and only then - prompt engineering. We deliberately broke that order so you could build intuition first. Now we pay the debt. Sessions 8 and 9 turn "the v4 prompt feels better" into "v4 scores 91% category accuracy against 20 real tickets, v2 scores 78%". One of those sentences survives a meeting with your boss.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Build-along - TriageBot gets its eval</span>
+      <span class="pill inkpill">Any model · any API</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The argument for why looks-good-to-me fails at scale, Anthropic's full grading taxonomy (three code-graded methods, three LLM-graded methods) and the volume-over-grading-quality principle, the anatomy of a promptfoo eval config, and a real golden set of 20 Meridian tickets with assertions that grade TriageBot v2 against v4 - with baseline scores logged for session 9's CI gate.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: WHY VIBES FAIL ============ -->
+  <section class="section" id="why-vibes">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the case</span>
+      <h2>Why vibes fail <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Every prompt you have shipped so far was graded the same way: you read a few outputs and nodded. That works for 5 test tickets. It does not survive contact with 1,000 real ones - and Meridian's queue does 1,000 a week.</p>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Looks-good-to-me is not a metric<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three reasons eyeballing collapses at scale, all of which have already bitten the Meridian team:</p>
+        <ul>
+          <li><strong>You sample the easy cases.</strong> The tickets you test with are the ones you remember - clean, typical, polite. Production sends you the drunk 2am ticket in three languages with an order number in the subject line.</li>
+          <li><strong>Your memory is not a baseline.</strong> When you "improved" the prompt in session 6, did shipping-delay accuracy go up or just refund handling? You genuinely cannot know without numbers from before the change.</li>
+          <li><strong>Prompt changes are code changes.</strong> They alter production behaviour, so they need what code changes need: regression tests. A one-word edit to a prompt can silently break a category that used to work - and nobody reads 1,000 outputs to check.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The Meridian incident that started this.</strong> A well-meaning edit in session 7's vendor-variant work reworded one line of the Gemini variant. Refund tickets started coming back tagged SHIPPING. Nobody noticed for four days, because everyone checked the same three sample tickets - none of them refunds.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The whole industry converged on this<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is not one vendor's opinion. Recall the session 1 funnel: Anthropic's prompt engineering overview lists success criteria and empirical evals as <strong>prerequisites</strong> - things you do before prompt engineering, not after. Anthropic's own API course on Skilljar goes further and puts the evals module <strong>before</strong> the prompt engineering module, a deliberate ordering choice. OpenAI's reasoning guidance keeps hammering explicit success criteria. The message from everyone who ships this stuff: a tips-and-tricks practice without evals is a 2023 practice.</p>
+        <p>The honest framing for your team: evals are not the boring homework after the fun prompting. Evals are the instrument panel. Prompting without them is flying by feel in clouds.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: GRADING TAXONOMY ============ -->
+  <section class="section" id="grading">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the toolbox</span>
+      <h2>The grading taxonomy <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Anthropic's eval docs give six ways to grade an output, and they sit on a ladder: cheap and rigid at the bottom, flexible and costly at the top. The craft is picking the lowest rung that can grade your criterion.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The grading ladder: exact match, similarity scores, LLM binary and Likert, LLM ordinal rubric">
+        <style>
+          .glW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .glT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .glX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .glXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .glN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="216" width="195" height="68" rx="12" fill="#78350F"/>
+        <text class="glW" x="40" y="244">1 · Exact match</text>
+        <text class="glX" x="40" y="266">Cheap, deterministic, rigid</text>
+        <rect x="235" y="156" width="195" height="128" rx="12" fill="#B45309"/>
+        <text class="glW" x="255" y="184">2 · Similarity</text>
+        <text class="glX" x="255" y="206">Cosine similarity</text>
+        <text class="glX" x="255" y="224">ROUGE-L for summaries</text>
+        <rect x="450" y="96" width="195" height="188" rx="12" fill="#F59E0B"/>
+        <text class="glT" x="470" y="124">3 · LLM binary + Likert</text>
+        <text class="glXd" x="470" y="146">Pass or fail, or a 1-5</text>
+        <text class="glXd" x="470" y="164">scale, graded by a model</text>
+        <rect x="665" y="36" width="195" height="248" rx="12" fill="#FCD34D"/>
+        <text class="glT" x="685" y="64">4 · LLM ordinal rubric</text>
+        <text class="glXd" x="685" y="86">Flexible, costly, needs</text>
+        <text class="glXd" x="685" y="104">bias care (session 9)</text>
+        <text class="glXd" x="40" y="300">code-graded: cheap, run thousands</text>
+        <text class="glXd" x="640" y="300">model-graded: flexible, costs per run</text>
+        <rect x="20" y="310" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="glN" x="44" y="322">Climb only as high as the criterion forces you. Category labels never need a judge.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the grading ladder, from exact match to LLM-graded rubrics</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Six methods, one table<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Method</th><th>Graded by</th><th>Grades what</th><th>TriageBot use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Exact match</strong></td><td>Code</td><td>Is the output exactly X?</td><td>Category label equals REFUND</td></tr>
+            <tr><td><strong>Cosine similarity</strong></td><td>Code</td><td>Is it semantically close to a reference?</td><td>Summary close to a gold summary</td></tr>
+            <tr><td><strong>ROUGE-L</strong></td><td>Code</td><td>Summary overlap with a reference</td><td>Same, word-overlap flavour</td></tr>
+            <tr><td><strong>LLM Likert</strong></td><td>Model</td><td>1-5 rating on a quality dimension</td><td>Tone appropriateness, 1-5</td></tr>
+            <tr><td><strong>LLM binary</strong></td><td>Model</td><td>Yes or no against a criterion</td><td>"Is this summary actionable?"</td></tr>
+            <tr><td><strong>LLM ordinal</strong></td><td>Model</td><td>Graded scale with a rubric</td><td>Escalation-note quality, 1-3</td></tr>
+          </tbody>
+        </table>
+        <p>Rule of thumb from the docs and from everyone's scars: <strong>code-graded beats model-graded whenever the criterion allows it</strong>. Code grading is free, instant, and deterministic - the same output always gets the same grade. A model judge costs money per run and can change its mind. Save it for what code truly cannot see: tone, helpfulness, reasoning quality. That is session 9's whole first act.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The volume principle - Anthropic's counterintuitive advice<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The single most useful line in Anthropic's eval docs: <strong>prioritise volume over grading quality</strong>. Many test cases with slightly crude grading beat a handful of cases with exquisite hand-grading.</p>
+        <ul>
+          <li>A 100-case eval with blunt exact-match assertions will catch a regression that a 5-case artisanal eval sails past - because the regression lives in case 47.</li>
+          <li>Crude grades average out. One mis-graded case in 100 shifts your score 1%. One missing case in 5 hides 20% of reality.</li>
+          <li>Volume is also cheaper to grow: every production failure becomes one more test case (session 9 makes this a formal loop).</li>
+        </ul>
+        <p>So when you feel the pull to perfect ten test cases, resist it and write thirty rough ones instead. You can always upgrade the grading later. You cannot upgrade coverage you never wrote.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: PROMPTFOO ============ -->
+  <section class="section" id="promptfoo">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the harness</span>
+      <h2>Your first eval harness with promptfoo <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">You could write an eval loop in 40 lines of Python - Anthropic's course literally does. But the field standardised on a tool: promptfoo, an open-source eval CLI with 20k+ GitHub stars, used inside Anthropic's own prompt evaluations course. One YAML file in, a results grid out. Today is conceptual; no install needed in session.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="promptfoo anatomy: prompts, providers and tests multiply into a graded results matrix">
+        <style>
+          .pfW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .pfT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .pfX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .pfXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .pfN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="pfArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L8,4.5 L0,9 Z" fill="#78350F"/>
+          </marker>
+        </defs>
+        <rect x="20" y="28" width="260" height="66" rx="12" fill="#78350F"/>
+        <text class="pfW" x="40" y="54">prompts</text>
+        <text class="pfX" x="40" y="76">triagebot_v2.txt · triagebot_v4.txt</text>
+        <rect x="20" y="112" width="260" height="66" rx="12" fill="#B45309"/>
+        <text class="pfW" x="40" y="138">providers</text>
+        <text class="pfX" x="40" y="160">the models you want in the race</text>
+        <rect x="20" y="196" width="260" height="66" rx="12" fill="#F59E0B"/>
+        <text class="pfT" x="40" y="222">tests + assertions</text>
+        <text class="pfXd" x="40" y="244">20 golden tickets, each with checks</text>
+        <line x1="290" y1="61" x2="360" y2="130" stroke="#78350F" stroke-width="3" marker-end="url(#pfArrow)"/>
+        <line x1="290" y1="145" x2="360" y2="145" stroke="#78350F" stroke-width="3" marker-end="url(#pfArrow)"/>
+        <line x1="290" y1="229" x2="360" y2="160" stroke="#78350F" stroke-width="3" marker-end="url(#pfArrow)"/>
+        <rect x="380" y="28" width="480" height="234" rx="12" fill="#FCD34D"/>
+        <text class="pfT" x="404" y="58">the matrix</text>
+        <text class="pfXd" x="404" y="80">every prompt x every provider x every test, graded</text>
+        <rect x="404" y="98" width="200" height="34" rx="6" fill="#F59E0B"/>
+        <text class="pfT" x="416" y="120">v2 · ticket 07 · pass</text>
+        <rect x="620" y="98" width="200" height="34" rx="6" fill="#F59E0B"/>
+        <text class="pfT" x="632" y="120">v4 · ticket 07 · pass</text>
+        <rect x="404" y="142" width="200" height="34" rx="6" fill="#B45309"/>
+        <text class="pfW" x="416" y="164">v2 · ticket 12 · fail</text>
+        <rect x="620" y="142" width="200" height="34" rx="6" fill="#F59E0B"/>
+        <text class="pfT" x="632" y="164">v4 · ticket 12 · pass</text>
+        <rect x="404" y="186" width="200" height="34" rx="6" fill="#F59E0B"/>
+        <text class="pfT" x="416" y="208">... 20 rows per prompt</text>
+        <rect x="620" y="186" width="200" height="34" rx="6" fill="#F59E0B"/>
+        <text class="pfT" x="632" y="208">scores per column</text>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="pfN" x="44" y="308">One config file declares the whole experiment. The grid is your before-and-after photo, per ticket.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - promptfoo anatomy: prompts x providers x tests become a graded grid</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The config, annotated<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A promptfoo config is one YAML file with three lists. Here is a trimmed TriageBot version - read it top to bottom and notice it is just the SVG above in text form:</p>
+        <div class="prompt-box good"><span class="label">promptfooconfig.yaml - the shape to steal</span>prompts:
+  - file://prompts/triagebot_v2.txt
+  - file://prompts/triagebot_v4.txt
+
+providers:
+  - anthropic:messages:claude-sonnet-5
+
+tests:
+  - description: "plain refund request"
+    vars:
+      ticket: "Order 4471 arrived smashed. I want my money back."
+    assert:
+      - type: is-json
+      - type: contains
+        value: '"category": "REFUND"'
+      - type: javascript
+        value: JSON.parse(output).summary.split(" ").length &lt;= 30
+
+  - description: "vague complaint, should not guess"
+    vars:
+      ticket: "your app is broken again, sort it out"
+    assert:
+      - type: is-json
+      - type: contains
+        value: '"category": "UNSURE"'</div>
+        <p>The four assertion types you will use constantly: <strong>contains</strong> (substring present), <strong>equals</strong> (exact match), <strong>is-json</strong> (parses cleanly - your session 3 schema work finally gets policed), and <strong>llm-rubric</strong> (a model judges against a written criterion - we hold this one until session 9, where it gets the care it needs). Anything custom, like the word count above, drops into a <strong>javascript</strong> assertion.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Running it, and reading the grid<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>When you do install it at your desk (one npm command, or use the hosted runner), the loop is: <strong>promptfoo eval</strong> runs the matrix, <strong>promptfoo view</strong> opens the grid in a browser. Each row is a test case, each column a prompt-provider pair, each cell green or red with the raw output on click.</p>
+        <ul>
+          <li>Read <strong>columns</strong> to compare prompts: v4's column should be greener than v2's, and the score at the top says by how much.</li>
+          <li>Read <strong>rows</strong> to find hard cases: a ticket that fails in every column is either genuinely hard or wrongly labelled in your golden set. Both are worth knowing.</li>
+          <li>Add a second provider line and the same tests grade a vendor swap for free - your session 7 multi-vendor variants suddenly have a scoreboard.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="buildalong">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>TriageBot gets its eval <span class="tag demo">★ 22 min · build it live</span></h2>
+    </div>
+    <p class="lede">No new prompt today - we build the thing that judges the prompts. By the end, v2 versus v4 is a number, not an argument.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Assemble the golden set: 20 real tickets with expected categories.</strong> This is the hardest step and it is a team sport, not a solo one. Pull 20 real Meridian tickets, spread across categories, and agree the correct label for each - out loud, as a group. The arguments you have here ("is a late refund a REFUND or a SHIPPING?") are the product decisions your prompt was silently making alone. Write the agreed answers down; that document outlives every prompt version.</p></div>
+      <div class="step"><p><strong>Write the code-graded assertions.</strong> Four checks per ticket, all cheap: category exact-match against the golden label; output is-json (the session 3 schema, enforced at last); summary under 30 words via a javascript word count; and no invented order numbers - this one is beautifully checkable: any order id appearing in the output must also appear in the input ticket. Hallucination detection in one line of code.</p></div>
+      <div class="step"><p><strong>Sketch the promptfoo YAML.</strong> Take the config from Part 3 and extend it: two prompt files (v2 and v4), one provider, 20 test blocks. Keep descriptions human ("angry refund, order id in subject") - future you reads the grid by them.</p></div>
+      <div class="step"><p><strong>Run v2 versus v4 - mentally, together.</strong> Before any real run, predict: which tickets does v2 fail? The team's guesses tend to cluster on the vague tickets and the multi-issue tickets - exactly where v4's grounded policy manual and lookup tool should win. Writing predictions down first is what makes the real numbers educational instead of just decorative.</p></div>
+      <div class="step"><p><strong>Log the baseline.</strong> Whatever the scores are, record them: date, prompt version, model, score per assertion type. This row of numbers is the whole point of today - session 9 wires a gate to it, so no future "improvement" can quietly score below it again.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Why the golden set is the asset</strong>
+      Prompts are cheap and disposable; you have rewritten TriageBot's four times already. The golden set is the opposite: it appreciates. Every ticket you add makes every future prompt, model swap, and vendor migration cheaper to judge. If you build one artifact from this whole track that outlives the course, make it this one.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 9 <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Grow the golden set from 20 to 50 tickets.</strong> Volume over grading quality, remember - rough labels on 50 beat perfect labels on 20. Recruit a support colleague; they label faster and better than you do.</li>
+      <li><strong>Add 5 deliberately nasty edge cases:</strong> a ticket in another language, one with two order numbers, one that is pure profanity, one that is 3,000 words, and one that politely asks TriageBot to change its own rules. (Keep that last one - it becomes very important in session 10.)</li>
+      <li><strong>Run the config for real if you can</strong> - promptfoo is a free install and your 20-case YAML is ready. Bring the grid screenshot; we compare baselines at the top of session 9.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below. Official notebooks and course videos stay with the vendors; links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic docs - success criteria + grading taxonomy</span><span class="note">Part 2 · six methods, volume principle (platform.claude.com develop-tests)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Prompt Evaluations course - lessons 1-4</span><span class="note">Parts 1-3 · evals 101, code-graded, classification (anthropics/courses)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">promptfoo - intro and config anatomy</span><span class="note">Part 3 + build-along · the harness Anthropic's own course uses</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Building Systems with the ChatGPT API - eval arc</span><span class="note">Part 1 · prompt-to-system bridge, evals as the system's tests (DeepLearning.AI)</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Anthropic's volume principle for evals says...</p>
+      <button class="qopt" type="button">A · Grade a small set of cases as precisely as possible before growing the set</button>
+      <button class="qopt" type="button">B · Many test cases with rougher grading beat a few cases with perfect grading</button>
+      <button class="qopt" type="button">C · Always use LLM judges, because they scale grading volume automatically</button>
+      <p class="qwhy">Coverage catches regressions; grading precision only refines them. One crude grade wrong shifts your score a little - one missing case can hide a whole failure mode. Write thirty rough cases, not ten perfect ones.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · When should you reach for a model-graded check instead of a code-graded one?</p>
+      <button class="qopt" type="button">A · Whenever you can afford it - model grading is strictly more accurate</button>
+      <button class="qopt" type="button">B · For structured outputs like JSON, where code parsing is unreliable</button>
+      <button class="qopt" type="button">C · Only when code genuinely cannot grade the criterion, like tone or helpfulness</button>
+      <p class="qwhy">Code-graded checks are free, instant, and deterministic - the same output always gets the same grade. Climb the ladder to a model judge only when the criterion forces you. Category labels and JSON validity never do.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · The hardest and most valuable part of building TriageBot's eval was...</p>
+      <button class="qopt" type="button">A · Assembling the golden set - real inputs with agreed expected answers</button>
+      <button class="qopt" type="button">B · Writing the YAML config syntax correctly</button>
+      <button class="qopt" type="button">C · Choosing between cosine similarity and ROUGE-L</button>
+      <p class="qwhy">The config is twenty minutes of typing. The golden set forces the team to agree what correct even means, ticket by ticket - and it appreciates in value with every prompt, model, and vendor change you ever make.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 8 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Vibes fail at volume</b><span>You test the easy cases and your memory is not a baseline. 1,000 real inputs need numbers, not nods.</span></div>
+      <div class="cheat-item"><b>Prompts are code</b><span>A prompt edit changes production behaviour, so it needs regression tests. Every vendor now teaches criteria + evals before techniques.</span></div>
+      <div class="cheat-item"><b>The grading ladder</b><span>Exact match, cosine similarity, ROUGE-L (code) · Likert, binary, ordinal (LLM). Climb only as high as the criterion forces.</span></div>
+      <div class="cheat-item"><b>Code beats model grading</b><span>Cheap, instant, deterministic. Save LLM judges for what code cannot see: tone, helpfulness, reasoning.</span></div>
+      <div class="cheat-item"><b>Volume over grading quality</b><span>Many ok-graded cases beat few perfectly-graded ones. Regressions live in case 47.</span></div>
+      <div class="cheat-item"><b>promptfoo anatomy</b><span>One YAML: prompts x providers x tests with assertions (contains, equals, is-json, llm-rubric, javascript). Run, view the grid.</span></div>
+      <div class="cheat-item"><b>The golden set is the asset</b><span>Real inputs + agreed answers, built as a team. Prompts are disposable; the golden set appreciates.</span></div>
+      <div class="cheat-item"><b>Checkable hallucinations</b><span>Any order id in the output must appear in the input. Grounding checks can be one line of code.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 8 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b9-evals-judge-ci.html">Next: Evals II →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

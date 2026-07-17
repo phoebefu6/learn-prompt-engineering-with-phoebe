@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 1 · The 2026 map: where prompting fits now - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 1 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 1 of 10</div>
+    <h1>The <span class="accent">2026 map</span>: where prompting fits now</h1>
+    <p class="sub">Before you learn a single technique, learn the terrain. What order the pros actually work in, where the prompt sits inside the wider context, and the one question that decides which advice applies to your model at all.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Builder track</span>
+      <span class="chip audience">Practitioners: DA · DE · DS · engineers</span>
+      <span class="chip audience">Any model or API</span>
+      <span class="chip time">Start here</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-20 · The map</span>
+      <span class="a3" style="flex:5">20-42 · Build-along: TriageBot v0</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>How this track works</h2>
+    </div>
+    <p class="lede">Ten hands-on sessions for people who ship things: analysts, data engineers, data scientists, software engineers. Everything is tool-agnostic - every prompt here runs in any chat UI or any API. And everything is one project: across the whole track we build and harden <strong>TriageBot</strong>, a support-ticket triage system for Meridian Retail that classifies, summarizes, and routes customer tickets. It starts naive today and ends production-grade in session 10.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Build-along - bring a laptop</span>
+      <span class="pill inkpill">Any model · any API</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The official working order (criteria before prompts, evals before techniques), a clean mental model of where prompting sits inside context engineering, a decision tree that tells you which 2023 advice to unlearn for reasoning models, the six shifts that reshaped this craft - and TriageBot v0, drafted against written success criteria instead of vibes.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: CRITERIA FIRST ============ -->
+  <section class="section" id="criteria-first">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the method</span>
+      <h2>Success criteria before prompts <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Anthropic's prompt engineering docs open with a funnel, not a technique: define success criteria, build empirical evals, draft a prompt - and only then start engineering it. Their official Skilljar API course makes the same move: the evals module comes before the techniques module. That ordering is deliberate, and it is the single biggest habit difference between hobbyists and practitioners.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anthropic's funnel: define success criteria, build evals, draft a prompt, then engineer against the evals">
+        <style>
+          .fnW { font: 700 17px Inter, sans-serif; fill: #FFFFFF; }
+          .fnT { font: 700 17px Inter, sans-serif; fill: #1C1917; }
+          .fnX { font: 400 13px Inter, sans-serif; fill: #FDE7C0; }
+          .fnXd { font: 400 13px Inter, sans-serif; fill: #6E655C; }
+          .fnN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="80" y="20" width="720" height="58" rx="12" fill="#78350F"/>
+        <text class="fnW" x="104" y="45">1 · Define success criteria</text>
+        <text class="fnX" x="104" y="66">What does good look like, in numbers? Accuracy, length, tone, latency, cost.</text>
+        <rect x="140" y="94" width="600" height="58" rx="12" fill="#B45309"/>
+        <text class="fnW" x="164" y="119">2 · Build empirical evals</text>
+        <text class="fnX" x="164" y="140">A test set plus a way to grade it. Even 10 labeled cases beats vibes.</text>
+        <rect x="200" y="168" width="480" height="58" rx="12" fill="#F59E0B"/>
+        <text class="fnT" x="224" y="193">3 · Draft your first prompt</text>
+        <text class="fnXd" x="224" y="214">Only now. A rough draft is fine - the evals will catch it.</text>
+        <rect x="260" y="242" width="360" height="58" rx="12" fill="#FCD34D"/>
+        <text class="fnT" x="284" y="267">4 · Engineer against evals</text>
+        <text class="fnXd" x="284" y="288">Iterate with a scoreboard, not a mood.</text>
+        <rect x="20" y="314" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="fnN" x="44" y="326">Most people start at step 3 and never leave it. The funnel is the course method: sessions 8-9 build the eval layer in full.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the official funnel: criteria → evals → draft → engineer</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why criteria come first - the practitioner's reason<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Without written criteria, "better prompt" means "the output I happened to like this afternoon". You will tweak forever because there is no finish line. With criteria, prompt engineering becomes normal engineering:</p>
+        <ul>
+          <li><strong>You know when to stop.</strong> "Category accuracy at 90% on the test set" is done or not done.</li>
+          <li><strong>You can compare fairly.</strong> Two prompt versions, same 10 tickets, count the wins. No memory bias.</li>
+          <li><strong>You can change models safely.</strong> When a new model ships, rerun the set. Criteria outlive any one model.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The 10-case rule</strong>
+          You do not need an eval framework today. Ten realistic inputs with expected answers, in a spreadsheet, is a legitimate eval. Anthropic's own eval docs say volume of test cases matters more than grading sophistication. We start exactly that small in the build-along.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Where fine-tuning fits - the decision boundary<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>One boundary mention, once, so it never distracts again: prompting is almost always the first tool, because it is instant, cheap, and reversible. Fine-tuning enters only when you have strong evals proving that prompting has plateaued, plus thousands of examples and a stable task. If you cannot measure the gap, you are not ready to fine-tune - which is another reason the funnel starts with criteria. This track does not cover fine-tuning further; the funnel is the point.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: CONTEXT ENGINEERING ============ -->
+  <section class="section" id="context-engineering">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the terrain</span>
+      <h2>Prompting inside context engineering <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Anthropic's 2025 framing renamed the wider game: <strong>context engineering</strong> is curating everything that lands in the model's context window - system prompt, retrieved documents, tool outputs, conversation history - aiming for the smallest set of high-signal tokens that gets the job done. The prompt did not get less important. It got a precise job title: it is the one layer of the context you fully control.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The context window contains your prompt, retrieved docs, tool outputs, and history; all of it flows into the model">
+        <style>
+          .ceW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .ceT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .ceX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .ceXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .ceN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .ceL { stroke: #78350F; stroke-width: 3; }
+        </style>
+        <rect x="20" y="20" width="840" height="170" rx="14" fill="#78350F"/>
+        <text class="ceW" x="44" y="50">The context window - every token the model sees this call</text>
+        <rect x="44" y="68" width="190" height="100" rx="10" fill="#F59E0B"/>
+        <text class="ceT" x="60" y="96">Your prompt</text>
+        <text class="ceXd" x="60" y="118">System + task. The</text>
+        <text class="ceXd" x="60" y="136">layer you fully</text>
+        <text class="ceXd" x="60" y="154">control. This course.</text>
+        <rect x="248" y="68" width="190" height="100" rx="10" fill="#B45309"/>
+        <text class="ceW" x="264" y="96">Retrieved docs</text>
+        <text class="ceX" x="264" y="118">RAG chunks, files,</text>
+        <text class="ceX" x="264" y="136">search results.</text>
+        <text class="ceX" x="264" y="154">Session 5.</text>
+        <rect x="452" y="68" width="190" height="100" rx="10" fill="#B45309"/>
+        <text class="ceW" x="468" y="96">Tool outputs</text>
+        <text class="ceX" x="468" y="118">API results, code</text>
+        <text class="ceX" x="468" y="136">runs, DB rows.</text>
+        <text class="ceX" x="468" y="154">Session 6.</text>
+        <rect x="656" y="68" width="180" height="100" rx="10" fill="#B45309"/>
+        <text class="ceW" x="672" y="96">History</text>
+        <text class="ceX" x="672" y="118">Earlier turns,</text>
+        <text class="ceX" x="672" y="136">notes, compacted</text>
+        <text class="ceX" x="672" y="154">summaries.</text>
+        <line class="ceL" x1="440" y1="190" x2="440" y2="222"/>
+        <rect x="290" y="224" width="300" height="52" rx="12" fill="#FCD34D"/>
+        <text class="ceT" x="316" y="248">The model</text>
+        <text class="ceXd" x="316" y="266">Sees only the window. Nothing else exists.</text>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="ceN" x="44" y="308">Goal per Anthropic: the smallest set of high-signal tokens that maximizes the chance of the outcome you want.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the context window and its layers; your prompt is the layer you fully control</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why the industry renamed the game<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three practical consequences of the context-engineering frame, before we zoom back into the prompt layer for the next few sessions:</p>
+        <ul>
+          <li><strong>Signal over volume.</strong> Stuffing the window hurts. Every irrelevant token competes with the relevant ones. Curation - choosing what NOT to include - is real work.</li>
+          <li><strong>The prompt is the constant.</strong> Retrieval varies per query, history grows per turn, tools return whatever they return. Your prompt is the stable contract holding it together - which is why it deserves engineering discipline.</li>
+          <li><strong>Techniques still work.</strong> What died was the standalone "prompt engineer" job title, not the skill. The skill got absorbed into every builder role, the way SQL did.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Three words you will hear later: compaction, just-in-time retrieval, subagents<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Anthropic's context-engineering post names three techniques for keeping windows lean. Today, names only - each gets real treatment later in the track:</p>
+        <ul>
+          <li><strong>Compaction:</strong> summarizing older history into a short note so long conversations do not drown the window. Session 5.</li>
+          <li><strong>Just-in-time retrieval:</strong> fetching documents at the moment they are needed instead of preloading everything. Session 5.</li>
+          <li><strong>Subagents:</strong> handing a subtask its own fresh context window and getting back only the conclusion. Session 6.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: MODEL CLASS ============ -->
+  <section class="section" id="model-class">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the fork in the road</span>
+      <h2>Which model class am I prompting? <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">This is the question that decides which advice applies. Reasoning models plan internally before answering; classic prompting tricks that induce planning can now actively hurt them. Standard models still respond to those tricks exactly as the 2023 playbook says. Ask this question first, every time, or you will apply the right technique to the wrong model.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decision tree: reasoning model means keep prompts simple and control via effort params; standard model means classic techniques work">
+        <style>
+          .dtW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .dtT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .dtX { font: 400 12.5px Inter, sans-serif; fill: #FDE7C0; }
+          .dtXd { font: 400 12.5px Inter, sans-serif; fill: #6E655C; }
+          .dtN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .dtL { stroke: #B45309; stroke-width: 3; fill: none; }
+        </style>
+        <rect x="250" y="20" width="380" height="54" rx="12" fill="#78350F"/>
+        <text class="dtW" x="276" y="44">Does the model plan internally?</text>
+        <text class="dtX" x="276" y="64">Thinking / reasoning mode on, or a reasoning-first model</text>
+        <path class="dtL" d="M 440 74 L 440 96 L 230 96 L 230 118"/>
+        <path class="dtL" d="M 440 74 L 440 96 L 650 96 L 650 118"/>
+        <rect x="30" y="120" width="400" height="150" rx="12" fill="#B45309"/>
+        <text class="dtW" x="54" y="148">Yes → reasoning model</text>
+        <text class="dtX" x="54" y="172">Keep the prompt simple. State goal + constraints.</text>
+        <text class="dtX" x="54" y="192">NO "think step by step" - it plans on its own.</text>
+        <text class="dtX" x="54" y="212">Zero-shot first; few-shot examples can HURT.</text>
+        <text class="dtX" x="54" y="232">Control depth via effort / reasoning params,</text>
+        <text class="dtX" x="54" y="252">not via prompt wording. Full story in session 4.</text>
+        <rect x="450" y="120" width="400" height="150" rx="12" fill="#F59E0B"/>
+        <text class="dtT" x="474" y="148">No → standard model</text>
+        <text class="dtXd" x="474" y="172">The classic playbook works as written.</text>
+        <text class="dtXd" x="474" y="192">Induced CoT ("think step by step") helps.</text>
+        <text class="dtXd" x="474" y="212">Few-shot examples: 3-5, diverse, in tags.</text>
+        <text class="dtXd" x="474" y="232">Explicit structure and detailed instructions</text>
+        <text class="dtXd" x="474" y="252">pay off. Sessions 2-3 live here.</text>
+        <rect x="20" y="300" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="dtN" x="44" y="312">Same task, opposite advice. When output quality surprises you, check which side of this tree you are on first.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the model-class decision tree; ask it before applying any technique</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>2023 advice vs 2026 advice, side by side<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>2023 said</th><th>2026 says (reasoning models)</th></tr></thead>
+          <tbody>
+            <tr><td>Always add "think step by step"</td><td>Never add it - the model plans internally; the phrase can degrade output</td></tr>
+            <tr><td>More examples = better</td><td>Zero-shot first; OpenAI measured reasoning models doing worse WITH examples</td></tr>
+            <tr><td>Spell out the method in detail</td><td>State the goal, constraints, and success bar; let it choose the method</td></tr>
+            <tr><td>Tune temperature and top_p</td><td>Use effort / reasoning parameters; some current models reject sampling params outright</td></tr>
+            <tr><td>Long elaborate role-play personas</td><td>Short domain framing; heavy personas demoted by Anthropic's own guidance</td></tr>
+          </tbody>
+        </table>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The classic failure:</strong> a team upgrades to a reasoning model, keeps their lovingly tuned 2023 mega-prompt full of "think carefully, step 1, step 2" scaffolding - and quality drops. They blame the model. The prompt was fighting the model's own planning. Deleting half the prompt fixed it.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 4: SIX SHIFTS ============ -->
+  <section class="section" id="six-shifts">
+    <div class="section-kicker">
+      <span class="klabel">Part 4 · the changelog</span>
+      <h2>The six shifts that reshaped this craft <span class="tag concept">4 min live</span></h2>
+    </div>
+    <p class="lede">If you learned prompting from a 2023 blog post, here is the diff. One line each - every shift gets its full session later in the track.</p>
+    <table class="clean">
+      <thead><tr><th>#</th><th>Shift</th><th>One line</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Reasoning models invert 2023 advice</strong></td><td>No induced CoT, few-shot can hurt, goal over procedure, effort params are the new lever</td><td>Session 4</td></tr>
+        <tr><td>2</td><td><strong>Prompt engineering → context engineering</strong></td><td>Curate the whole token ecosystem; the job title died, the skill spread everywhere</td><td>Today + session 5</td></tr>
+        <tr><td>3</td><td><strong>Agentic prompting replaced scaffold prompting</strong></td><td>Native tool calling killed hand-rolled ReAct loops; the skill is now tool descriptions and harness prompts</td><td>Session 6</td></tr>
+        <tr><td>4</td><td><strong>Security is architecture, not wording</strong></td><td>"Ignore malicious instructions" is not a defense; injection needs design-level answers</td><td>Session 10</td></tr>
+        <tr><td>5</td><td><strong>Evals are the core practitioner skill</strong></td><td>Prompt changes are code changes and need regression tests; tips without evals are obsolete</td><td>Sessions 8-9</td></tr>
+        <tr><td>6</td><td><strong>Automated prompt optimization is emerging</strong></td><td>Metaprompting descendants can draft and improve prompts; a tool to know, not a pillar</td><td>Session 10</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="build-along">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Meet TriageBot: criteria first, then v0 <span class="tag demo">★ 22 min · laptops open</span></h2>
+    </div>
+    <p class="lede">Meridian Retail's support inbox gets hundreds of tickets a day. Our job across this track: a prompt system that classifies each ticket, summarizes it, and routes it - reliably enough to trust. Today we practice the funnel from Part 1 on it: criteria before prompt.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The raw material: 10 Meridian tickets<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Your working test set - real inbox energy, typos and rage included. Keep these; they follow us to session 10.</p>
+        <ol>
+          <li>"Charged twice for order #48210, refund one please"</li>
+          <li>"Where is my parcel?? Ordered 9 days ago, tracking frozen since Tuesday"</li>
+          <li>"The kettle arrived dented, I want to send it back"</li>
+          <li>"Your website charged my card but shows no order confirmation???"</li>
+          <li>"Jacket is lovely but too small - how do I exchange for a size up?"</li>
+          <li>"Driver left the box in the rain, everything inside is soaked"</li>
+          <li>"I keep getting someone else's invoices by email, this is the third time"</li>
+          <li>"Cancel my order if it has not shipped, otherwise ignore this"</li>
+          <li>"hi"</li>
+          <li>"Store staff were great but the app deleted my loyalty points AND my last order shows twice on my statement"</li>
+        </ol>
+        <p>Notice tickets 8, 9, and 10: conditional, empty, and genuinely two-category. Every real inbox has them. They exist to punish naive prompts.</p>
+      </div>
+    </details>
+
+    <div class="prompt-box bad"><span class="label">TriageBot v0 - the naive draft everyone writes first</span>Categorize this support ticket:
+
+[paste ticket here]</div>
+
+    <div class="prompt-box good"><span class="label">TriageBot v0.1 - the same ask with criteria baked in</span>You are TriageBot, the support-ticket triage assistant for Meridian Retail.
+
+Read the ticket below and output exactly this:
+Category: one of BILLING, SHIPPING, RETURNS, UNSURE
+Summary: one sentence, max 25 words, neutral tone
+
+Rules:
+- Use only facts stated in the ticket. Never invent order numbers, names, or amounts.
+- If the ticket fits no category, fits two equally, or lacks enough information, output UNSURE.
+
+Ticket:
+[paste one ticket here]</div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Read the 10 raw tickets.</strong> Before writing anything, decide what categories even exist. We settle on BILLING, SHIPPING, RETURNS, and UNSURE for everything else - small on purpose.</p></div>
+      <div class="step"><p><strong>Write success criteria FIRST.</strong> Ours: category accuracy 9/10 or better on the test set · summary 25 words or fewer · neutral tone even when the customer is furious · zero invented order numbers or amounts. Write yours down before touching the prompt.</p></div>
+      <div class="step"><p><strong>Draft v0, the naive one.</strong> Run the bad box above on tickets 2, 9, and 10. Watch it invent categories you never defined, guess on "hi", and pick one category for ticket 10 without telling you it dropped the other.</p></div>
+      <div class="step"><p><strong>Write v0.1 with criteria baked in.</strong> Role, enumerated categories, output format, and the UNSURE escape hatch. Run the same three tickets and compare against your written criteria - not against your mood.</p></div>
+      <div class="step"><p><strong>Save both versions and the criteria.</strong> A file, a gist, anywhere durable. In session 8 those criteria become a real eval, and v0 becomes your baseline to beat on a scoreboard.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>The habit this plants</strong>
+      Nothing about v0.1 is clever - no technique from later sessions appears in it. It is better purely because the success criteria existed before the prompt did. That ordering, not any phrasing trick, is today's takeaway.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before session 2 <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Label the full test set.</strong> Assign your own expected category to all 10 tickets and note the two you found hardest to label - if a human hesitates, the criteria need a rule for it.</li>
+      <li><strong>Run v0.1 on all 10 tickets</strong> in your chat UI or API of choice. Score it against your criteria: how many categories correct? Any invented details? Bring the number.</li>
+      <li><strong>Classify your models.</strong> List the 2-3 models you use most at work and decide which side of the Part 3 decision tree each sits on. If you are not sure, check the vendor's docs for a thinking or reasoning mode - that is your answer.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below. Official certificates, videos, and quizzes stay with the vendors - links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic docs - prompt engineering overview funnel</span><span class="note">Part 1 · criteria → evals → draft → engineer (platform.claude.com)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Skilljar API course - evals module ordered before techniques</span><span class="note">Part 1 · the deliberate ordering (anthropic.skilljar.com)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic context engineering post (2025)</span><span class="note">Part 2 · smallest set of high-signal tokens; compaction / JIT retrieval / subagents named</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">OpenAI reasoning best practices - model-class split</span><span class="note">Part 3 · the decision tree; full reasoning treatment in session 4</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The six 2026 framing shifts</span><span class="note">Part 4 · one line each, sessions assigned</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Fine-tuning vs prompting decision boundary</span><span class="note">Part 1 self-study · mention only, by design; not covered further in this track</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Anthropic's official working order for prompt development is...</p>
+      <button class="qopt" type="button">A · Draft a prompt, test it by feel, add techniques until it looks right</button>
+      <button class="qopt" type="button">B · Define success criteria, build evals, draft a prompt, then engineer against the evals</button>
+      <button class="qopt" type="button">C · Pick the best model first, then write the longest prompt it can hold</button>
+      <p class="qwhy">The funnel runs criteria → evals → draft → engineer. Their Skilljar course even teaches evals before techniques - the ordering is the method, not an accident.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · You are prompting a reasoning model. Which habit should you drop?</p>
+      <button class="qopt" type="button">A · Stating the goal and constraints clearly</button>
+      <button class="qopt" type="button">B · Defining what a good answer looks like</button>
+      <button class="qopt" type="button">C · Adding "think step by step" and a batch of worked examples</button>
+      <p class="qwhy">Reasoning models plan internally: induced CoT is redundant-to-harmful, and few-shot examples can measurably hurt. Go zero-shot first and steer depth with effort or reasoning parameters.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Context engineering is best described as...</p>
+      <button class="qopt" type="button">A · Curating everything in the context window - prompt, retrieved docs, tool outputs, history - for the smallest set of high-signal tokens</button>
+      <button class="qopt" type="button">B · A fancier synonym for writing longer prompts</button>
+      <button class="qopt" type="button">C · A retrieval technique that replaced prompting entirely</button>
+      <p class="qwhy">It is the wider discipline of managing the whole token ecosystem. The prompt remains the one layer you fully control - which is exactly why this course exists inside that bigger frame.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The funnel</b><span>Criteria → evals → draft → engineer. Never start at draft; you will never leave it.</span></div>
+      <div class="cheat-item"><b>The 10-case rule</b><span>Ten labeled inputs in a spreadsheet is a real eval. Volume beats grading sophistication.</span></div>
+      <div class="cheat-item"><b>Context engineering</b><span>Curate the whole window - prompt, docs, tools, history - for the smallest high-signal token set.</span></div>
+      <div class="cheat-item"><b>Your layer</b><span>The prompt is the one context layer you fully control. It is the stable contract; engineer it like one.</span></div>
+      <div class="cheat-item"><b>The tree</b><span>Ask "does it plan internally?" before any technique. Reasoning and standard models take opposite advice.</span></div>
+      <div class="cheat-item"><b>Reasoning models</b><span>Simple prompts, goal + constraints, zero-shot first, no "think step by step", steer via effort params.</span></div>
+      <div class="cheat-item"><b>Standard models</b><span>The classic playbook holds: induced CoT, 3-5 few-shot examples, explicit structure. Sessions 2-3.</span></div>
+      <div class="cheat-item"><b>TriageBot v0 lesson</b><span>v0.1 beat v0 with zero technique - only because written criteria existed first. Criteria are the technique.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 1 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b2-core-techniques.html">Next: Core techniques →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

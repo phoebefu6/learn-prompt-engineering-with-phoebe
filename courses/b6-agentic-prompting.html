@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 6 · Chaining and agentic prompting - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 6 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 6 of 10</div>
+    <h1>Chaining and <span class="accent">agentic</span> prompting</h1>
+    <p class="sub">One giant prompt is where reliability goes to die. Today we split work into chains, then hand the model tools - and discover that the system prompt, the tool spec, and the stop rules are all one prompting surface.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Builder track</span>
+      <span class="chip audience">Practitioners</span>
+      <span class="chip audience">Any model or API</span>
+      <span class="chip time">35 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:6">3-20 · Chains, agents, tools</span>
+      <span class="a3" style="flex:7">20-42 · Build-along: TriageBot v4</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we are in the arc</h2>
+    </div>
+    <p class="lede">Sessions 1-5 taught you to write one excellent call: clear, structured, grounded, cache-shaped. Session 6 is the phase change. First we stop pretending one call should do everything and learn to chain. Then we let the model act - call tools, observe results, decide what to do next - and learn what that does to your prompts. TriageBot gets hands today.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Build-along - do it with me</span>
+      <span class="pill inkpill">Any model or API</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A rule of thumb for when to chain versus when one call is fine, the self-correction pattern (draft, review against a rubric, refine), the three agentic system-prompt reminders that fix most flaky agents, eagerness calibration in both directions, the habit of engineering tool descriptions like the prompts they are, and TriageBot v4: a triage prompt that can look up order status before routing a refund.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: CHAINING ============ -->
+  <section class="section" id="chaining">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · decompose</span>
+      <h2>Chaining: many small prompts beat one giant one <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Prompt chaining is the simplest idea in this session: the output of one call becomes the input of the next. Anthropic's docs push it for accuracy on multi-step work, and Gemini's docs teach the same move as decompose-and-aggregate: break the task down, run the pieces, merge the results. Each link does one job, so each link can be tested, cached, and fixed on its own.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A prompt chain with a self-correction loop: ticket in, classify, draft, review against rubric, refine">
+        <style>
+          .chW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .chT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .chX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
+          .chXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
+          .chL { font: 600 12px Inter, sans-serif; fill: #6E655C; }
+          .chN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="b6chArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+          </marker>
+        </defs>
+        <rect x="20" y="70" width="140" height="90" rx="12" fill="#F59E0B"/>
+        <text class="chT" x="36" y="100">Ticket in</text>
+        <text class="chXd" x="36" y="122">Raw customer</text>
+        <text class="chXd" x="36" y="138">message</text>
+        <rect x="195" y="70" width="140" height="90" rx="12" fill="#78350F"/>
+        <text class="chW" x="211" y="100">Call 1</text>
+        <text class="chX" x="211" y="122">Classify + extract</text>
+        <text class="chX" x="211" y="138">fields as JSON</text>
+        <rect x="370" y="70" width="140" height="90" rx="12" fill="#B45309"/>
+        <text class="chW" x="386" y="100">Call 2</text>
+        <text class="chX" x="386" y="122">Draft the routing</text>
+        <text class="chX" x="386" y="138">decision</text>
+        <rect x="545" y="70" width="140" height="90" rx="12" fill="#78350F"/>
+        <text class="chW" x="561" y="100">Call 3</text>
+        <text class="chX" x="561" y="122">Review draft</text>
+        <text class="chX" x="561" y="138">against a rubric</text>
+        <rect x="720" y="70" width="140" height="90" rx="12" fill="#FCD34D"/>
+        <text class="chT" x="736" y="100">Call 4</text>
+        <text class="chXd" x="736" y="122">Refine + emit</text>
+        <text class="chXd" x="736" y="138">final JSON</text>
+        <line x1="160" y1="115" x2="192" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <line x1="335" y1="115" x2="367" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <line x1="510" y1="115" x2="542" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <line x1="685" y1="115" x2="717" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <path d="M 615 70 C 615 26, 440 26, 440 67" fill="none" stroke="#B45309" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#b6chArr)"/>
+        <text class="chL" x="452" y="34">fails the rubric? loop back and redraft</text>
+        <rect x="20" y="206" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="chN" x="44" y="218">Calls 3 and 4 are the self-correction pattern: draft, review with a rubric, refine. Each link is testable alone.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - a prompt chain: output of one call is input to the next, with a self-correction loop on the end</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The self-correction pattern<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The highest-value chain is only two links longer than what you already have. Anthropic's docs describe it plainly:</p>
+        <ul>
+          <li><strong>Draft:</strong> the call you have today produces its answer.</li>
+          <li><strong>Review with a rubric:</strong> a second call gets the draft plus explicit criteria ("check the quote is verbatim, the category is one of the allowed five, the JSON validates") and returns a pass/fail per criterion.</li>
+          <li><strong>Refine:</strong> a third call gets the draft plus the review notes and fixes only what failed.</li>
+        </ul>
+        <p>Why not just tell the first call "double-check your work"? Because a fresh call has no attachment to the draft. Reviewing your own answer in the same context is like grading your own exam with the answers already written in your handwriting.</p>
+        <div class="callout tip">
+          <strong>The rubric is the whole trick</strong>
+          A review call without explicit criteria drifts into vibes ("looks good!"). Write the rubric as a checklist, and reuse it later as eval criteria - Session 8 will thank you.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>When to chain, when one call is fine<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Stay with one call</th><th>Chain it</th></tr></thead>
+          <tbody>
+            <tr><td>One task, one output shape</td><td>Distinct sub-tasks with different skills (extract, then judge, then write)</td></tr>
+            <tr><td>Accuracy already meets the bar</td><td>Errors compound mid-task and you cannot see where</td></tr>
+            <tr><td>Latency or cost budget is tight</td><td>You need to test, cache, or fix one step without touching the rest</td></tr>
+            <tr><td>The model handles it reliably in evals</td><td>Different steps want different context, models, or effort levels</td></tr>
+          </tbody>
+        </table>
+        <p>Chaining costs latency and money - every link is a round trip. The discipline: chain when a step is measurably failing, not because diagrams look impressive. Modern models handle much more in one call than 2023 folklore suggests.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Meridian's data team</strong> split TriageBot's "summarize the week's tickets" report into decompose-and-aggregate: one call per store's tickets, then one call to merge the 80 mini-summaries. Accuracy jumped and the merge call became the only prompt they ever needed to tune.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: PROMPTING AGENTS ============ -->
+  <section class="section" id="agents">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the loop</span>
+      <h2>Prompting agents: what changes when the model can act <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">A chain is choreography you wrote. An agent chooses its own next step: it gets a goal and tools, then loops - plan, call a tool, observe the result, reflect, repeat. Your prompt stops being a request and becomes a policy: how hard to persist, when to use tools, when to stop.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The agent loop: goal, plan, tool call, observe, reflect, repeat - with prompt touchpoints under each stage">
+        <style>
+          .agW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .agT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .agX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
+          .agXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
+          .agP { font: 600 12px Inter, sans-serif; fill: #1E1B4B; }
+          .agL { font: 600 12px Inter, sans-serif; fill: #6E655C; }
+          .agN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="b6agArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#78350F"/>
+          </marker>
+        </defs>
+        <rect x="20" y="80" width="140" height="86" rx="12" fill="#FCD34D"/>
+        <text class="agT" x="36" y="110">Goal</text>
+        <text class="agXd" x="36" y="132">"Triage this</text>
+        <text class="agXd" x="36" y="148">refund ticket"</text>
+        <rect x="195" y="80" width="140" height="86" rx="12" fill="#78350F"/>
+        <text class="agW" x="211" y="110">Plan</text>
+        <text class="agX" x="211" y="132">Decide next step,</text>
+        <text class="agX" x="211" y="148">say it out loud</text>
+        <rect x="370" y="80" width="140" height="86" rx="12" fill="#B45309"/>
+        <text class="agW" x="386" y="110">Tool call</text>
+        <text class="agX" x="386" y="132">lookup_order(</text>
+        <text class="agX" x="386" y="148">"MR-88231")</text>
+        <rect x="545" y="80" width="140" height="86" rx="12" fill="#F59E0B"/>
+        <text class="agT" x="561" y="110">Observe</text>
+        <text class="agXd" x="561" y="132">Result lands in</text>
+        <text class="agXd" x="561" y="148">the context</text>
+        <rect x="720" y="80" width="140" height="86" rx="12" fill="#78350F"/>
+        <text class="agW" x="736" y="110">Reflect</text>
+        <text class="agX" x="736" y="132">Done? Loop?</text>
+        <text class="agX" x="736" y="148">Budget left?</text>
+        <line x1="160" y1="123" x2="192" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <line x1="335" y1="123" x2="367" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <line x1="510" y1="123" x2="542" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <line x1="685" y1="123" x2="717" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <path d="M 790 80 C 790 30, 265 30, 265 77" fill="none" stroke="#78350F" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#b6agArr)"/>
+        <text class="agL" x="380" y="40">repeat until resolved - or the early-stop rule fires</text>
+        <text class="agP" x="195" y="192">◆ persistence + planning</text>
+        <text class="agL" x="195" y="210">reminders live here</text>
+        <text class="agP" x="370" y="192">◆ tool description</text>
+        <text class="agL" x="370" y="210">+ one-line preamble</text>
+        <text class="agP" x="720" y="192">◆ early-stop criteria</text>
+        <text class="agL" x="720" y="210">+ tool budget</text>
+        <rect x="20" y="246" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="agN" x="44" y="258">Every ◆ is a prompt touchpoint. Agent quality is set in the system prompt, the tool spec, and the stop rules.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the agent loop, with the prompt touchpoints that steer each stage</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three reminders that fix most flaky agents (GPT-4.1 guide)<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>OpenAI's GPT-4.1 prompting guide found that three system-prompt reminders transform agent reliability. In spirit:</p>
+        <ul>
+          <li><strong>Persistence:</strong> "You are an agent - keep going until the user's request is completely resolved before ending your turn. Do not stop at the first uncertainty."</li>
+          <li><strong>Tool-calling:</strong> "If you are not sure about facts you can look up, use your tools. Do not guess or make up an answer."</li>
+          <li><strong>Planning:</strong> "Plan before each tool call and reflect on the result of the previous one - do not chain silent tool calls with no thinking in between."</li>
+        </ul>
+        <p>They read like management advice because they are: finish the job, check instead of guessing, think between actions. Models tuned for agentic work default toward chat-style politeness (stop early, hand back to the user); these reminders flip the default.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Eagerness: a dial you turn in both directions (GPT-5 era)<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Newer agentic models made the opposite failure common: too much persistence. The GPT-5 guidance calls the dial <strong>agentic eagerness</strong>, and you calibrate it both ways in the prompt:</p>
+        <table class="clean">
+          <thead><tr><th>Agent gives up too early</th><th>Agent rummages forever</th></tr></thead>
+          <tbody>
+            <tr><td>Add persistence clauses: do not hand back on uncertainty, make the most reasonable assumption and note it</td><td>Add early-stop criteria: "as soon as you can name the order status, stop looking things up"</td></tr>
+            <tr><td>Tell it not to ask permission for steps inside its mandate</td><td>Set tool budgets: "at most 2 lookups per ticket, then route to a human"</td></tr>
+          </tbody>
+        </table>
+        <p>Same era, second habit: <strong>tool preambles</strong>. Ask the model to restate its plan before the first tool call and narrate progress between calls. Costs a few tokens, buys you debuggable transcripts and fewer silent wrong turns.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Anthropic's agentic playbook: state, action defaults, honesty tags<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Anthropic's best-practices docs have a whole agentic section. The pieces you will reuse constantly:</p>
+        <ul>
+          <li><strong>Long-horizon state:</strong> for work that outlives one context window, tell the agent to keep progress notes in a file it updates as it goes, and to use git commits as durable checkpoints - the context window is working memory, not storage.</li>
+          <li><strong>Action defaults:</strong> named snippets set the posture. <code>&lt;default_to_action&gt;</code> for agents that should just do the thing; <code>&lt;do_not_act_before_instructions&gt;</code> for agents that must wait for explicit direction. Pick one deliberately.</li>
+          <li><strong>Parallel tool calls:</strong> <code>&lt;use_parallel_tool_calls&gt;</code> - when reads are independent, fire them together instead of one by one.</li>
+          <li><strong>Anti-hallucination:</strong> <code>&lt;investigate_before_answering&gt;</code> - never claim a file, record, or fact exists without having looked at it in this session.</li>
+          <li><strong>De-escalate the shouting:</strong> older prompts full of CRITICAL and MUST in all caps make modern Claude models overtrigger on those rules at the expense of everything else. State rules once, calmly, and reserve strong language for the one rule that genuinely is critical.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Gemini's 9-point agentic system-instruction framework<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Google's Gemini agentic guidance arrives as a framework: nine sections a serious agent system instruction should cover. Paraphrasing the categories:</p>
+        <ul>
+          <li><strong>1 Role</strong> - who the agent is and what it owns. <strong>2 Objective</strong> - what done looks like. <strong>3 Instructions</strong> - the behavioural rules. <strong>4 Workflow</strong> - the planned sequence of steps. <strong>5 Tool guidance</strong> - which tool for what, and what not to touch. <strong>6 Context</strong> - the environment and data it operates in. <strong>7 Constraints and escalation</strong> - hard limits, and when to hand to a human. <strong>8 Output format</strong> - the shape of the final answer. <strong>9 Examples and reminders</strong> - a worked case plus the rules worth restating at the end.</li>
+        </ul>
+        <p>Notice how much this overlaps the GPT-4.1 template from Session 2 and Anthropic's agentic sections above. Three vendors, one converged shape: role, rules, tools, limits, format. That convergence is next session's whole subject.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: TOOL DESCRIPTIONS ============ -->
+  <section class="section" id="tools">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the hidden prompt</span>
+      <h2>Tool descriptions ARE prompts <span class="tag concept">4 min live</span></h2>
+    </div>
+    <p class="lede">Here is the most under-engineered prompting surface in production systems: the tool spec. Teams agonize over the system prompt, then describe their most important tool as "looks up orders". The model chooses tools by reading those descriptions - they are prompts, and they deserve the same craft.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What a well-engineered tool spec contains<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Name:</strong> a verb phrase the model can reason about - <code>lookup_order</code>, not <code>svc_call_3</code>.</li>
+          <li><strong>Description:</strong> what it does, what it returns, and its limits, written for a reader with zero backend knowledge.</li>
+          <li><strong>When to use it:</strong> the trigger conditions, concretely ("the ticket mentions an order and status affects routing").</li>
+          <li><strong>When NOT to use it:</strong> the anti-triggers - the missing half in most specs, and the main cause of both tool spam and tool neglect.</li>
+        </ul>
+        <p>One more GPT-4.1 finding with teeth: pass tools through the API's <strong>tools field</strong>, not by pasting descriptions into the prompt text. Models are trained on the structured format; in OpenAI's testing, using the tools field improved performance and hand-injected descriptions underperformed. Same message from every vendor: let the API carry the spec.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>ReAct in one honest paragraph<span class="mini">1 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>ReAct (Yao et al., 2022) taught models to interleave Thought / Action / Observation as literal text you parsed with regex, and for a year every agent tutorial made you hand-roll that loop. As a prompt technique it is dead: native tool calling won, the models are trained for it, and nobody should be parsing "Action:" lines in 2026. As an architecture it is immortal - plan, act, observe, reflect is exactly the loop running inside Claude Code, Gemini's agent stack, and every harness you will ever use. Honor it as lineage; do not hand-roll it.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="build">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>TriageBot v4: it gets hands <span class="tag demo">★ 22 min · build it with me</span></h2>
+    </div>
+    <p class="lede">TriageBot v3 (Session 5) classifies tickets into schema JSON, grounded in the policy manual with quote extraction, cache-shaped. Its blind spot: refund routing depends on order status, which it can only guess at. v4 gets one tool - <code>lookup_order</code> - and the agentic rules to use it well.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Write the tool description first.</strong> Name, description, when to use, when NOT to use. Draft it before touching the system prompt - if the spec cannot explain the tool to a colleague, the model has no chance.</p></div>
+      <div class="step"><p><strong>Add the three agentic reminders</strong> to the system prompt: persistence (finish the triage), tool-calling (do not guess order status - look it up), planning (reflect after each result).</p></div>
+      <div class="step"><p><strong>Add the early-stop rule.</strong> Max 2 lookups per ticket; if status is still unclear, route to a human with <code>needs_human: true</code>. Eagerness calibrated in both directions: it must look, and it must stop.</p></div>
+      <div class="step"><p><strong>Dry-run a refund ticket on paper.</strong> "Order MR-88231 never arrived, refund me." Walk the loop: what does it look up? Suppose the tool returns <code>status: delivered, signed_by: neighbor</code> - how does the final JSON change? (Category shifts from refund to delivery-dispute, and the evidence field cites the tool result.)</p></div>
+      <div class="step"><p><strong>Add the preamble rule.</strong> One line of plan before any tool call. Now your logs read "Checking order status because the customer claims non-delivery" instead of a bare function call - future-you debugging at 5pm will be grateful.</p></div>
+    </div>
+
+    <div class="prompt-box good"><span class="label">TriageBot v4 - system prompt additions + tool spec (steal this shape)</span>[TriageBot v3 stays as-is above this line: role, policy manual in
+&lt;policy_manual&gt; tags, 3 few-shot examples, JSON schema, quote-grounding
+rule. Static, cache-shaped. New agentic block below.]
+
+Agentic rules:
+- You are an agent: keep going until this ticket is fully triaged.
+  Do not stop early or hand back a half-answer.
+- If order status could change the routing, use the lookup_order tool.
+  Do not guess or invent an order status.
+- Before each tool call, state a one-line plan. After each result,
+  reflect on what it changes before acting again.
+- Early stop: at most 2 lookups per ticket. If status is still unclear,
+  set needs_human to true and route to a human agent.
+- Only cite order facts that came back from lookup_order in this
+  conversation - never from memory.
+
+--- tool spec (goes in the API tools field, NOT in this prompt) ---
+name: lookup_order
+description: Returns the current status of one Meridian Retail order:
+  status (processing | shipped | delivered | returned), carrier,
+  delivery date, and signature record if any. Read-only; covers the
+  last 24 months of orders.
+when to use: The ticket references an order (order number, "my order",
+  a delivery complaint) AND the routing decision depends on status -
+  refunds, missing parcels, delivery disputes.
+when NOT to use: Tickets with no order dimension (store feedback,
+  product questions, job applications), or when the customer already
+  pasted a status you have no reason to doubt.
+input: order_id (string, format MR-XXXXX)</div>
+
+    <div class="callout tip">
+      <strong>Why the tool spec sits outside the prompt box in production</strong>
+      In the real API call, everything below the divider goes into the <code>tools</code> parameter as structured JSON. It is shown here so you can see the whole prompting surface in one place - system prompt and tool spec are one design, split across two fields.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before Session 7 <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Chain something you own.</strong> Take one prompt that does two jobs at once and split it: draft call, review-with-rubric call, refine call. Compare against the single-call version on 5 real inputs.</li>
+      <li><strong>Audit one tool spec</strong> in any agent you use or build. Does it say when NOT to use the tool? Rewrite it with all four ingredients and note what the agent does differently.</li>
+      <li><strong>Dry-run TriageBot v4</strong> on two more tickets: one where the lookup changes the routing, one where the early-stop rule should fire (order number malformed, both lookups fail). Write down the expected JSON for each - these become eval cases in Session 8.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below. Official docs and guides stay with the vendors; links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Prompt chaining + self-correction pattern</span><span class="note">Part 1 · Anthropic docs; decompose/aggregate per Gemini docs</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">GPT-4.1 guide - the three agentic reminders</span><span class="note">Part 2 · persistence, tool-calling, planning</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">GPT-5 era - eagerness calibration + tool preambles</span><span class="note">Part 2 · both directions: persistence clauses vs stop criteria + budgets</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic agentic sections</span><span class="note">Part 2 · state tracking, action-default tags, parallel calls, anti-hallucination, de-escalation</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Gemini 9-point agentic system-instruction framework</span><span class="note">Part 2 · categories named, convergence noted</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Tool descriptions as prompts + API tools field finding</span><span class="note">Part 3 + build-along · GPT-4.1 guide</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">ReAct (Yao et al. 2022) as architecture, not prompt</span><span class="note">Part 3 · lineage paragraph; native tool calling won</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · The GPT-4.1 guide's three agentic system-prompt reminders are...</p>
+      <button class="qopt" type="button">A · Role, output format, and few-shot examples</button>
+      <button class="qopt" type="button">B · Persistence (keep going until resolved), tool-calling (do not guess - use your tools), and planning (reflect between actions)</button>
+      <button class="qopt" type="button">C · Temperature, top-p, and reasoning effort</button>
+      <p class="qwhy">Finish the job, check instead of guessing, think between actions. Three sentences in the system prompt that flip a chat-tuned model into a reliable agent.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Your agent keeps looking things up long after it has the answer. The eagerness fix is...</p>
+      <button class="qopt" type="button">A · Add more persistence clauses so it commits to finishing</button>
+      <button class="qopt" type="button">B · Remove the tools - it clearly cannot be trusted with them</button>
+      <button class="qopt" type="button">C · Add early-stop criteria and a tool budget ("at most 2 lookups, then decide or escalate")</button>
+      <p class="qwhy">Eagerness is a two-direction dial. Under-eager agents need persistence clauses; over-eager agents need explicit stop criteria and budgets. This one is over-eager.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · The most under-engineered prompt surface in most tool-using systems is...</p>
+      <button class="qopt" type="button">A · The tool descriptions - name, what it does, when to use it, and when NOT to</button>
+      <button class="qopt" type="button">B · The user message - it should repeat the whole system prompt</button>
+      <button class="qopt" type="button">C · The ReAct Thought/Action/Observation template you hand-roll into the prompt</button>
+      <p class="qwhy">The model chooses tools by reading their descriptions, so they are prompts. Pass them through the API's tools field - and never hand-roll ReAct text loops in 2026.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 6 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Chain when it earns it</b><span>Output of one call = input of the next. Chain for distinct sub-tasks or compounding errors; one call when it passes evals.</span></div>
+      <div class="cheat-item"><b>Self-correction</b><span>Draft, review with an explicit rubric, refine. A fresh call grades better than "double-check your work".</span></div>
+      <div class="cheat-item"><b>The three reminders</b><span>Persistence, tool-calling ("do not guess - use your tools"), planning. Paste into every agent system prompt.</span></div>
+      <div class="cheat-item"><b>Eagerness, both ways</b><span>Gives up early: persistence clauses. Rummages forever: early-stop criteria + tool budgets.</span></div>
+      <div class="cheat-item"><b>Preambles</b><span>One-line plan before tool use, narrate progress between calls. Cheap tokens, debuggable transcripts.</span></div>
+      <div class="cheat-item"><b>Tool specs are prompts</b><span>Name, description, when to use, when NOT to. Pass via the API tools field, never pasted into prompt text.</span></div>
+      <div class="cheat-item"><b>Anthropic's tags</b><span>default_to_action vs do_not_act_before_instructions, parallel tool calls, investigate_before_answering. Calm language beats CRITICAL/MUST shouting.</span></div>
+      <div class="cheat-item"><b>ReAct's afterlife</b><span>Dead as a prompt template, alive as the loop inside every harness. Long jobs: progress files + git as state.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 6 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b7-vendor-deltas.html">Next: Vendor deltas →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

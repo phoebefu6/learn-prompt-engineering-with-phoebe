@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 1 · Prompting is delegation, not magic words - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Leader session 1 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Leader track · Session 1 of 6</div>
+    <h1>Prompting is <span class="accent">delegation</span>, not magic words</h1>
+    <p class="sub">There is no secret incantation. A prompt is a work request to the fastest, most literal new hire you have ever had - and the executives who get great AI output are simply the ones who delegate well.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Leader track</span>
+      <span class="chip audience">C-level, boards &amp; managers</span>
+      <span class="chip audience">No tech required</span>
+      <span class="chip audience">Works with any AI chat</span>
+      <span class="chip time">30 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-25 · The three ideas</span>
+      <span class="a3" style="flex:4">25-40 · The makeover, live</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Why this track exists</h2>
+    </div>
+    <p class="lede">Your builders have a 10-session deep track on this site that goes all the way to eval pipelines and prompt security. This track is the other half of the deal: six short sessions for the people who sponsor AI, approve its budgets, and use it between meetings - executives, boards, managers. No code, no API keys. Just the thinking moves that separate people who get real work out of AI from people who got a funny paragraph once and gave up.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Try it in your next sitting</span>
+      <span class="pill inkpill">Any model · any chat app</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A mental model that instantly upgrades every prompt you write (delegate, do not incant), the golden rule that catches a weak request before you send it, the four skills that make anyone effective with AI, and a live makeover of a real business ask from vague to sharp. We follow one leadership team, Meridian Retail, through the whole track - their stumbles will look familiar.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE NEW HIRE ============ -->
+  <section class="section" id="new-hire">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the mental model</span>
+      <h2>Meet your brilliant, literal new hire <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Anthropic's own documentation tells prompt writers to treat the model like a brilliant new employee - one with amnesia. Sharp, fast, well-read, and knowing absolutely nothing about your company, your project, or what you said in the hallway. Everything it needs must be in the request.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="What the new hire has and lacks: knowledge yes, context no, judgment on request only">
+        <style>
+          .nhW { font: 700 17px Inter, sans-serif; fill: #FFFFFF; }
+          .nhT { font: 700 17px Inter, sans-serif; fill: #1C1917; }
+          .nhB { font: 800 24px Inter, sans-serif; fill: #FFFFFF; }
+          .nhBd { font: 800 24px Inter, sans-serif; fill: #1C1917; }
+          .nhX { font: 400 13px Inter, sans-serif; fill: #FDE7C0; }
+          .nhXd { font: 400 13px Inter, sans-serif; fill: #6E655C; }
+          .nhN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="24" width="410" height="110" rx="14" fill="#78350F"/>
+        <text class="nhW" x="44" y="56">What it brings</text>
+        <text class="nhB" x="44" y="92">Breadth + speed</text>
+        <text class="nhX" x="44" y="116">Has read more than your whole team. Never tired, never offended.</text>
+        <rect x="450" y="24" width="410" height="110" rx="14" fill="#B45309"/>
+        <text class="nhW" x="474" y="56">What it lacks</text>
+        <text class="nhB" x="474" y="92">Your context</text>
+        <text class="nhX" x="474" y="116">Day one, every time. No memory of your strategy or customers.</text>
+        <rect x="20" y="150" width="410" height="110" rx="14" fill="#F59E0B"/>
+        <text class="nhT" x="44" y="182">What it does with gaps</text>
+        <text class="nhBd" x="44" y="218">Fills them - confidently</text>
+        <text class="nhXd" x="44" y="242">Vague ask in, plausible guess out. It will not stop to ask you.</text>
+        <rect x="450" y="150" width="410" height="110" rx="14" fill="#FCD34D"/>
+        <text class="nhT" x="474" y="182">What that means for you</text>
+        <text class="nhBd" x="474" y="218">Delegate properly</text>
+        <text class="nhXd" x="474" y="242">Brief it like a person: goal, context, constraints, example.</text>
+        <rect x="20" y="266" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="nhN" x="44" y="278">The quality of the output is set by the quality of the delegation. That part never left your hands.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the new-hire model: what AI brings, lacks, and does with gaps</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Meet Meridian - a Monday you will recognise<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Meridian Retail</strong> is a 2,000-person retailer: 80 stores, an online arm, a data team of twelve. The exec team just got company AI accounts. Within a week, three things happened:</p>
+        <ul>
+          <li>The COO, <strong>Dana</strong>, asked for "a summary of our customer complaints" and got a beautifully written essay about retail complaints in general - <strong>none of it about Meridian</strong>.</li>
+          <li>The CMO pasted a campaign brief and got back exactly the same bland copy three times, concluded "the AI is mediocre", and <strong>went back to the agency</strong>.</li>
+          <li>The CFO asked for market sizing, got confident numbers with no sources, and <strong>nearly put them in a board deck</strong>.</li>
+        </ul>
+        <p>Nobody did anything wrong by their old habits. They delegated to the AI the way you cannot delegate to anyone: no context, no success criteria, no examples. This track is the story of that exec team learning to ask properly - and what changed.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The pattern in every company:</strong> the person who says "AI is useless for real work" and the person getting hours back every week are usually using the same tool. The difference is rarely the model. It is the brief.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The golden rule - one test before you hit send<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Anthropic's documentation gives one rule above all others, and it needs no technology to apply:</p>
+        <div class="callout tip">
+          <strong>The golden rule of clear prompting</strong>
+          Show your prompt to a colleague with minimal context on the task and ask them to follow it. If they are confused, the model will be too.
+        </div>
+        <p>Notice what this implies: prompting well is not a technical skill. It is the same skill as writing a good work request for a person - which is why the best prompt writers in most companies turn out to be the best delegators, not the best engineers.</p>
+        <table class="clean">
+          <thead><tr><th>Delegating to a person</th><th>Delegating to a model</th></tr></thead>
+          <tbody>
+            <tr><td>"You know the client, so tone it right"</td><td>Say who the client is and what tone you want</td></tr>
+            <tr><td>"Like the one you did last quarter"</td><td>Paste the one from last quarter as the example</td></tr>
+            <tr><td>"Use your judgment on length"</td><td>Say the length. It will happily write 3 pages or 3 lines</td></tr>
+            <tr><td>They ask questions when unsure</td><td>It guesses when unsure - unless you tell it to ask</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why "magic words" thinking took hold - and why it faded<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>In 2023 the internet filled with "50 secret prompts" listicles, and companies hired "prompt engineers" at eye-watering salaries. Two things have happened since:</p>
+        <ul>
+          <li><strong>Models improved.</strong> Anthropic's own guidance now notes that some classic tricks (special formatting tags, elaborate role-play) are less necessary with modern models. The models meet you more than halfway.</li>
+          <li><strong>The craft matured.</strong> What survived is not vocabulary but structure: clear goal, right context, defined output, an example when it matters. The industry now calls the wider discipline context engineering - deciding what information the AI sees - and clear asking is the layer of it every leader personally controls.</li>
+        </ul>
+        <p>So the fashionable phrases were never the point. The thinking was. Good news: thinking is transferable, and you already do it every time you brief a person well.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE FOUR SKILLS ============ -->
+  <section class="section" id="four-skills">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the skill map</span>
+      <h2>The four skills of working with AI <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Anthropic teaches organisations a framework called AI Fluency with four skills, all beginning with D. Prompting - the subject of this course - is the second one. Knowing all four tells you where prompting fits, and why it alone is not enough.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 4D AI Fluency framework: Delegation, Description, Discernment, Diligence">
+        <style>
+          .fsW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
+          .fsT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
+          .fsX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .fsXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .fsN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="30" width="200" height="120" rx="14" fill="#78350F"/>
+        <text class="fsW" x="40" y="62">1 · Delegation</text>
+        <text class="fsX" x="40" y="88">Choosing what to hand</text>
+        <text class="fsX" x="40" y="106">to AI at all - and what</text>
+        <text class="fsX" x="40" y="124">stays human.</text>
+        <rect x="234" y="30" width="200" height="120" rx="14" fill="#B45309"/>
+        <text class="fsW" x="254" y="62">2 · Description</text>
+        <text class="fsX" x="254" y="88">Briefing the work well.</text>
+        <text class="fsX" x="254" y="106">This is prompting -</text>
+        <text class="fsX" x="254" y="124">this whole course.</text>
+        <rect x="448" y="30" width="200" height="120" rx="14" fill="#F59E0B"/>
+        <text class="fsT" x="468" y="62">3 · Discernment</text>
+        <text class="fsXd" x="468" y="88">Judging what comes</text>
+        <text class="fsXd" x="468" y="106">back. Session 4 is</text>
+        <text class="fsXd" x="468" y="124">devoted to this.</text>
+        <rect x="662" y="30" width="198" height="120" rx="14" fill="#FCD34D"/>
+        <text class="fsT" x="682" y="62">4 · Diligence</text>
+        <text class="fsXd" x="682" y="88">Using it responsibly:</text>
+        <text class="fsXd" x="682" y="106">data, disclosure, risk.</text>
+        <text class="fsXd" x="682" y="124">Session 6 territory.</text>
+        <rect x="20" y="196" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="fsN" x="44" y="208">Description and Discernment form a loop: brief, judge, re-brief. One pass is rarely the plan.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the 4D framework; this course lives in Description, with visits to all four</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The loop, not the lottery<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The single biggest behavioural difference between frustrated and fluent AI users: fluent users <strong>iterate on purpose</strong>. They treat the first answer as a first draft from the new hire - useful information about what the brief missed - and refine.</p>
+        <ul>
+          <li><strong>First pass:</strong> decent brief, see what comes back.</li>
+          <li><strong>Read the miss:</strong> wrong tone? Missing context. Wrong content? Vague task. Too generic? No example.</li>
+          <li><strong>Fix the brief, not the mood:</strong> add the one thing the output shows was missing, and go again.</li>
+        </ul>
+        <p>Two or three rounds like this routinely beat an hour of trying to compose the perfect first prompt. Andrew Ng's famous developer course teaches exactly this as its core method: nobody writes the right prompt first time, and nobody needs to.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Dana's second try.</strong> After the generic complaints essay, Dana pasted 40 actual complaint tickets in and asked for "the top 5 themes, each with a count and one verbatim quote". Ninety seconds later she had a slide she actually used. Same tool, same morning. The difference was all in the ask.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What belongs in a strong ask - the anatomy<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>You will meet this anatomy in every session of both tracks, so here it is once, plainly. A strong ask usually carries five things:</p>
+        <table class="clean">
+          <thead><tr><th>Ingredient</th><th>Answers</th><th>Example fragment</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Goal</strong></td><td>What does done look like?</td><td>"Draft a one-page memo recommending one option"</td></tr>
+            <tr><td><strong>Context</strong></td><td>What would a new hire need to know?</td><td>"We are a mid-market retailer; the audience is the board"</td></tr>
+            <tr><td><strong>Constraints</strong></td><td>What are the rules?</td><td>"Under 400 words, no jargon, GBP figures"</td></tr>
+            <tr><td><strong>Format</strong></td><td>What shape should it take?</td><td>"Three headed sections, each ending in one action"</td></tr>
+            <tr><td><strong>Example</strong></td><td>What does good look like?</td><td>"Match the tone of the memo below: ..."</td></tr>
+          </tbody>
+        </table>
+        <p>Not every ask needs all five - a quick question needs none of them. The skill is noticing which missing ingredient caused a weak answer. That diagnosis habit is Session 2's whole subject.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: WHAT CHANGED IN 2026 ============ -->
+  <section class="section" id="reality-2026">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the state of play</span>
+      <h2>"Isn't prompt engineering dead?" <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">You may have seen the headlines: the six-figure prompt engineer job has largely disappeared, and analysts now talk about context engineering instead. Both true - and neither means what the headlines imply. Here is the honest read for a leadership audience.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What died, what lives<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Died</th><th>Lives - and grew</th></tr></thead>
+          <tbody>
+            <tr><td>The standalone "prompt engineer" job title</td><td>Prompting as a baseline skill in every role, like spreadsheets</td></tr>
+            <tr><td>Secret-phrase folklore ("act as a genius...")</td><td>Clear goal, right context, defined output, real examples</td></tr>
+            <tr><td>Tricks to force step-by-step thinking</td><td>Models that reason by themselves - you state the goal and the bar</td></tr>
+            <tr><td>One perfect mega-prompt</td><td>Context engineering: giving AI the right documents, data, and tools</td></tr>
+          </tbody>
+        </table>
+        <p>The executive translation: <strong>the craft moved up a level, closer to what leaders already do</strong>. Modern models need less coaching on how to think and more clarity on what you actually want and what information they should use. Asking well became more valuable, not less.</p>
+        <div class="callout tip">
+          <strong>One habit update for newer models</strong>
+          The latest "reasoning" models plan before they answer. Micro-managing their method ("first do this, then think about that") can actively make results worse. State the goal, the constraints, and what a good answer looks like - then let it work. You will meet this again in Session 3.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why "context engineering" matters to you anyway<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Context engineering is the practitioner discipline of curating everything the model sees: documents, data, tools, history. Your builders will live it in their track. It reaches your desk in two ways:</p>
+        <ul>
+          <li><strong>Personally:</strong> the highest-leverage upgrade to your own AI use is rarely fancier wording - it is pasting in the actual document, the actual numbers, the actual example. Context beats phrasing, almost every time.</li>
+          <li><strong>Organisationally:</strong> when teams propose AI projects, the real question is rarely "which model?" It is "what context will it have?" - which data, which systems, kept current how. That is a strategy and budget question, and it is yours. Session 5 turns it into a checklist.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ THE MAKEOVER ============ -->
+  <section class="section" id="makeover">
+    <div class="section-kicker">
+      <span class="klabel">The boardroom moment</span>
+      <h2>The makeover: one real ask, upgraded live <span class="tag demo">★ 15 min · work it live</span></h2>
+    </div>
+    <p class="lede">Take one real request from your own week - an email to summarise, a memo to draft, a plan to critique. We upgrade it together using the anatomy from Part 2. Here is the worked example with Dana's complaints ask, before and after.</p>
+
+    <div class="prompt-box bad"><span class="label">Prompt A - what Dana sent first</span>Summarize our customer complaints.</div>
+
+    <div class="prompt-box good"><span class="label">Prompt B - the upgrade (steal this shape)</span>You are helping the COO of Meridian Retail, a 2,000-person retailer with 80 stores and an online arm, prepare for Monday's exec meeting.
+
+Below are 40 customer complaint tickets from last week (pasted after the ===).
+
+Task: identify the top 5 complaint themes.
+
+For each theme give:
+1. A short name for the theme
+2. How many of the 40 tickets it covers
+3. One verbatim quote that captures it
+4. One sentence on the likely operational cause
+
+Format: a table I can paste into a slide. Under 200 words total.
+If the tickets do not support a clear theme, say so rather than stretching.
+
+===
+[paste the 40 tickets here]</div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Pick your real ask.</strong> Something you genuinely need this week. Toy examples teach nothing - this is a build-along on your own work.</p></div>
+      <div class="step"><p><strong>Run it raw first.</strong> Send the one-line version. Keep the answer open in a tab - it is your before photo.</p></div>
+      <div class="step"><p><strong>Rebuild it with the anatomy.</strong> Goal, context, constraints, format, example. Steal Prompt B's shape wholesale.</p></div>
+      <div class="step"><p><strong>Compare, out loud.</strong> What changed? Usually: specificity, relevance, and a format you can actually use. Name which ingredient did the work.</p></div>
+      <div class="step"><p><strong>Golden-rule it.</strong> Show your upgraded ask to the person next to you. If they can follow it cold, ship it. If they frown, you found the gap before the model did.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Why this exercise repeats</strong>
+      Every session in this track ends hands-on because reading about delegation changes nothing. Fifteen minutes on your own real work does. By Session 6 the anatomy is muscle memory and the before photos become genuinely embarrassing - that is the goal.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before Session 2 <span class="tag exercise">◐ 20 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Upgrade three real asks</strong> this week using the anatomy. Keep the before and after answers side by side - bring your best contrast to Session 2.</li>
+      <li><strong>Apply the golden rule once:</strong> show one prompt to a colleague before sending it. Notice what they ask you - that question was the hole in your brief.</li>
+      <li><strong>Catch one confident guess.</strong> Find one place where the AI filled a gap you left (a number, a name, an assumption about your company). That instinct - spotting the fill - is Session 4's foundation.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Leader-level coverage of the sources below - working ideas in plain language, honestly flagged where the depth lives in the builder track. Official certificates and videos stay with the vendors; links are in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic AI Fluency framework - the 4Ds</span><span class="note">Part 2 · Description + Discernment loop (anthropic.skilljar.com)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic prompting docs - new-hire model + golden rule</span><span class="note">Part 1 · exec framing (platform.claude.com docs)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Andrew Ng - iterative prompt development</span><span class="note">Part 2 · the loop, no code (DeepLearning.AI)</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Context engineering (Anthropic, 2025)</span><span class="note">Part 3 · one insight; full treatment in Builder session 1</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Reasoning-model prompting shift</span><span class="note">Part 3 · one habit; the whole story in Session 3 + Builder session 4</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · The golden rule of clear prompting says to test your prompt by...</p>
+      <button class="qopt" type="button">A · Running it on two different AI models</button>
+      <button class="qopt" type="button">B · Adding the phrase "be accurate and detailed"</button>
+      <button class="qopt" type="button">C · Showing it to a colleague with minimal context - if they are confused, so is the model</button>
+      <p class="qwhy">Prompting well is delegation, and the test is human: could a smart person with no background follow this brief? No technology required.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · When your ask leaves a gap - a missing number, audience, or definition - the model will usually...</p>
+      <button class="qopt" type="button">A · Fill it with a confident, plausible guess</button>
+      <button class="qopt" type="button">B · Stop and ask you a clarifying question</button>
+      <button class="qopt" type="button">C · Leave that part of the answer blank</button>
+      <p class="qwhy">Left to itself, the model fills gaps confidently rather than asking. You can invite questions ("ask me anything unclear first") - but the default is the guess.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · With the newest reasoning models, the best habit shift for leaders is...</p>
+      <button class="qopt" type="button">A · Write longer prompts with detailed step-by-step method instructions</button>
+      <button class="qopt" type="button">B · State the goal, constraints, and what good looks like - let the model plan its own method</button>
+      <button class="qopt" type="button">C · Always ask the model to "think step by step" before answering</button>
+      <p class="qwhy">Reasoning models plan internally. Micro-managing their method can make results worse - the leverage moved to clear goals and success criteria. Delegation, again.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The new-hire model</b><span>Brilliant, fast, zero context, guesses confidently. Brief it like a person on day one - every time.</span></div>
+      <div class="cheat-item"><b>The golden rule</b><span>Show the prompt to a colleague cold. Their confusion = the model's confusion. Fix before sending.</span></div>
+      <div class="cheat-item"><b>The anatomy</b><span>Goal · context · constraints · format · example. Diagnose weak answers by the missing ingredient.</span></div>
+      <div class="cheat-item"><b>The 4Ds</b><span>Delegation, Description, Discernment, Diligence. Prompting is Description; judging output is Discernment.</span></div>
+      <div class="cheat-item"><b>The loop</b><span>First answer = first draft. Read the miss, fix the brief, go again. 2-3 rounds beat one "perfect" prompt.</span></div>
+      <div class="cheat-item"><b>Context beats phrasing</b><span>Pasting the real document, numbers, or example helps more than any clever wording.</span></div>
+      <div class="cheat-item"><b>Reasoning models</b><span>State goal + bar, not method. "Think step by step" is yesterday's trick and can now hurt.</span></div>
+      <div class="cheat-item"><b>What died vs lives</b><span>Died: magic words, the job title. Lives: asking well, as a baseline skill in every role - including yours.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 1 of 6 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="a2-ask-the-right-question.html">Next: Ask the right question →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 9 · Evals II: judge, CI, and agents - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Builder session 9 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Builder track · Session 9 of 10</div>
+    <h1>Evals II: the <span class="accent">judge</span>, the gate, and the agent</h1>
+    <p class="sub">Session 8 gave TriageBot a scoreboard for everything code can check. Today we grade what code cannot see - tone, faithfulness, helpfulness - with an LLM judge you can actually trust, then wire the whole suite into CI so no prompt "improvement" ever sneaks a regression past you again.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Builder track</span>
+      <span class="chip audience">Practitioners</span>
+      <span class="chip audience">promptfoo + any CI</span>
+      <span class="chip time">45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-22 · Concepts</span>
+      <span class="a3" style="flex:4">22-40 · Build-along</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Why this session exists</h2>
+    </div>
+    <p class="lede">Your session 8 harness grades categories, JSON shape, and word counts - the checkable stuff. But TriageBot's most important promise is one code cannot verify: does the summary actually capture what the customer is upset about? Grading that takes a judge. Judges can be sloppy, biased, and overconfident - so today is equal parts "how to use an LLM judge" and "how to keep it honest". Then we make the suite a gate, not a suggestion: evals that run on every prompt change, exactly like unit tests, and block the merge when a score drops.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Build-along - TriageBot gets its regression suite</span>
+      <span class="pill inkpill">promptfoo · any CI system</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A binary judge rubric that grades TriageBot's summaries reliably (and the evidence for why binary beats a 1-5 scale), the judge-the-judge habit that keeps model graders honest, the unit-tests-for-prompts CI pattern with a merge gate, the four layers of agent evals (router, skill, trajectory, outcome), and a live demo where a deliberately "improved" prompt breaks a case and the suite catches it before anyone ships.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: LLM-AS-JUDGE ============ -->
+  <section class="section" id="judge">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the judge</span>
+      <h2>LLM-as-judge that you can trust <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Some criteria are simply not code-gradeable. "Summary under 30 words" is a word count; "summary contains the customer's actual complaint" is a judgment call. Anthropic's Prompt Evaluations course spends five of its nine lessons on exactly this jump: model-graded evals, done carefully enough to trust.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grading-method ladder: exact match, code-graded, classification, LLM binary judge, human review - cost and flexibility rise together">
+        <style>
+          .jmW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .jmT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .jmX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .jmXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .jmN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="220" width="156" height="64" rx="12" fill="#78350F"/>
+        <text class="jmW" x="36" y="246">1 · Exact match</text>
+        <text class="jmX" x="36" y="268">Label equals REFUND</text>
+        <rect x="192" y="180" width="156" height="104" rx="12" fill="#78350F"/>
+        <text class="jmW" x="208" y="206">2 · Code-graded</text>
+        <text class="jmX" x="208" y="228">is-json, word counts,</text>
+        <text class="jmX" x="208" y="246">ids traced to input</text>
+        <rect x="364" y="140" width="156" height="144" rx="12" fill="#B45309"/>
+        <text class="jmW" x="380" y="166">3 · Classification</text>
+        <text class="jmX" x="380" y="188">A small model sorts</text>
+        <text class="jmX" x="380" y="206">outputs into buckets</text>
+        <rect x="536" y="100" width="156" height="184" rx="12" fill="#F59E0B"/>
+        <text class="jmT" x="552" y="126">4 · Binary judge</text>
+        <text class="jmXd" x="552" y="148">Pass or fail against</text>
+        <text class="jmXd" x="552" y="166">one written criterion</text>
+        <text class="jmXd" x="552" y="184">Today's new tool</text>
+        <rect x="708" y="60" width="152" height="224" rx="12" fill="#FCD34D"/>
+        <text class="jmT" x="724" y="86">5 · Human review</text>
+        <text class="jmXd" x="724" y="108">Gold standard, slow</text>
+        <text class="jmXd" x="724" y="126">and costly - use to</text>
+        <text class="jmXd" x="724" y="144">calibrate the judge,</text>
+        <text class="jmXd" x="724" y="162">not to run the suite</text>
+        <text class="jmXd" x="20" y="40">cheap · deterministic · run thousands</text>
+        <text class="jmXd" x="640" y="40">flexible · costly · needs supervision</text>
+        <rect x="20" y="304" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="jmN" x="44" y="316">Same rule as session 8: climb only as high as the criterion forces you. Most rows stay on rungs 1-2.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the grading-method ladder: when each rung applies, from exact match to human review</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Binary beats Likert - the counterintuitive rule<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Your instinct says a 1-5 scale carries more information than pass/fail. Anthropic's guidance says the opposite for eval work, and experience agrees: <strong>binary pass/fail beats Likert scales</strong>.</p>
+        <ul>
+          <li><strong>A 3 versus a 4 is noise.</strong> Ask the same judge twice and the same output drifts between adjacent scores. Pass versus fail is a decision the model can make consistently.</li>
+          <li><strong>Scales invite grade inflation.</strong> Judges cluster around 3-4 and almost never award a 1, so your average flatters everything and moves for nothing.</li>
+          <li><strong>Binary forces a sharp rubric.</strong> To write a pass/fail question you must define what passing means. That definition, not the score, is where the quality thinking happens.</li>
+        </ul>
+        <p>Need gradations? Split the criterion into several binary judges: "contains the complaint - yes/no", "invents nothing - yes/no", "tone is professional - yes/no". Three crisp verdicts beat one mushy 3.7.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Rubric design: one criterion per judge<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A judge prompt is still a prompt, and everything from sessions 2-3 applies. The two rules that matter most:</p>
+        <ul>
+          <li><strong>One criterion per judge.</strong> "Is this summary accurate, concise, professional, and helpful?" is four questions wearing one trench coat. The judge will answer some blend of them and you will never know which. One judge, one question.</li>
+          <li><strong>Define pass explicitly.</strong> Not "is the summary good?" but "would a support agent reading only the summary know what the customer is unhappy about, in the customer's own terms?" The pass condition is written into the rubric, so the judge applies your bar, not its own taste.</li>
+        </ul>
+        <p>In promptfoo this lands as an <strong>llm-rubric</strong> assertion, or a fully custom grader when you want total control of the judge prompt - Anthropic's course builds both, and the build-along steals its shape.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Meridian's first judge was useless.</strong> The rubric said "grade the summary's quality 1-5". Every summary got a 4, including one that summarised a refund demand as "customer provides feedback about their order experience". The rewrite to a binary "does it contain the actual complaint?" failed that output instantly - because now failing was defined.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Judge the judge<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A judge is a model making judgment calls, which means it can be wrong - systematically. Before you trust one in the suite, calibrate it:</p>
+        <ul>
+          <li><strong>Spot-check verdicts against human calls.</strong> Take 20 outputs, grade them yourself, then compare. Agreement above roughly 9 in 10 on a binary rubric means the judge is usable; below that, the rubric is ambiguous - fix the rubric, not the judge.</li>
+          <li><strong>Study the disagreements.</strong> Every case where you and the judge disagree is either a rubric hole or a genuinely hard call worth a golden-set discussion. Both are gifts.</li>
+          <li><strong>Re-check when anything changes.</strong> New judge model, edited rubric, new failure mode in production - each one re-opens the calibration question. Ten minutes, twice a quarter, keeps the instrument honest.</li>
+        </ul>
+        <p>The mental model: the judge is an employee you delegated grading to. You would spot-check a new hire's first batches. Same here - it is Discernment, one level up.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: EVALS IN CI ============ -->
+  <section class="section" id="ci">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the gate</span>
+      <h2>Evals in CI: prompts are code <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Session 8 ended with a baseline in a log. A baseline nobody is forced to beat is a decoration. The fix is the same one software found decades ago: run the tests automatically on every change, and let a red run block the merge. The Automated Testing for LLMOps course calls this the core move - prompt changes are code changes, so they ride the same pipeline.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The analogy that makes it click<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Unit tests for code</th><th>Eval suite for prompts</th></tr></thead>
+          <tbody>
+            <tr><td>Test cases with expected outputs</td><td>Golden set: real tickets with agreed labels</td></tr>
+            <tr><td>Assertions in the test framework</td><td>promptfoo assertions: contains, is-json, llm-rubric</td></tr>
+            <tr><td>Runs on every commit or pull request</td><td>Runs on every prompt file change</td></tr>
+            <tr><td>Red build blocks the merge</td><td>Score below baseline blocks the merge</td></tr>
+            <tr><td>Bug report becomes a regression test</td><td>Production failure becomes a new eval row</td></tr>
+            <tr><td>Flaky tests get quarantined and fixed</td><td>Noisy judges get recalibrated or split</td></tr>
+          </tbody>
+        </table>
+        <p>One honest difference: unit tests are deterministic, model outputs are not. So eval gates are usually <strong>thresholds</strong>, not perfection - "category accuracy at or above the baseline 91%" rather than "all green, always". The gate still does its job: nothing quietly gets worse.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Quality gates that block a merge<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The wiring is unglamorous and that is the point. In GitHub Actions, GitLab CI, or anything similar:</p>
+        <ul>
+          <li><strong>Trigger:</strong> any change under <strong>prompts/</strong> or to the eval config kicks off an eval run.</li>
+          <li><strong>Run:</strong> the CI job calls the eval harness - promptfoo has a first-class GitHub Action, and Braintrust popularised the same merge-gate pattern with score comparisons posted straight onto the pull request.</li>
+          <li><strong>Gate:</strong> the job fails if any hard assertion fails or a tracked score drops below baseline. A failed job blocks the merge like any red build.</li>
+          <li><strong>Receipt:</strong> the run posts the score table as a PR comment, so the reviewer sees "v5: category 94%, judge pass 90%" next to the diff.</li>
+        </ul>
+        <p>Result: the conversation about a prompt change stops being "trust me, it reads better" and becomes a diff plus a scoreboard. Reviewers can have opinions about taste; the gate has opinions about regressions.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Trace-to-testcase: the flywheel<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The last piece turns production into a test-writing machine. Every logged failure - a mis-routed ticket, an angry correction from a support agent, a summary that missed the point - is a real input with a now-known correct answer. That is precisely one golden-set row.</p>
+        <ul>
+          <li><strong>Capture:</strong> log the input, the bad output, and what should have happened.</li>
+          <li><strong>Convert:</strong> add it to the eval config as a test case with the correct expectation.</li>
+          <li><strong>Protect:</strong> from that day on, no prompt version that reintroduces the failure can merge.</li>
+        </ul>
+        <p>Teams that run this loop stop having the same incident twice. The golden set stops being a document you wrote once and becomes an immune system that learns. Session 8 called the golden set the asset that appreciates - this loop is the mechanism doing the appreciating.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: AGENT EVALS + RED TEAMING ============ -->
+  <section class="section" id="agent-evals">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the agent</span>
+      <h2>Agent evals + red teaming <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Session 6 gave TriageBot a tool: the order-lookup call. The moment a system chooses actions instead of just producing text, grading only the final answer is like reviewing a chess game by checking who won. The Arize Evaluating AI Agents course breaks agent evaluation into layers - and adds the discipline of attacking your own system before strangers do.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent eval layers: router, skill, trajectory, outcome, with a monitoring loop feeding production failures back to the eval suite">
+        <style>
+          .avW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .avT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .avX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .avXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .avN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <defs>
+          <marker id="avArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L8,4.5 L0,9 Z" fill="#78350F"/>
+          </marker>
+        </defs>
+        <rect x="20" y="24" width="640" height="60" rx="12" fill="#78350F"/>
+        <text class="avW" x="40" y="49">1 · Router evals</text>
+        <text class="avX" x="40" y="70">Did it pick the right skill or tool? Lookup vs answer-from-policy vs escalate.</text>
+        <rect x="20" y="96" width="640" height="60" rx="12" fill="#B45309"/>
+        <text class="avW" x="40" y="121">2 · Skill evals</text>
+        <text class="avX" x="40" y="142">Did each step do its own job well? The lookup found the order; the summary held up.</text>
+        <rect x="20" y="168" width="640" height="60" rx="12" fill="#F59E0B"/>
+        <text class="avT" x="40" y="193">3 · Trajectory evals</text>
+        <text class="avXd" x="40" y="214">Right steps in the right order? Looked up the order BEFORE classifying, no loops.</text>
+        <rect x="20" y="240" width="640" height="60" rx="12" fill="#FCD34D"/>
+        <text class="avT" x="40" y="265">4 · Outcome evals</text>
+        <text class="avXd" x="40" y="286">Was the final answer right? Everything sessions 8-9 built grades this layer.</text>
+        <rect x="690" y="24" width="170" height="276" rx="12" fill="#B45309"/>
+        <text class="avW" x="708" y="52">Monitoring</text>
+        <text class="avX" x="708" y="76">Production runs,</text>
+        <text class="avX" x="708" y="94">watched per layer.</text>
+        <text class="avX" x="708" y="118">Failures at any</text>
+        <text class="avX" x="708" y="136">layer flow back</text>
+        <text class="avX" x="708" y="154">into the suite as</text>
+        <text class="avX" x="708" y="172">new test cases.</text>
+        <line x1="775" y1="300" x2="775" y2="316" stroke="#78350F" stroke-width="3"/>
+        <line x1="775" y1="316" x2="340" y2="316" stroke="#78350F" stroke-width="3"/>
+        <line x1="340" y1="316" x2="340" y2="308" stroke="#78350F" stroke-width="3" marker-end="url(#avArrow)"/>
+        <rect x="20" y="326" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="avN" x="44" y="338">A perfect answer reached by a broken route is a failure you have not met yet. Grade every layer.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the four agent eval layers plus the monitoring loop that feeds failures back into the suite</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why answer-grading alone misses agent failures<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>TriageBot with its lookup tool can now fail in ways the outcome layer cannot see:</p>
+        <ul>
+          <li><strong>Router failure:</strong> it answers a refund-status question from the policy manual instead of calling the lookup - and happens to guess right. Outcome: pass. System: broken.</li>
+          <li><strong>Trajectory failure:</strong> it calls the lookup four times for one ticket, burning latency and budget, then answers correctly. Outcome: pass. Bill: quadrupled.</li>
+          <li><strong>Skill failure:</strong> the lookup step queries the wrong order id, and a later step papers over it with a plausible summary. Outcome: sometimes pass. Trust: gone.</li>
+        </ul>
+        <p>Layered evals catch each of these where it happens. In practice: router evals are usually cheap classification checks ("given this ticket, was tool X the right call?"), trajectory evals compare the step sequence against an expected pattern, and outcome evals are exactly what you built in session 8.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Red teaming: attack your own suite first<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything so far grades cooperative inputs. Production also contains the other kind: tickets that try to manipulate the system - "ignore your instructions", "reveal your prompt", "mark this URGENT". The Red Teaming LLM Applications course frames adversarial testing as an eval discipline, not a dark art: <strong>a red-team suite is a golden set of attacks</strong>, run to find injection, jailbreak, and leakage weaknesses before real attackers do.</p>
+        <ul>
+          <li><strong>Same harness, hostile rows:</strong> each probe is a test case whose pass condition is "behaviour did NOT change" - the category stays correct, the system prompt stays private, no unauthorized action fires.</li>
+          <li><strong>Tooling exists:</strong> promptfoo ships built-in vulnerability probes (its red-teaming mode generates attack inputs against your actual config), so the tool you already run covers this too.</li>
+          <li><strong>Defensive purpose, explicitly:</strong> you probe your own system, with permission, to fix what you find. That framing matters - it is the difference between a security practice and mischief.</li>
+        </ul>
+        <p>Today you get the eval-side view; session 10 is the full security story - what injection actually is, why it is not jailbreaking, and which defenses hold up.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ BUILD-ALONG ============ -->
+  <section class="section" id="buildalong">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>TriageBot gets its regression suite <span class="tag demo">★ 18 min · build it live</span></h2>
+    </div>
+    <p class="lede">We take session 8's promptfoo config and upgrade it into the thing that guards production: a judge for the ungradeable, regression rows from real failures, and a gate - then we try to sneak a bad "improvement" past it and enjoy watching it bounce.</p>
+
+    <div class="prompt-box good"><span class="label">The binary judge rubric - steal this shape</span>You are grading one output of a support-ticket triage system.
+
+Criterion (the ONLY thing you grade): does the summary contain the
+customer's actual complaint?
+
+The customer's ticket:
+{{ticket}}
+
+The summary being graded:
+{{output}}
+
+PASS if a support agent reading only the summary would know what this
+customer is unhappy about, in terms the customer would recognise.
+FAIL if the complaint is missing, replaced by a generic paraphrase
+("customer has feedback"), or describes something not in the ticket.
+
+Answer with exactly one word: PASS or FAIL. No partial credit.</div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Add the judge assertion to the session 8 config.</strong> One new assertion on every test row: an llm-rubric (or custom grader) carrying the rubric above. Note everything it does right: one criterion, an explicit pass definition, an explicit fail definition, a one-word verdict. Run it and read a few judge verdicts out loud - the first calibration is communal.</p></div>
+      <div class="step"><p><strong>Judge the judge before trusting it.</strong> Pick 10 outputs, grade them by hand first, then compare with the judge's calls. Meridian's run disagreed on one: a summary that named the product but not the problem. The group ruled it a FAIL, tightened one rubric line, and agreement went to 10 of 10. That is the whole ceremony - do it before every new rubric goes live.</p></div>
+      <div class="step"><p><strong>Add 3 regression rows from past failures.</strong> Straight from Meridian's history: the session 8 incident ticket (refund tagged SHIPPING after a "harmless" rewording), the two-order-numbers ticket from homework, and the ticket that politely asked TriageBot to change its rules. Each gets the label the team agreed it should have had. Past pain, permanently fenced.</p></div>
+      <div class="step"><p><strong>Wire the gate.</strong> Concept first, YAML second: the CI job runs the suite on any change under prompts/, and the run fails if any assertion fails. In GitHub Actions this is promptfoo's action plus one failing exit code; every CI system has the same primitive. The merge button now answers to the golden set.</p></div>
+      <div class="step"><p><strong>Now break it - on purpose.</strong> Make a plausible "improvement" to the v4 prompt: "Summaries should be positive and solution-oriented in tone." Reads great in review. Run the suite: the judge fails two rows because "customer is furious the replacement also arrived broken" became "customer looks forward to a resolution". The gate goes red, the merge is blocked, and everyone watches a regression get caught by a robot instead of a customer. That feeling is the whole session.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>The suite is now the reviewer of record</strong>
+      Notice what just happened to your team's process: prompt changes are proposed as diffs, argued about with scores, and merged through a gate. Nobody has to be the taste police anymore. Humans debate the rubric and the golden set - the machines enforce them. That division of labour is what "evals as the core practitioner skill" actually means day to day.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 10 <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Calibrate one judge properly:</strong> 20 outputs, hand grades first, then compare with the judge. Log the agreement rate and the disagreements - bring the weirdest disagreement to session 10.</li>
+      <li><strong>Convert two real production failures into regression rows</strong> in your own project's suite (or Meridian's, if you are running the course config). Watch the flywheel start.</li>
+      <li><strong>Re-read that homework ticket from session 8</strong> - the one that politely asks TriageBot to change its own rules. Write down what you think a hostile version of it could achieve. Session 10 opens exactly there.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Builder-level coverage of the sources below. Official notebooks and course videos stay with the vendors; links live in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Prompt Evaluations course - lessons 5-9</span><span class="note">Part 1 + build-along · model-graded evals, custom graders, promptfoo judges (anthropics/courses)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Automated Testing for LLMOps - evals in CI</span><span class="note">Part 2 · prompt changes as code changes, pipeline gates (DeepLearning.AI · CircleCI)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Evaluating AI Agents - eval taxonomy</span><span class="note">Part 3 · router, skill, trajectory, outcome + monitoring (DeepLearning.AI · Arize)</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Red Teaming LLM Applications - overview</span><span class="note">Part 3 · adversarial suites as evals; the full security story is session 10 (Giskard)</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">1 · Anthropic's guidance prefers binary pass/fail judges over 1-5 Likert scales because...</p>
+      <button class="qopt" type="button">A · Binary verdicts are more consistent, and writing a pass definition forces a sharper rubric</button>
+      <button class="qopt" type="button">B · A 1-5 scale costs five times as many tokens per grading call</button>
+      <button class="qopt" type="button">C · Likert scales only work when a human is doing the grading</button>
+      <p class="qwhy">A judge's 3-versus-4 distinction is noise, and scales invite grade inflation around the middle. Binary forces you to define what passing means - and if you need nuance, split into several one-criterion binary judges.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · "Evals in CI" means...</p>
+      <button class="qopt" type="button">A · Running the full eval suite once per quarter as an audit</button>
+      <button class="qopt" type="button">B · Letting the model grade its own outputs in production automatically</button>
+      <button class="qopt" type="button">C · Running the suite on every prompt change, and blocking the merge when a score regresses</button>
+      <p class="qwhy">Prompts are code: a one-word edit changes production behaviour. So prompt changes ride the same pipeline as code changes - eval run on every change, threshold gate on the merge, score table posted on the PR.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · TriageBot answers a refund-status question correctly - but from the policy manual, without calling the order lookup. Which eval layer catches this?</p>
+      <button class="qopt" type="button">A · Trajectory evals - the steps happened in the wrong order</button>
+      <button class="qopt" type="button">B · Router evals - it picked the wrong skill, even though the outcome looked fine</button>
+      <button class="qopt" type="button">C · Outcome evals - the final answer is what matters, so this passes</button>
+      <p class="qwhy">The routing decision itself was wrong: this ticket needed the lookup tool. Router evals grade that choice directly. Outcome grading alone would pass it - a lucky guess hiding a broken route - and trajectory evals grade step order, not the initial skill pick.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 9 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Judges are for the ungradeable</b><span>Code first, always. Reach for an LLM judge only for tone, helpfulness, faithfulness - what code cannot see.</span></div>
+      <div class="cheat-item"><b>Binary beats Likert</b><span>Pass/fail is consistent; 3-vs-4 is noise. Need nuance? Several one-criterion binary judges, not one mushy scale.</span></div>
+      <div class="cheat-item"><b>One criterion per judge</b><span>Define PASS and FAIL explicitly in the rubric. "Is it good?" is not a rubric; "would an agent know the complaint?" is.</span></div>
+      <div class="cheat-item"><b>Judge the judge</b><span>Hand-grade 20 outputs, compare, fix rubric holes. Recalibrate on every judge-model or rubric change.</span></div>
+      <div class="cheat-item"><b>Prompts are code</b><span>Every prompt change runs the suite in CI; a regression blocks the merge. Thresholds, not perfection.</span></div>
+      <div class="cheat-item"><b>Trace-to-testcase</b><span>Every production failure becomes a golden-set row. Run the loop and you never have the same incident twice.</span></div>
+      <div class="cheat-item"><b>Agent evals have layers</b><span>Router (right skill?), skill (each step ok?), trajectory (right order?), outcome (right answer?) + monitoring.</span></div>
+      <div class="cheat-item"><b>Red team your own suite</b><span>Attack rows whose pass condition is "behaviour did not change". Probe for injection and leakage before attackers do.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 9 of 10 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b10-security-production.html">Next: Security + production →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

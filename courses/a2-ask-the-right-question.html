@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 2 · Ask the right question - learn prompt engineering with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-prompt-engineering-with-phoebe</a> / Leader session 2 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Prompt Engineering with Phoebe · Leader track · Session 2 of 6</div>
+    <h1>Ask the <span class="accent">right</span> question</h1>
+    <p class="sub">Session 1 taught you to brief AI like a new hire. Today we get concrete: the five jobs you can actually hand over, the two principles that make any ask land, and how to read a weak answer the way a doctor reads a symptom.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Leader track</span>
+      <span class="chip audience">C-level, boards &amp; managers</span>
+      <span class="chip audience">No tech required</span>
+      <span class="chip audience">Bring 3 real asks</span>
+      <span class="chip time">30 min self-read · 45 min live</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-25 · Five jobs, two principles</span>
+      <span class="a3" style="flex:4">25-40 · The brief makeover, live</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>From delegation to the ask itself</h2>
+    </div>
+    <p class="lede">Last session the Meridian Retail exec team learned the mental model: AI is a brilliant, literal new hire, and output quality is set by delegation quality. This session is the practical sequel. What kinds of work can you actually hand it? What makes an instruction land? And when the answer comes back weak - as first answers often do - how do you know exactly what to fix instead of just trying again louder?</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">★ Try it in your next sitting</span>
+      <span class="pill inkpill">Any model · any chat app</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A five-job taxonomy that tells you what to ask for before you type a word, Andrew Ng's two principles of effective prompting in plain executive language, a specificity ladder you can climb one rung at a time, and a diagnosis table that turns every disappointing answer into a precise one-line fix. Plus the live makeover of the Meridian CMO's campaign brief - the one that sent her back to the agency in session 1.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE FIVE JOBS ============ -->
+  <section class="section" id="five-jobs">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the task taxonomy</span>
+      <h2>The five jobs you can give AI <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Andrew Ng's famous prompting course organises almost everything a language model does into a handful of task families: summarize, infer, transform, expand - plus the one leaders use most, create. Naming the job before you type is the single fastest upgrade to any ask, because each job wants a different brief.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 195" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The five jobs: summarize, infer, transform, expand, create - each with a Meridian example">
+        <style>
+          .tjW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
+          .tjT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
+          .tjX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
+          .tjXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
+          .tjN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="30" width="162" height="104" rx="14" fill="#78350F"/>
+        <text class="tjW" x="34" y="60">1 · Summarize</text>
+        <text class="tjX" x="34" y="86">Long in, short out.</text>
+        <text class="tjX" x="34" y="110">40 tickets, 5 themes</text>
+        <rect x="189" y="30" width="162" height="104" rx="14" fill="#B45309"/>
+        <text class="tjW" x="203" y="60">2 · Infer</text>
+        <text class="tjX" x="203" y="86">Read and label.</text>
+        <text class="tjX" x="203" y="110">Tag reviews pos / neg</text>
+        <rect x="358" y="30" width="162" height="104" rx="14" fill="#F59E0B"/>
+        <text class="tjT" x="372" y="60">3 · Transform</text>
+        <text class="tjXd" x="372" y="86">Same content, new form.</text>
+        <text class="tjXd" x="372" y="110">Memo to store email</text>
+        <rect x="527" y="30" width="162" height="104" rx="14" fill="#FCD34D"/>
+        <text class="tjT" x="541" y="60">4 · Expand</text>
+        <text class="tjXd" x="541" y="86">Short in, long out.</text>
+        <text class="tjXd" x="541" y="110">6 bullets, full brief</text>
+        <rect x="696" y="30" width="162" height="104" rx="14" fill="#78350F"/>
+        <text class="tjW" x="710" y="60">5 · Create</text>
+        <text class="tjX" x="710" y="86">New options from zero.</text>
+        <text class="tjX" x="710" y="110">20 campaign angles</text>
+        <rect x="20" y="158" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="tjN" x="44" y="170">Name the job before you type. Each job wants a different brief - and mixed jobs in one ask are the top cause of mush.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the five jobs, each with a one-line Meridian example</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The five jobs, with Meridian's actual week<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Here is each job with a request the Meridian team really made this month. Notice how naming the job makes the rest of the brief almost write itself:</p>
+        <table class="clean">
+          <thead><tr><th>Job</th><th>You are asking it to...</th><th>Meridian example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Summarize</strong></td><td>Compress long material without losing what matters</td><td>Dana: "40 complaint tickets into the top 5 themes, with counts and one quote each"</td></tr>
+            <tr><td><strong>Infer</strong></td><td>Read and judge: classify, extract, detect tone</td><td>The CMO: "Tag these 500 product reviews positive / negative / mixed, and pull out every mention of delivery"</td></tr>
+            <tr><td><strong>Transform</strong></td><td>Keep the content, change the form: rewrite, translate, reformat</td><td>Dana: "Turn this policy memo into a friendly two-paragraph email for store managers"</td></tr>
+            <tr><td><strong>Expand</strong></td><td>Grow a seed: bullets into a draft, notes into a memo</td><td>The CFO: "Draft a one-page board note from these six bullet points, formal tone"</td></tr>
+            <tr><td><strong>Create</strong></td><td>Generate options that did not exist: ideas, names, angles</td><td>The CMO: "20 distinct campaign angles for the summer sale - no two alike"</td></tr>
+          </tbody>
+        </table>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The underused pair:</strong> most executives discover summarize and expand in week one and stop there. The quiet workhorses are infer and transform - tagging, extracting, reformatting. They are the jobs that eat the most staff hours, and the ones AI does most reliably, because the answer is checkable against the input you gave it.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Name the job before you type - the 5-second habit<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Before your next ask, finish this sentence in your head: "I am asking it to ______ this." If the blank is summarize, lead with the material and the compression target. If it is create, lead with the quantity and the constraints. If you cannot fill the blank, the model cannot either - and you will get an answer that half-does three jobs.</p>
+        <ul>
+          <li><strong>One ask, one job.</strong> "Summarize these tickets and also draft a response plan and make it funny" is three jobs. Chain them: summarize first, then expand the plan from the summary you approved.</li>
+          <li><strong>The job picks the brief.</strong> Summarize wants a length and an audience. Infer wants the exact labels. Transform wants the target format. Expand wants the skeleton. Create wants volume and variety rules.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE TWO PRINCIPLES ============ -->
+  <section class="section" id="two-principles">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the principles</span>
+      <h2>The two principles <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Ng's course boils effective prompting down to two principles, and they have aged beautifully. One: write clear and specific instructions. Two: give the model room to work - context, and a reason. Everything fancier is decoration on these two.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The specificity ladder: the same summer-sale ask at vague, better, and sharp levels">
+        <style>
+          .slW { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .slT { font: 700 12px Inter, sans-serif; fill: #1C1917; }
+          .slX { font: 400 13px Inter, sans-serif; fill: #FDE7C0; }
+          .slXd { font: 400 13px Inter, sans-serif; fill: #6E655C; }
+          .slN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+        </style>
+        <rect x="20" y="24" width="840" height="56" rx="12" fill="#78350F"/>
+        <text class="slW" x="40" y="46">RUNG 3 · SHARP</text>
+        <text class="slX" x="40" y="66">3 captions for young families near our stores, voice like the sample below, under 25 words, each ends with a reason to visit</text>
+        <rect x="20" y="96" width="640" height="56" rx="12" fill="#F59E0B"/>
+        <text class="slT" x="40" y="118">RUNG 2 · BETTER</text>
+        <text class="slXd" x="40" y="138">Write 3 Instagram captions for our summer sale, upbeat tone, under 25 words each</text>
+        <rect x="20" y="168" width="440" height="56" rx="12" fill="#FCD34D"/>
+        <text class="slT" x="40" y="190">RUNG 1 · VAGUE</text>
+        <text class="slXd" x="40" y="210">Write something about our summer sale</text>
+        <rect x="20" y="240" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <text class="slN" x="44" y="252">Same ask, three rungs. Each rung adds one ingredient - specific is not longer for its own sake, every word buys precision.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the specificity ladder: one ask upgraded rung by rung</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Principle 1 · clear and specific - which is not the same as long<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The most common misreading of this principle: people hear "specific" and write longer. Length is not the point. Precision is. A 15-word ask that names the audience, the format, and the limit beats a 200-word ramble that names none of them.</p>
+        <table class="clean">
+          <thead><tr><th>Vague (short and useless)</th><th>Specific (short and sharp)</th></tr></thead>
+          <tbody>
+            <tr><td>"Make this better"</td><td>"Cut this to half its length without losing the three numbers"</td></tr>
+            <tr><td>"Write something professional"</td><td>"Write it for a board that has 90 seconds per paper"</td></tr>
+            <tr><td>"Give me some ideas"</td><td>"Give me 20 ideas, no two from the same category"</td></tr>
+            <tr><td>"Summarize this"</td><td>"Summarize this into 5 bullets a store manager can act on Monday"</td></tr>
+          </tbody>
+        </table>
+        <p>Climb the ladder one rung at a time. You rarely need rung 3 on the first try - but you should always know which rung you are standing on.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Principle 2 · give it room to work - context, and a reason<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The second principle is about generosity: give the model the material and the motive. Context you know from session 1 - paste the real thing. The motive part surprises people:</p>
+        <div class="callout tip">
+          <strong>Say why - it measurably helps</strong>
+          Anthropic's own prompting documentation advises explaining the reason behind an instruction, because knowing the purpose improves results. "Under 200 words" is an order. "Under 200 words because it goes on one slide for a 90-second board item" is an order the model can use to make a hundred small decisions correctly - what to cut, what to keep, what tone fits.
+        </div>
+        <p>Think of any brief you have given a person. "Do it this way" gets compliance. "Do it this way, because here is what it is for" gets judgment. Models respond the same way - which should not be surprising by now, because they learned from text written by people.</p>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Dana's why test.</strong> Dana added one sentence to her weekly ops summary ask: "This goes to the exec team who have 2 minutes; they only care about what changed and what needs a decision." The output stopped including background she already knew - without her ever listing what to exclude. The reason did the excluding for her.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Where the two principles come from - and why they still hold<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>These two principles anchor Andrew Ng and Isa Fulford's "ChatGPT Prompt Engineering for Developers" - one of the most-taken AI courses ever. It was written for developers, but the principles have no code in them, and Anthropic's published best practices open with the same three moves: be explicit, add context and motivation, be specific about everything that matters.</p>
+        <p>Three years of fast model progress later, plenty of 2023 tricks have died (session 1 covered the graveyard). These two principles did not - because they are not model tricks. They are delegation, formalised. As models improve, sloppy asks get better answers too, but the gap between a vague ask and a sharp one stays wide. It is the one gap the vendors cannot close for you.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: READ THE MISS ============ -->
+  <section class="section" id="read-the-miss">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the diagnosis</span>
+      <h2>Read the miss <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Session 1 gave you the anatomy of a strong ask: goal, context, constraints, format, example. Here is the payoff. A weak answer is not a verdict on the tool - it is a symptom, and the symptom tells you exactly which ingredient your brief was missing. Diagnose, add one thing, go again.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The diagnosis table - from symptom to one-line fix<span class="mini">6 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Symptom - what came back</th><th>Missing ingredient</th><th>The fix</th></tr></thead>
+          <tbody>
+            <tr><td>Right topic, but generic - could be about any company</td><td><strong>Context</strong></td><td>Paste the real document, numbers, or situation. "Our" means nothing to a day-one hire.</td></tr>
+            <tr><td>Beautiful answer to a question you did not ask</td><td><strong>Goal</strong></td><td>Say what done looks like: the decision it supports, the audience it serves.</td></tr>
+            <tr><td>Three pages when you needed three lines; or hedged, jargon-heavy, off-limits topics included</td><td><strong>Constraints</strong></td><td>State length, tone, and the rules: what to include, what never to mention.</td></tr>
+            <tr><td>Content is fine but the shape is unusable - prose when you needed a table</td><td><strong>Format</strong></td><td>Name the shape: "a table with these 3 columns", "an email under 150 words".</td></tr>
+            <tr><td>Right shape, wrong voice - bland, or nothing like how you write</td><td><strong>Example</strong></td><td>Paste one gold sample and say "match this". One example beats ten adjectives.</td></tr>
+          </tbody>
+        </table>
+        <p>The discipline: <strong>add only the missing ingredient.</strong> Rewriting the whole prompt from scratch each round teaches you nothing. Fixing one named gap per round teaches you the craft in a week.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why "try again but better" fails - and diagnosis works<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>When an answer disappoints, the untrained reflex is to re-ask with more emphasis: "No, really summarize it WELL this time." That adds emotion, not information - and the model already tried its best with what it had. The trained reflex is a 10-second diagnosis: which row of the table is this? Then one surgical addition.</p>
+        <p>This is the iterative loop from session 1, now with a steering wheel. First answer, read the miss, add the ingredient, second answer. Two rounds of diagnosis routinely beat five rounds of frustration - and unlike frustration, the skill compounds: after a month you pre-empt the miss and write the ingredient in the first ask.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ THE MAKEOVER ============ -->
+  <section class="section" id="makeover">
+    <div class="section-kicker">
+      <span class="klabel">The boardroom moment</span>
+      <h2>The makeover: the CMO's campaign brief <span class="tag demo">★ 15 min · work it live</span></h2>
+    </div>
+    <p class="lede">In session 1 you heard how the Meridian CMO pasted a one-liner, got bland copy three times, and went back to the agency. Today she gets her makeover. Watch the anatomy assemble - then run the same upgrade on one of the three real asks you brought.</p>
+
+    <div class="prompt-box bad"><span class="label">Prompt A - what the CMO sent (three times)</span>Write social copy for our summer sale.</div>
+
+    <div class="prompt-box good"><span class="label">Prompt B - the upgrade (steal this shape)</span>You are helping the CMO of Meridian Retail, a 2,000-person retailer with 80 stores and an online arm.
+
+Task: write social copy for our summer sale - 5 Instagram captions and 2 Facebook posts.
+
+Audience: young families living within 15 minutes of a Meridian store. They shop for value but respond to warmth, not discount-shouting.
+
+Why this matters: the sale clears summer stock before autumn ranges land, so the goal is store visits this fortnight, not brand awareness.
+
+Brand voice - match this caption we loved last year:
+"School's out. Snack drawer's empty. We've got you - and the ice cream is 2 for 1."
+
+Constraints:
+- Under 25 words per caption
+- No exclamation marks, no "unbeatable prices"
+- Every caption ends with one concrete reason to come in this week
+
+If anything above is unclear, ask me before writing.</div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Run the one-liner first.</strong> Send Prompt A as-is. Keep the bland result open in a tab - it is your before photo, and it is what "the AI is mediocre" actually looks like from the other side.</p></div>
+      <div class="step"><p><strong>Name the job.</strong> This is create plus a little transform: new options, in a defined voice. That tells you the brief needs volume rules, a voice sample, and format constraints - the taxonomy just wrote your checklist.</p></div>
+      <div class="step"><p><strong>Assemble the anatomy.</strong> Audience, the why, the voice sample, format, constraints. Notice the sample caption does more work than any adjective - "warm, playful, family-focused" describes it; the sample IS it.</p></div>
+      <div class="step"><p><strong>Compare out loud and name the winner.</strong> Which ingredient moved the output most? For voice-driven work it is almost always the example. For analytical work it is almost always context. Knowing your pattern makes the next brief faster.</p></div>
+      <div class="step"><p><strong>Now yours.</strong> Take the best of your three real asks and climb it to rung 3. Golden-rule it with your neighbour: if they can execute your brief cold, so can the model.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Keep the winning brief</strong>
+      The CMO's Prompt B is now a template: next campaign she changes the audience, the why, and the sample - 90 seconds of editing instead of three rounds of bland. Any brief that worked once is an asset. Save it where you will find it. Session 5 turns this habit into how you spec projects with your data team.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Three things before session 3 <span class="tag exercise">◐ 20 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Name the job on five real asks</strong> this week - say "this is summarize" or "this is infer" out loud before typing. Notice how the brief writes itself once the job has a name.</li>
+      <li><strong>Build a voice sample pack:</strong> collect 3 gold examples of writing you want AI to match - your best email, your best memo, a caption you loved. Pasting one of these is your highest-leverage single move.</li>
+      <li><strong>Diagnose one miss with the table.</strong> Take one disappointing answer, find its row, add only the missing ingredient, and re-run. Bring the before and after - session 3 opens with the best one.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES COVERED ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">Leader-level coverage of the sources below - working ideas in plain language, honestly flagged where the depth lives in the builder track. Official certificates and videos stay with the vendors; links are in the course map.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Andrew Ng - task taxonomy: summarize, infer, transform, expand</span><span class="note">Part 1 · no code (DeepLearning.AI, ChatGPT Prompt Engineering for Developers)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Andrew Ng - the two principles of prompting</span><span class="note">Part 2 · clear and specific + give the model room (DeepLearning.AI)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic best practices 1-3: explicit, context + motivation, specific</span><span class="note">Part 2 · the "say why" evidence (claude.com/blog)</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Iterative prompt development - the loop, with diagnosis</span><span class="note">Part 3 + makeover · session 1's loop gains a steering wheel</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Examples and few-shot prompting in depth</span><span class="note">Voice sample only today; the full craft lives in Builder session 2</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">1 · Dana wants 500 store-visit reports turned into a one-page brief for the exec team. Which job is she delegating?</p>
+      <button class="qopt" type="button">A · Summarize - long material in, short actionable output</button>
+      <button class="qopt" type="button">B · Expand - growing a seed into a draft</button>
+      <button class="qopt" type="button">C · Create - generating options that did not exist</button>
+      <p class="qwhy">Long in, short out is summarize - so the brief needs a compression target ("one page") and an audience ("exec team"). Naming the job tells you what the brief must contain.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · "Write clear and specific instructions" means your prompts should be...</p>
+      <button class="qopt" type="button">A · As long as possible - more words, more clarity</button>
+      <button class="qopt" type="button">B · Written in formal, professional language</button>
+      <button class="qopt" type="button">C · Precise about audience, outcome, and limits - which can be very short</button>
+      <p class="qwhy">Specific is not long. "Cut this to half without losing the three numbers" is nine words and rung-3 sharp. Length without precision is just a longer vague prompt.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · The AI returns a polished answer about retail in general - nothing about your company. Which ingredient was missing?</p>
+      <button class="qopt" type="button">A · Format - you did not name the shape</button>
+      <button class="qopt" type="button">B · Context - it never saw your documents, numbers, or situation</button>
+      <button class="qopt" type="button">C · Example - you did not show it a gold sample</button>
+      <p class="qwhy">Generic output is the signature symptom of missing context. The model filled the gap with what it knows about retail at large. Paste the real material and the answer becomes yours.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 2 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The five jobs</b><span>Summarize · infer · transform · expand · create. Name the job before you type; one ask, one job.</span></div>
+      <div class="cheat-item"><b>Principle 1</b><span>Clear and specific. Specific is not long - precision about audience, outcome, and limits.</span></div>
+      <div class="cheat-item"><b>Principle 2</b><span>Give it room: context plus motivation. Saying WHY measurably improves what comes back.</span></div>
+      <div class="cheat-item"><b>The specificity ladder</b><span>Vague, better, sharp. Climb one rung per rewrite; every added word should buy precision.</span></div>
+      <div class="cheat-item"><b>Read the miss</b><span>Generic = context. Wrong question = goal. Too long = constraints. Wrong shape = format. Wrong voice = example.</span></div>
+      <div class="cheat-item"><b>Fix one thing</b><span>Add only the missing ingredient and re-run. Full rewrites teach nothing; diagnosis compounds.</span></div>
+      <div class="cheat-item"><b>The sample beats adjectives</b><span>One gold example of the voice you want outperforms any description of it. Build a sample pack.</span></div>
+      <div class="cheat-item"><b>Keep winning briefs</b><span>A brief that worked is a reusable template - edit the audience and the why, not the whole thing.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 2 of 6 · learn-prompt-engineering-with-phoebe · by Phoebe Fu</span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="a3-thought-partner.html">Next: AI as thought partner →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>
