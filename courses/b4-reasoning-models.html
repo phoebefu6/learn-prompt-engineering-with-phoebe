@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builder session 4 · Reasoning: from chain-of-thought to thinking models - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -69,56 +69,56 @@
       <svg viewBox="0 0 880 404" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline: four reasoning papers from the prompt-tricks era and where each lives in the model-feature era">
         <style>
           .b4tW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .b4tT { font: 800 18px Inter, sans-serif; fill: #1C1917; }
-          .b4tX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .b4tXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .b4tH { font: 700 13px Inter, sans-serif; fill: #6E655C; }
-          .b4tN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .b4tT { font: 800 18px Inter, sans-serif; fill: #16232E; }
+          .b4tX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .b4tXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .b4tH { font: 700 13px Inter, sans-serif; fill: #5F6B76; }
+          .b4tN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="b4tArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+            <path d="M0,0 L8,4 L0,8 z" fill="#1B72AB"/>
           </marker>
         </defs>
         <text class="b4tH" x="20" y="30">2022-2023 · the paper</text>
         <text class="b4tH" x="470" y="30">2026 · where it lives</text>
-        <rect x="20" y="44" width="330" height="70" rx="12" fill="#78350F"/>
+        <rect x="20" y="44" width="330" height="70" rx="12" fill="#17669C"/>
         <text class="b4tW" x="40" y="70">Chain-of-thought · Wei et al. 2022</text>
         <text class="b4tX" x="40" y="90">Exemplars with reasoning steps</text>
         <text class="b4tX" x="40" y="106">unlock multi-step reasoning.</text>
-        <line x1="358" y1="79" x2="460" y2="79" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
-        <rect x="470" y="44" width="390" height="70" rx="12" fill="#F59E0B"/>
+        <line x1="358" y1="79" x2="460" y2="79" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="44" width="390" height="70" rx="12" fill="#F0A64B"/>
         <text class="b4tT" x="490" y="70">PARTIAL</text>
         <text class="b4tXd" x="490" y="90">Absorbed into reasoning models via RL.</text>
         <text class="b4tXd" x="490" y="106">Still works on small, non-reasoning models.</text>
-        <rect x="20" y="130" width="330" height="70" rx="12" fill="#B45309"/>
+        <rect x="20" y="130" width="330" height="70" rx="12" fill="#1B72AB"/>
         <text class="b4tW" x="40" y="156">Self-consistency · Wang et al.</text>
         <text class="b4tX" x="40" y="176">Sample many reasoning paths,</text>
         <text class="b4tX" x="40" y="192">take the majority vote.</text>
-        <line x1="358" y1="165" x2="460" y2="165" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
-        <rect x="470" y="130" width="390" height="70" rx="12" fill="#FCD34D"/>
+        <line x1="358" y1="165" x2="460" y2="165" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="130" width="390" height="70" rx="12" fill="#FBEFA5"/>
         <text class="b4tT" x="490" y="156">MOSTLY HISTORICAL</text>
         <text class="b4tXd" x="490" y="176">The earliest test-time compute. Now runs</text>
         <text class="b4tXd" x="490" y="192">model-side. Still a cheap reliability trick.</text>
-        <rect x="20" y="216" width="330" height="70" rx="12" fill="#78350F"/>
+        <rect x="20" y="216" width="330" height="70" rx="12" fill="#17669C"/>
         <text class="b4tW" x="40" y="242">Tree of Thoughts · Yao et al. 2023</text>
         <text class="b4tX" x="40" y="262">Explore branches, score them,</text>
         <text class="b4tX" x="40" y="278">backtrack when stuck.</text>
-        <line x1="358" y1="251" x2="460" y2="251" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
-        <rect x="470" y="216" width="390" height="70" rx="12" fill="#F59E0B"/>
+        <line x1="358" y1="251" x2="460" y2="251" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="216" width="390" height="70" rx="12" fill="#F0A64B"/>
         <text class="b4tT" x="490" y="242">HISTORICAL</text>
         <text class="b4tXd" x="490" y="262">Lineage of model-internal search.</text>
         <text class="b4tXd" x="490" y="278">Practitioners no longer prompt this.</text>
-        <rect x="20" y="302" width="330" height="70" rx="12" fill="#B45309"/>
+        <rect x="20" y="302" width="330" height="70" rx="12" fill="#1B72AB"/>
         <text class="b4tW" x="40" y="328">ReAct · Yao et al. 2022</text>
         <text class="b4tX" x="40" y="348">Reason + act loops, with tool</text>
         <text class="b4tX" x="40" y="364">calls between the thoughts.</text>
-        <line x1="358" y1="337" x2="460" y2="337" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4tArr)"/>
-        <rect x="470" y="302" width="390" height="70" rx="12" fill="#FCD34D"/>
+        <line x1="358" y1="337" x2="460" y2="337" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4tArr)"/>
+        <rect x="470" y="302" width="390" height="70" rx="12" fill="#FBEFA5"/>
         <text class="b4tT" x="490" y="328">ARCHITECTURE, NOT PROMPT</text>
         <text class="b4tXd" x="490" y="348">Native tool calling took over. But every</text>
         <text class="b4tXd" x="490" y="364">agent harness still runs the loop inside.</text>
-        <rect x="20" y="384" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="384" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="b4tN" x="44" y="396">Every trick that worked got pulled inside the model. The prompt's job shrank to goals and criteria.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the four reasoning papers and their honest 2026 status</figcaption>
@@ -257,36 +257,36 @@ Ticket: "Charged twice AND the parcel never arrived."
       <svg viewBox="0 0 880 332" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TriageBot escalation routing: easy tickets to a small fast model with the full v2 prompt, hard tickets to a reasoning model with a simpler prompt">
         <style>
           .b4rW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .b4rT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
-          .b4rX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .b4rXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .b4rN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .b4rT { font: 700 16px Inter, sans-serif; fill: #16232E; }
+          .b4rX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .b4rXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .b4rN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="b4rArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+            <path d="M0,0 L8,4 L0,8 z" fill="#1B72AB"/>
           </marker>
         </defs>
-        <rect x="20" y="94" width="200" height="100" rx="12" fill="#78350F"/>
+        <rect x="20" y="94" width="200" height="100" rx="12" fill="#17669C"/>
         <text class="b4rW" x="40" y="126">Incoming tickets</text>
         <text class="b4rX" x="40" y="148">Meridian's full support</text>
         <text class="b4rX" x="40" y="164">queue, all shapes.</text>
-        <line x1="224" y1="144" x2="272" y2="144" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4rArr)"/>
-        <rect x="280" y="94" width="184" height="100" rx="12" fill="#B45309"/>
+        <line x1="224" y1="144" x2="272" y2="144" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4rArr)"/>
+        <rect x="280" y="94" width="184" height="100" rx="12" fill="#1B72AB"/>
         <text class="b4rW" x="300" y="126">Escalation rule</text>
         <text class="b4rX" x="300" y="148">Multi-issue? Ambiguous</text>
         <text class="b4rX" x="300" y="164">refund? Then it is hard.</text>
-        <line x1="468" y1="120" x2="532" y2="76" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4rArr)"/>
-        <line x1="468" y1="168" x2="532" y2="212" stroke="#B45309" stroke-width="2.5" marker-end="url(#b4rArr)"/>
-        <rect x="540" y="24" width="320" height="100" rx="12" fill="#F59E0B"/>
+        <line x1="468" y1="120" x2="532" y2="76" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4rArr)"/>
+        <line x1="468" y1="168" x2="532" y2="212" stroke="#1B72AB" stroke-width="2.5" marker-end="url(#b4rArr)"/>
+        <rect x="540" y="24" width="320" height="100" rx="12" fill="#F0A64B"/>
         <text class="b4rT" x="560" y="56">Easy · small fast model</text>
         <text class="b4rXd" x="560" y="78">Full engineered v2 prompt: few-shot</text>
         <text class="b4rXd" x="560" y="94">+ delimiters + induced CoT + schema.</text>
-        <rect x="540" y="164" width="320" height="100" rx="12" fill="#FCD34D"/>
+        <rect x="540" y="164" width="320" height="100" rx="12" fill="#FBEFA5"/>
         <text class="b4rT" x="560" y="196">Hard · reasoning model</text>
         <text class="b4rXd" x="560" y="218">Simpler prompt: goal, categories,</text>
         <text class="b4rXd" x="560" y="234">success criteria. No procedure.</text>
-        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="b4rN" x="44" y="308">Cheap volume goes small. Expensive judgment goes deep. Route by difficulty, not by habit.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the escalation router: two model classes, two prompts, one queue</figcaption>

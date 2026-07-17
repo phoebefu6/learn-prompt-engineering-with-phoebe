@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builder session 6 · Chaining and agentic prompting - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -69,44 +69,44 @@
       <svg viewBox="0 0 880 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A prompt chain with a self-correction loop: ticket in, classify, draft, review against rubric, refine">
         <style>
           .chW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .chT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .chX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
-          .chXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
-          .chL { font: 600 12px Inter, sans-serif; fill: #6E655C; }
-          .chN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .chT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .chX { font: 400 11px Inter, sans-serif; fill: #D9F0FE; }
+          .chXd { font: 400 11px Inter, sans-serif; fill: #5F6B76; }
+          .chL { font: 600 12px Inter, sans-serif; fill: #5F6B76; }
+          .chN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="b6chArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 z" fill="#B45309"/>
+            <path d="M0,0 L8,4 L0,8 z" fill="#1B72AB"/>
           </marker>
         </defs>
-        <rect x="20" y="70" width="140" height="90" rx="12" fill="#F59E0B"/>
+        <rect x="20" y="70" width="140" height="90" rx="12" fill="#F0A64B"/>
         <text class="chT" x="36" y="100">Ticket in</text>
         <text class="chXd" x="36" y="122">Raw customer</text>
         <text class="chXd" x="36" y="138">message</text>
-        <rect x="195" y="70" width="140" height="90" rx="12" fill="#78350F"/>
+        <rect x="195" y="70" width="140" height="90" rx="12" fill="#17669C"/>
         <text class="chW" x="211" y="100">Call 1</text>
         <text class="chX" x="211" y="122">Classify + extract</text>
         <text class="chX" x="211" y="138">fields as JSON</text>
-        <rect x="370" y="70" width="140" height="90" rx="12" fill="#B45309"/>
+        <rect x="370" y="70" width="140" height="90" rx="12" fill="#1B72AB"/>
         <text class="chW" x="386" y="100">Call 2</text>
         <text class="chX" x="386" y="122">Draft the routing</text>
         <text class="chX" x="386" y="138">decision</text>
-        <rect x="545" y="70" width="140" height="90" rx="12" fill="#78350F"/>
+        <rect x="545" y="70" width="140" height="90" rx="12" fill="#17669C"/>
         <text class="chW" x="561" y="100">Call 3</text>
         <text class="chX" x="561" y="122">Review draft</text>
         <text class="chX" x="561" y="138">against a rubric</text>
-        <rect x="720" y="70" width="140" height="90" rx="12" fill="#FCD34D"/>
+        <rect x="720" y="70" width="140" height="90" rx="12" fill="#FBEFA5"/>
         <text class="chT" x="736" y="100">Call 4</text>
         <text class="chXd" x="736" y="122">Refine + emit</text>
         <text class="chXd" x="736" y="138">final JSON</text>
-        <line x1="160" y1="115" x2="192" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
-        <line x1="335" y1="115" x2="367" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
-        <line x1="510" y1="115" x2="542" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
-        <line x1="685" y1="115" x2="717" y2="115" stroke="#B45309" stroke-width="3" marker-end="url(#b6chArr)"/>
-        <path d="M 615 70 C 615 26, 440 26, 440 67" fill="none" stroke="#B45309" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#b6chArr)"/>
+        <line x1="160" y1="115" x2="192" y2="115" stroke="#1B72AB" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <line x1="335" y1="115" x2="367" y2="115" stroke="#1B72AB" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <line x1="510" y1="115" x2="542" y2="115" stroke="#1B72AB" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <line x1="685" y1="115" x2="717" y2="115" stroke="#1B72AB" stroke-width="3" marker-end="url(#b6chArr)"/>
+        <path d="M 615 70 C 615 26, 440 26, 440 67" fill="none" stroke="#1B72AB" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#b6chArr)"/>
         <text class="chL" x="452" y="34">fails the rubric? loop back and redraft</text>
-        <rect x="20" y="206" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="206" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="chN" x="44" y="218">Calls 3 and 4 are the self-correction pattern: draft, review with a rubric, refine. Each link is testable alone.</text>
       </svg>
       <figcaption>🔍 Click to zoom - a prompt chain: output of one call is input to the next, with a self-correction loop on the end</figcaption>
@@ -162,43 +162,43 @@
       <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The agent loop: goal, plan, tool call, observe, reflect, repeat - with prompt touchpoints under each stage">
         <style>
           .agW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .agT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .agX { font: 400 11px Inter, sans-serif; fill: #FDE7C0; }
-          .agXd { font: 400 11px Inter, sans-serif; fill: #6E655C; }
-          .agP { font: 600 12px Inter, sans-serif; fill: #1E1B4B; }
-          .agL { font: 600 12px Inter, sans-serif; fill: #6E655C; }
-          .agN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .agT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .agX { font: 400 11px Inter, sans-serif; fill: #D9F0FE; }
+          .agXd { font: 400 11px Inter, sans-serif; fill: #5F6B76; }
+          .agP { font: 600 12px Inter, sans-serif; fill: #71180E; }
+          .agL { font: 600 12px Inter, sans-serif; fill: #5F6B76; }
+          .agN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="b6agArr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 z" fill="#78350F"/>
+            <path d="M0,0 L8,4 L0,8 z" fill="#17669C"/>
           </marker>
         </defs>
-        <rect x="20" y="80" width="140" height="86" rx="12" fill="#FCD34D"/>
+        <rect x="20" y="80" width="140" height="86" rx="12" fill="#FBEFA5"/>
         <text class="agT" x="36" y="110">Goal</text>
         <text class="agXd" x="36" y="132">"Triage this</text>
         <text class="agXd" x="36" y="148">refund ticket"</text>
-        <rect x="195" y="80" width="140" height="86" rx="12" fill="#78350F"/>
+        <rect x="195" y="80" width="140" height="86" rx="12" fill="#17669C"/>
         <text class="agW" x="211" y="110">Plan</text>
         <text class="agX" x="211" y="132">Decide next step,</text>
         <text class="agX" x="211" y="148">say it out loud</text>
-        <rect x="370" y="80" width="140" height="86" rx="12" fill="#B45309"/>
+        <rect x="370" y="80" width="140" height="86" rx="12" fill="#1B72AB"/>
         <text class="agW" x="386" y="110">Tool call</text>
         <text class="agX" x="386" y="132">lookup_order(</text>
         <text class="agX" x="386" y="148">"MR-88231")</text>
-        <rect x="545" y="80" width="140" height="86" rx="12" fill="#F59E0B"/>
+        <rect x="545" y="80" width="140" height="86" rx="12" fill="#F0A64B"/>
         <text class="agT" x="561" y="110">Observe</text>
         <text class="agXd" x="561" y="132">Result lands in</text>
         <text class="agXd" x="561" y="148">the context</text>
-        <rect x="720" y="80" width="140" height="86" rx="12" fill="#78350F"/>
+        <rect x="720" y="80" width="140" height="86" rx="12" fill="#17669C"/>
         <text class="agW" x="736" y="110">Reflect</text>
         <text class="agX" x="736" y="132">Done? Loop?</text>
         <text class="agX" x="736" y="148">Budget left?</text>
-        <line x1="160" y1="123" x2="192" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
-        <line x1="335" y1="123" x2="367" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
-        <line x1="510" y1="123" x2="542" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
-        <line x1="685" y1="123" x2="717" y2="123" stroke="#78350F" stroke-width="3" marker-end="url(#b6agArr)"/>
-        <path d="M 790 80 C 790 30, 265 30, 265 77" fill="none" stroke="#78350F" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#b6agArr)"/>
+        <line x1="160" y1="123" x2="192" y2="123" stroke="#17669C" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <line x1="335" y1="123" x2="367" y2="123" stroke="#17669C" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <line x1="510" y1="123" x2="542" y2="123" stroke="#17669C" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <line x1="685" y1="123" x2="717" y2="123" stroke="#17669C" stroke-width="3" marker-end="url(#b6agArr)"/>
+        <path d="M 790 80 C 790 30, 265 30, 265 77" fill="none" stroke="#17669C" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#b6agArr)"/>
         <text class="agL" x="380" y="40">repeat until resolved - or the early-stop rule fires</text>
         <text class="agP" x="195" y="192">◆ persistence + planning</text>
         <text class="agL" x="195" y="210">reminders live here</text>
@@ -206,7 +206,7 @@
         <text class="agL" x="370" y="210">+ one-line preamble</text>
         <text class="agP" x="720" y="192">◆ early-stop criteria</text>
         <text class="agL" x="720" y="210">+ tool budget</text>
-        <rect x="20" y="246" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="246" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="agN" x="44" y="258">Every ◆ is a prompt touchpoint. Agent quality is set in the system prompt, the tool spec, and the stop rules.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the agent loop, with the prompt touchpoints that steer each stage</figcaption>

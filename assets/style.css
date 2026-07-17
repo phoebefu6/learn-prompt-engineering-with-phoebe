@@ -1,22 +1,22 @@
 /* learn-claude-with-phoebe - editorial bold design system
-   Accent: indigo #B45309 · Ink: #1C1917 · Flagship: amber #4F46E5 */
+   Accent: indigo #1B72AB · Ink: #16232E · Flagship: amber #EA6155 */
 
 :root {
-  --indigo: #B45309;
-  --indigo-deep: #78350F;
-  --indigo-mid: #F59E0B;
-  --indigo-soft: #FCD34D;
-  --indigo-50: #FEF3C7;
-  --ink: #1C1917;
-  --muted: #6E655C;
-  --faint: #D6CEC3;
-  --hairline: #EDE7DE;
-  --amber: #4F46E5;
-  --amber-ink: #1E1B4B;
-  --amber-50: #4F46E5TINT;
+  --indigo: #1B72AB;
+  --indigo-deep: #17669C;
+  --indigo-mid: #F0A64B;
+  --indigo-soft: #FBEFA5;
+  --indigo-50: #E5F5FE;
+  --ink: #16232E;
+  --muted: #5F6B76;
+  --faint: #C7D3DB;
+  --hairline: #E3ECF2;
+  --amber: #EA6155;
+  --amber-ink: #71180E;
+  --amber-50: #EA6155TINT;
   --paper: #FFFFFF;
-  --code-bg: #1F1913;
-  --code-ink: #EFE9DC;
+  --code-bg: #10222E;
+  --code-ink: #DCEBF5;
   --radius: 14px;
 }
 
@@ -178,7 +178,7 @@ details.card {
   overflow: hidden;
   background: #fff;
 }
-details.card[open] { border-color: var(--indigo-soft); box-shadow: 0 8px 28px rgba(180,83,9,.08); }
+details.card[open] { border-color: var(--indigo-soft); box-shadow: 0 8px 28px rgba(27,114,171,.08); }
 details.card summary {
   list-style: none;
   cursor: pointer;
@@ -370,7 +370,7 @@ figure.zoomable {
   transition: box-shadow .15s ease;
   background: #fff;
 }
-figure.zoomable:hover { box-shadow: 0 8px 28px rgba(180,83,9,.12); }
+figure.zoomable:hover { box-shadow: 0 8px 28px rgba(27,114,171,.12); }
 figure.zoomable svg, figure.zoomable img { width: 100%; height: auto; display: block; }
 figure.zoomable figcaption {
   margin-top: .6rem;
@@ -386,7 +386,7 @@ figure.zoomable figcaption {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(28,25,23,.9);
+  background: rgba(22,35,46,.9);
   display: none;
   align-items: center;
   justify-content: center;
@@ -525,7 +525,7 @@ main { counter-reset: partnum -1; }
 .section .section-kicker > * { position: relative; z-index: 1; }
 
 details.card summary { transition: background .15s ease; }
-details.card summary:hover { background: #FBFAF8; }
+details.card summary:hover { background: #F9FBFD; }
 
 /* ---------- journey strip: you are here in the series ---------- */
 .journey {
@@ -630,7 +630,7 @@ details.card::after {
   pointer-events: none;
   opacity: 0;
   transition: opacity .3s ease;
-  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(180,83,9,.09), transparent 65%);
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(27,114,171,.09), transparent 65%);
 }
 details.card:hover::after { opacity: 1; }
 

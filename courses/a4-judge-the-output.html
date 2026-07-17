@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leader session 4 · Judge the output - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -70,32 +70,32 @@
       <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="What the model does under uncertainty: completes plausibly, sounds sure, fills gaps with invented specifics, and rarely volunteers I do not know">
         <style>
           .hzW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .hzT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
-          .hzX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .hzXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .hzN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .hzT { font: 700 16px Inter, sans-serif; fill: #16232E; }
+          .hzX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .hzXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .hzN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
-        <rect x="20" y="30" width="200" height="120" rx="14" fill="#78350F"/>
+        <rect x="20" y="30" width="200" height="120" rx="14" fill="#17669C"/>
         <text class="hzW" x="40" y="62">1 · It completes</text>
         <text class="hzX" x="40" y="88">Trained to continue</text>
         <text class="hzX" x="40" y="106">text plausibly - truth</text>
         <text class="hzX" x="40" y="124">is not the test.</text>
-        <rect x="234" y="30" width="200" height="120" rx="14" fill="#B45309"/>
+        <rect x="234" y="30" width="200" height="120" rx="14" fill="#1B72AB"/>
         <text class="hzW" x="254" y="62">2 · It sounds sure</text>
         <text class="hzX" x="254" y="88">Fluent confidence is</text>
         <text class="hzX" x="254" y="106">the house style -</text>
         <text class="hzX" x="254" y="124">right or wrong.</text>
-        <rect x="448" y="30" width="200" height="120" rx="14" fill="#F59E0B"/>
+        <rect x="448" y="30" width="200" height="120" rx="14" fill="#F0A64B"/>
         <text class="hzT" x="468" y="62">3 · It fills gaps</text>
         <text class="hzXd" x="468" y="88">Missing facts get</text>
         <text class="hzXd" x="468" y="106">invented: numbers,</text>
         <text class="hzXd" x="468" y="124">names, citations.</text>
-        <rect x="662" y="30" width="198" height="120" rx="14" fill="#FCD34D"/>
+        <rect x="662" y="30" width="198" height="120" rx="14" fill="#FBEFA5"/>
         <text class="hzT" x="682" y="62">4 · No self-doubt</text>
         <text class="hzXd" x="682" y="88">It rarely volunteers</text>
         <text class="hzXd" x="682" y="106">"I do not know" -</text>
         <text class="hzXd" x="682" y="124">unless you invite it.</text>
-        <rect x="20" y="196" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="196" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="hzN" x="44" y="208">Highest-risk specifics: numbers, names, dates, citations. Confidence is a style, not a signal.</text>
       </svg>
       <figcaption>🔍 Click to zoom - what the model does under uncertainty: plausible, confident, specific, and never in doubt</figcaption>
@@ -195,11 +195,11 @@ Rules:
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Verification budget two by two: stakes against reversibility - skim it, spot-check the specifics, independent source check, human expert sign-off">
         <style>
           .vbW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .vbT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
-          .vbX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .vbXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .vbA { font: 700 14px Inter, sans-serif; fill: #1C1917; }
-          .vbN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .vbT { font: 700 16px Inter, sans-serif; fill: #16232E; }
+          .vbX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .vbXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .vbA { font: 700 14px Inter, sans-serif; fill: #16232E; }
+          .vbN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <text class="vbA" x="255" y="30">Easy to undo</text>
         <text class="vbA" x="630" y="30">Hard to undo</text>
@@ -207,23 +207,23 @@ Rules:
         <text class="vbA" x="30" y="112">stakes</text>
         <text class="vbA" x="30" y="214">High</text>
         <text class="vbA" x="30" y="232">stakes</text>
-        <rect x="130" y="44" width="355" height="112" rx="14" fill="#FCD34D"/>
+        <rect x="130" y="44" width="355" height="112" rx="14" fill="#FBEFA5"/>
         <text class="vbT" x="152" y="76">Skim it</text>
         <text class="vbXd" x="152" y="102">Drafts, brainstorms, internal notes.</text>
         <text class="vbXd" x="152" y="120">Read it, sanity-check, move on.</text>
-        <rect x="505" y="44" width="355" height="112" rx="14" fill="#F59E0B"/>
+        <rect x="505" y="44" width="355" height="112" rx="14" fill="#F0A64B"/>
         <text class="vbT" x="527" y="76">Spot-check the specifics</text>
         <text class="vbXd" x="527" y="102">Anything leaving your hands: check every</text>
         <text class="vbXd" x="527" y="120">name, number, and date before it goes.</text>
-        <rect x="130" y="164" width="355" height="112" rx="14" fill="#B45309"/>
+        <rect x="130" y="164" width="355" height="112" rx="14" fill="#1B72AB"/>
         <text class="vbW" x="152" y="196">Independent source check</text>
         <text class="vbX" x="152" y="222">Money, strategy, anything quoted upward:</text>
         <text class="vbX" x="152" y="240">trace key claims to a primary source.</text>
-        <rect x="505" y="164" width="355" height="112" rx="14" fill="#78350F"/>
+        <rect x="505" y="164" width="355" height="112" rx="14" fill="#17669C"/>
         <text class="vbW" x="527" y="196">Human expert sign-off</text>
         <text class="vbX" x="527" y="222">Board decks, filings, legal, medical: an</text>
         <text class="vbX" x="527" y="240">expert reviews before anything ships.</text>
-        <rect x="20" y="300" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="300" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="vbN" x="44" y="312">Never forward AI numbers you have not traced. The byline on the deck is yours, not the model's.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the verification budget: stakes and reversibility set the checking level</figcaption>

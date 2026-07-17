@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builder session 5 · Long context, grounding, and caching - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -69,42 +69,42 @@
       <svg viewBox="0 0 880 344" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three-lane diagram of long-prompt layouts: Claude docs-then-query, GPT-4.1 instructions at both ends, Gemini data first question last">
         <style>
           .b5pW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .b5pT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .b5pX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .b5pXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .b5pH { font: 700 14px Inter, sans-serif; fill: #6E655C; }
-          .b5pN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .b5pT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .b5pX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .b5pXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .b5pH { font: 700 14px Inter, sans-serif; fill: #5F6B76; }
+          .b5pN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <text class="b5pH" x="20" y="30">Claude · query after docs</text>
-        <rect x="20" y="42" width="260" height="140" rx="12" fill="#78350F"/>
+        <rect x="20" y="42" width="260" height="140" rx="12" fill="#17669C"/>
         <text class="b5pW" x="40" y="70">Long documents</text>
         <text class="b5pX" x="40" y="92">The 50-page manual,</text>
         <text class="b5pX" x="40" y="108">tagged, at the top.</text>
-        <rect x="20" y="192" width="260" height="76" rx="12" fill="#F59E0B"/>
+        <rect x="20" y="192" width="260" height="76" rx="12" fill="#F0A64B"/>
         <text class="b5pT" x="40" y="220">Query + instructions</text>
         <text class="b5pXd" x="40" y="242">After the docs. Up to +30%</text>
         <text class="b5pXd" x="40" y="258">on long-document tasks.</text>
         <text class="b5pH" x="310" y="30">GPT-4.1 · both ends</text>
-        <rect x="310" y="42" width="260" height="52" rx="12" fill="#F59E0B"/>
+        <rect x="310" y="42" width="260" height="52" rx="12" fill="#F0A64B"/>
         <text class="b5pT" x="330" y="66">Instructions</text>
         <text class="b5pXd" x="330" y="84">Once at the top...</text>
-        <rect x="310" y="104" width="260" height="102" rx="12" fill="#B45309"/>
+        <rect x="310" y="104" width="260" height="102" rx="12" fill="#1B72AB"/>
         <text class="b5pW" x="330" y="132">Long documents</text>
         <text class="b5pX" x="330" y="154">The same manual,</text>
         <text class="b5pX" x="330" y="170">in the middle.</text>
-        <rect x="310" y="216" width="260" height="52" rx="12" fill="#FCD34D"/>
+        <rect x="310" y="216" width="260" height="52" rx="12" fill="#FBEFA5"/>
         <text class="b5pT" x="330" y="240">Instructions again</text>
         <text class="b5pXd" x="330" y="258">...repeated at the bottom.</text>
         <text class="b5pH" x="600" y="30">Gemini 3 · question last</text>
-        <rect x="600" y="42" width="260" height="140" rx="12" fill="#78350F"/>
+        <rect x="600" y="42" width="260" height="140" rx="12" fill="#17669C"/>
         <text class="b5pW" x="620" y="70">Data first</text>
         <text class="b5pX" x="620" y="92">All documents and data</text>
         <text class="b5pX" x="620" y="108">before anything else.</text>
-        <rect x="600" y="192" width="260" height="76" rx="12" fill="#FCD34D"/>
+        <rect x="600" y="192" width="260" height="76" rx="12" fill="#FBEFA5"/>
         <text class="b5pT" x="620" y="220">Question LAST</text>
         <text class="b5pXd" x="620" y="242">The ask comes at the very</text>
         <text class="b5pXd" x="620" y="258">end, after all the data.</text>
-        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="b5pN" x="44" y="308">Dark = documents, amber = instructions/query. Three official layouts. Placement is measurable: A/B it on YOUR task.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the placement wars: three vendor-official layouts for the same long prompt</figcaption>
@@ -206,38 +206,38 @@
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cache-shaped prompt layout: static system instructions, policy manual, and examples first form the cached prefix; the variable ticket comes last">
         <style>
           .b5cW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .b5cT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .b5cX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .b5cXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .b5cH { font: 700 14px Inter, sans-serif; fill: #6E655C; }
-          .b5cN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .b5cT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .b5cX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .b5cXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .b5cH { font: 700 14px Inter, sans-serif; fill: #5F6B76; }
+          .b5cN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <text class="b5cH" x="20" y="34">Static · identical every call · cached after the first request</text>
         <text class="b5cH" x="660" y="34">Variable · last</text>
-        <rect x="20" y="70" width="200" height="110" rx="12" fill="#78350F"/>
+        <rect x="20" y="70" width="200" height="110" rx="12" fill="#17669C"/>
         <text class="b5cW" x="40" y="100">System</text>
         <text class="b5cW" x="40" y="120">instructions</text>
         <text class="b5cX" x="40" y="144">Role, categories,</text>
         <text class="b5cX" x="40" y="160">rules, schema.</text>
-        <rect x="232" y="70" width="212" height="110" rx="12" fill="#B45309"/>
+        <rect x="232" y="70" width="212" height="110" rx="12" fill="#1B72AB"/>
         <text class="b5cW" x="252" y="100">Policy manual</text>
         <text class="b5cX" x="252" y="124">50 pages in document</text>
         <text class="b5cX" x="252" y="140">tags. The big, boring,</text>
         <text class="b5cX" x="252" y="156">unchanging payload.</text>
-        <rect x="456" y="70" width="180" height="110" rx="12" fill="#78350F"/>
+        <rect x="456" y="70" width="180" height="110" rx="12" fill="#17669C"/>
         <text class="b5cW" x="476" y="100">Examples</text>
         <text class="b5cX" x="476" y="124">Few-shot exemplars,</text>
         <text class="b5cX" x="476" y="140">fixed across calls.</text>
-        <line x1="648" y1="60" x2="648" y2="196" stroke="#B45309" stroke-width="2.5" stroke-dasharray="6 5"/>
-        <rect x="660" y="70" width="200" height="110" rx="12" fill="#F59E0B"/>
+        <line x1="648" y1="60" x2="648" y2="196" stroke="#1B72AB" stroke-width="2.5" stroke-dasharray="6 5"/>
+        <rect x="660" y="70" width="200" height="110" rx="12" fill="#F0A64B"/>
         <text class="b5cT" x="680" y="100">The ticket</text>
         <text class="b5cXd" x="680" y="124">Changes every call.</text>
         <text class="b5cXd" x="680" y="140">Everything before it</text>
         <text class="b5cXd" x="680" y="156">stays byte-identical.</text>
-        <rect x="20" y="216" width="616" height="52" rx="12" fill="#FCD34D"/>
+        <rect x="20" y="216" width="616" height="52" rx="12" fill="#FBEFA5"/>
         <text class="b5cT" x="40" y="240">Cached prefix</text>
         <text class="b5cXd" x="40" y="258">Anthropic: cache breakpoints · OpenAI: automatic static-prefix caching. Same shape wins on both.</text>
-        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="b5cN" x="44" y="308">One early variable token breaks the prefix. Keep everything that changes at the very end.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the cache-shaped prompt: static prefix first, the variable ticket dead last</figcaption>

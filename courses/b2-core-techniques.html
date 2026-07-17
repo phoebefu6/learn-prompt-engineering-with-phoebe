@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builder session 2 · Core techniques: clarity, structure, examples, roles - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -103,28 +103,28 @@
       <svg viewBox="0 0 880 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anatomy of a production prompt: role and objective, instructions, reasoning steps, output format, examples, then variable context last - together one production prompt">
         <style>
           .paW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .paT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .paX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .paXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .paN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
-          .paB { stroke: #78350F; stroke-width: 3; fill: none; }
+          .paT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .paX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .paXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .paN { font: 600 14px Inter, sans-serif; fill: #71180E; }
+          .paB { stroke: #17669C; stroke-width: 3; fill: none; }
         </style>
-        <rect x="20" y="16" width="640" height="42" rx="10" fill="#78350F"/>
+        <rect x="20" y="16" width="640" height="42" rx="10" fill="#17669C"/>
         <text class="paW" x="40" y="35">1 · Role &amp; objective</text>
         <text class="paX" x="40" y="51">Who the model is, what done means</text>
-        <rect x="20" y="66" width="640" height="42" rx="10" fill="#78350F"/>
+        <rect x="20" y="66" width="640" height="42" rx="10" fill="#17669C"/>
         <text class="paW" x="40" y="85">2 · Instructions</text>
         <text class="paX" x="40" y="101">The rules, positive phrasing, with the why</text>
-        <rect x="20" y="116" width="640" height="42" rx="10" fill="#B45309"/>
+        <rect x="20" y="116" width="640" height="42" rx="10" fill="#1B72AB"/>
         <text class="paW" x="40" y="135">3 · Reasoning steps</text>
         <text class="paX" x="40" y="151">Standard models only - skip on reasoning models</text>
-        <rect x="20" y="166" width="640" height="42" rx="10" fill="#B45309"/>
+        <rect x="20" y="166" width="640" height="42" rx="10" fill="#1B72AB"/>
         <text class="paW" x="40" y="185">4 · Output format</text>
         <text class="paX" x="40" y="201">Exact shape of the answer - session 3 goes deep</text>
-        <rect x="20" y="216" width="640" height="42" rx="10" fill="#F59E0B"/>
+        <rect x="20" y="216" width="640" height="42" rx="10" fill="#F0A64B"/>
         <text class="paT" x="40" y="235">5 · Examples</text>
         <text class="paXd" x="40" y="251">3-5 few-shot, wrapped in tags</text>
-        <rect x="20" y="266" width="640" height="42" rx="10" fill="#FCD34D"/>
+        <rect x="20" y="266" width="640" height="42" rx="10" fill="#FBEFA5"/>
         <text class="paT" x="40" y="285">6 · Context / variable data - LAST</text>
         <text class="paXd" x="40" y="301">The ticket, the document, the {{variable}} - changes per call</text>
         <path class="paB" d="M 680 20 L 700 20 L 700 304 L 680 304"/>
@@ -132,7 +132,7 @@
         <text class="paT" x="726" y="150">= one</text>
         <text class="paT" x="726" y="170">production</text>
         <text class="paT" x="726" y="190">prompt</text>
-        <rect x="20" y="336" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="336" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="paN" x="44" y="348">OpenAI's recommended template, GPT-4.1 guide. Fixed parts 1-5 stay identical every call; only part 6 varies.</text>
       </svg>
       <figcaption>🔍 Click to zoom - anatomy of a production prompt; fixed instructions first, variable data last</figcaption>
@@ -178,28 +178,28 @@
       <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Few-shot rules: 3 to 5 examples, diverse and relevant, wrapped in tags, mix the classes">
         <style>
           .fxW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .fxT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
-          .fxX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .fxXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .fxN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .fxT { font: 700 16px Inter, sans-serif; fill: #16232E; }
+          .fxX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .fxXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .fxN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
-        <rect x="20" y="20" width="410" height="90" rx="12" fill="#78350F"/>
+        <rect x="20" y="20" width="410" height="90" rx="12" fill="#17669C"/>
         <text class="fxW" x="44" y="50">3-5 examples</text>
         <text class="fxX" x="44" y="72">Anthropic's number. Fewer underspecifies the</text>
         <text class="fxX" x="44" y="90">pattern; more adds tokens, not accuracy.</text>
-        <rect x="450" y="20" width="410" height="90" rx="12" fill="#B45309"/>
+        <rect x="450" y="20" width="410" height="90" rx="12" fill="#1B72AB"/>
         <text class="fxW" x="474" y="50">Diverse and relevant</text>
         <text class="fxX" x="474" y="72">Cover the edge cases you actually fear,</text>
         <text class="fxX" x="474" y="90">not five variations of the easy case.</text>
-        <rect x="20" y="126" width="410" height="90" rx="12" fill="#F59E0B"/>
+        <rect x="20" y="126" width="410" height="90" rx="12" fill="#F0A64B"/>
         <text class="fxT" x="44" y="156">Wrapped in tags</text>
         <text class="fxXd" x="44" y="178">&lt;example&gt; tags per Anthropic docs - the model</text>
         <text class="fxXd" x="44" y="196">must never mistake an example for the task.</text>
-        <rect x="450" y="126" width="410" height="90" rx="12" fill="#FCD34D"/>
+        <rect x="450" y="126" width="410" height="90" rx="12" fill="#FBEFA5"/>
         <text class="fxT" x="474" y="156">Mix the classes</text>
         <text class="fxXd" x="474" y="178">Boonstra: in classification few-shot, interleave</text>
         <text class="fxXd" x="474" y="196">the categories so order carries no signal.</text>
-        <rect x="20" y="234" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="234" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="fxN" x="44" y="246">Standard models only. On reasoning models, go zero-shot first - session 1's tree, session 4's full story.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the four few-shot rules the vendors converge on</figcaption>

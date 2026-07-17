@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builder session 1 · The 2026 map: where prompting fits now - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -69,24 +69,24 @@
       <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anthropic's funnel: define success criteria, build evals, draft a prompt, then engineer against the evals">
         <style>
           .fnW { font: 700 17px Inter, sans-serif; fill: #FFFFFF; }
-          .fnT { font: 700 17px Inter, sans-serif; fill: #1C1917; }
-          .fnX { font: 400 13px Inter, sans-serif; fill: #FDE7C0; }
-          .fnXd { font: 400 13px Inter, sans-serif; fill: #6E655C; }
-          .fnN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .fnT { font: 700 17px Inter, sans-serif; fill: #16232E; }
+          .fnX { font: 400 13px Inter, sans-serif; fill: #D9F0FE; }
+          .fnXd { font: 400 13px Inter, sans-serif; fill: #5F6B76; }
+          .fnN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
-        <rect x="80" y="20" width="720" height="58" rx="12" fill="#78350F"/>
+        <rect x="80" y="20" width="720" height="58" rx="12" fill="#17669C"/>
         <text class="fnW" x="104" y="45">1 · Define success criteria</text>
         <text class="fnX" x="104" y="66">What does good look like, in numbers? Accuracy, length, tone, latency, cost.</text>
-        <rect x="140" y="94" width="600" height="58" rx="12" fill="#B45309"/>
+        <rect x="140" y="94" width="600" height="58" rx="12" fill="#1B72AB"/>
         <text class="fnW" x="164" y="119">2 · Build empirical evals</text>
         <text class="fnX" x="164" y="140">A test set plus a way to grade it. Even 10 labeled cases beats vibes.</text>
-        <rect x="200" y="168" width="480" height="58" rx="12" fill="#F59E0B"/>
+        <rect x="200" y="168" width="480" height="58" rx="12" fill="#F0A64B"/>
         <text class="fnT" x="224" y="193">3 · Draft your first prompt</text>
         <text class="fnXd" x="224" y="214">Only now. A rough draft is fine - the evals will catch it.</text>
-        <rect x="260" y="242" width="360" height="58" rx="12" fill="#FCD34D"/>
+        <rect x="260" y="242" width="360" height="58" rx="12" fill="#FBEFA5"/>
         <text class="fnT" x="284" y="267">4 · Engineer against evals</text>
         <text class="fnXd" x="284" y="288">Iterate with a scoreboard, not a mood.</text>
-        <rect x="20" y="314" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="314" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="fnN" x="44" y="326">Most people start at step 3 and never leave it. The funnel is the course method: sessions 8-9 build the eval layer in full.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the official funnel: criteria → evals → draft → engineer</figcaption>
@@ -128,39 +128,39 @@
       <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The context window contains your prompt, retrieved docs, tool outputs, and history; all of it flows into the model">
         <style>
           .ceW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .ceT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
-          .ceX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .ceXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .ceN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
-          .ceL { stroke: #78350F; stroke-width: 3; }
+          .ceT { font: 700 16px Inter, sans-serif; fill: #16232E; }
+          .ceX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .ceXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .ceN { font: 600 14px Inter, sans-serif; fill: #71180E; }
+          .ceL { stroke: #17669C; stroke-width: 3; }
         </style>
-        <rect x="20" y="20" width="840" height="170" rx="14" fill="#78350F"/>
+        <rect x="20" y="20" width="840" height="170" rx="14" fill="#17669C"/>
         <text class="ceW" x="44" y="50">The context window - every token the model sees this call</text>
-        <rect x="44" y="68" width="190" height="100" rx="10" fill="#F59E0B"/>
+        <rect x="44" y="68" width="190" height="100" rx="10" fill="#F0A64B"/>
         <text class="ceT" x="60" y="96">Your prompt</text>
         <text class="ceXd" x="60" y="118">System + task. The</text>
         <text class="ceXd" x="60" y="136">layer you fully</text>
         <text class="ceXd" x="60" y="154">control. This course.</text>
-        <rect x="248" y="68" width="190" height="100" rx="10" fill="#B45309"/>
+        <rect x="248" y="68" width="190" height="100" rx="10" fill="#1B72AB"/>
         <text class="ceW" x="264" y="96">Retrieved docs</text>
         <text class="ceX" x="264" y="118">RAG chunks, files,</text>
         <text class="ceX" x="264" y="136">search results.</text>
         <text class="ceX" x="264" y="154">Session 5.</text>
-        <rect x="452" y="68" width="190" height="100" rx="10" fill="#B45309"/>
+        <rect x="452" y="68" width="190" height="100" rx="10" fill="#1B72AB"/>
         <text class="ceW" x="468" y="96">Tool outputs</text>
         <text class="ceX" x="468" y="118">API results, code</text>
         <text class="ceX" x="468" y="136">runs, DB rows.</text>
         <text class="ceX" x="468" y="154">Session 6.</text>
-        <rect x="656" y="68" width="180" height="100" rx="10" fill="#B45309"/>
+        <rect x="656" y="68" width="180" height="100" rx="10" fill="#1B72AB"/>
         <text class="ceW" x="672" y="96">History</text>
         <text class="ceX" x="672" y="118">Earlier turns,</text>
         <text class="ceX" x="672" y="136">notes, compacted</text>
         <text class="ceX" x="672" y="154">summaries.</text>
         <line class="ceL" x1="440" y1="190" x2="440" y2="222"/>
-        <rect x="290" y="224" width="300" height="52" rx="12" fill="#FCD34D"/>
+        <rect x="290" y="224" width="300" height="52" rx="12" fill="#FBEFA5"/>
         <text class="ceT" x="316" y="248">The model</text>
         <text class="ceXd" x="316" y="266">Sees only the window. Nothing else exists.</text>
-        <rect x="20" y="296" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="296" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="ceN" x="44" y="308">Goal per Anthropic: the smallest set of high-signal tokens that maximizes the chance of the outcome you want.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the context window and its layers; your prompt is the layer you fully control</figcaption>
@@ -203,32 +203,32 @@
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decision tree: reasoning model means keep prompts simple and control via effort params; standard model means classic techniques work">
         <style>
           .dtW { font: 700 16px Inter, sans-serif; fill: #FFFFFF; }
-          .dtT { font: 700 16px Inter, sans-serif; fill: #1C1917; }
-          .dtX { font: 400 12.5px Inter, sans-serif; fill: #FDE7C0; }
-          .dtXd { font: 400 12.5px Inter, sans-serif; fill: #6E655C; }
-          .dtN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
-          .dtL { stroke: #B45309; stroke-width: 3; fill: none; }
+          .dtT { font: 700 16px Inter, sans-serif; fill: #16232E; }
+          .dtX { font: 400 12.5px Inter, sans-serif; fill: #D9F0FE; }
+          .dtXd { font: 400 12.5px Inter, sans-serif; fill: #5F6B76; }
+          .dtN { font: 600 14px Inter, sans-serif; fill: #71180E; }
+          .dtL { stroke: #1B72AB; stroke-width: 3; fill: none; }
         </style>
-        <rect x="250" y="20" width="380" height="54" rx="12" fill="#78350F"/>
+        <rect x="250" y="20" width="380" height="54" rx="12" fill="#17669C"/>
         <text class="dtW" x="276" y="44">Does the model plan internally?</text>
         <text class="dtX" x="276" y="64">Thinking / reasoning mode on, or a reasoning-first model</text>
         <path class="dtL" d="M 440 74 L 440 96 L 230 96 L 230 118"/>
         <path class="dtL" d="M 440 74 L 440 96 L 650 96 L 650 118"/>
-        <rect x="30" y="120" width="400" height="150" rx="12" fill="#B45309"/>
+        <rect x="30" y="120" width="400" height="150" rx="12" fill="#1B72AB"/>
         <text class="dtW" x="54" y="148">Yes → reasoning model</text>
         <text class="dtX" x="54" y="172">Keep the prompt simple. State goal + constraints.</text>
         <text class="dtX" x="54" y="192">NO "think step by step" - it plans on its own.</text>
         <text class="dtX" x="54" y="212">Zero-shot first; few-shot examples can HURT.</text>
         <text class="dtX" x="54" y="232">Control depth via effort / reasoning params,</text>
         <text class="dtX" x="54" y="252">not via prompt wording. Full story in session 4.</text>
-        <rect x="450" y="120" width="400" height="150" rx="12" fill="#F59E0B"/>
+        <rect x="450" y="120" width="400" height="150" rx="12" fill="#F0A64B"/>
         <text class="dtT" x="474" y="148">No → standard model</text>
         <text class="dtXd" x="474" y="172">The classic playbook works as written.</text>
         <text class="dtXd" x="474" y="192">Induced CoT ("think step by step") helps.</text>
         <text class="dtXd" x="474" y="212">Few-shot examples: 3-5, diverse, in tags.</text>
         <text class="dtXd" x="474" y="232">Explicit structure and detailed instructions</text>
         <text class="dtXd" x="474" y="252">pay off. Sessions 2-3 live here.</text>
-        <rect x="20" y="300" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="300" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="dtN" x="44" y="312">Same task, opposite advice. When output quality surprises you, check which side of this tree you are on first.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the model-class decision tree; ask it before applying any technique</figcaption>

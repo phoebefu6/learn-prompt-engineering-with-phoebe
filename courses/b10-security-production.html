@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builder session 10 · Security + production - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -103,27 +103,27 @@
       <svg viewBox="0 0 880 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The lethal trifecta triangle: private data access, untrusted content, external communication - any two manageable, all three means redesign">
         <style>
           .tfW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .tfT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .tfX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .tfXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .tfN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .tfT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .tfX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .tfXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .tfN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
-        <line x1="440" y1="88" x2="180" y2="240" stroke="#B45309" stroke-width="3"/>
-        <line x1="440" y1="88" x2="700" y2="240" stroke="#B45309" stroke-width="3"/>
-        <line x1="180" y1="240" x2="700" y2="240" stroke="#B45309" stroke-width="3"/>
-        <rect x="330" y="24" width="220" height="64" rx="12" fill="#78350F"/>
+        <line x1="440" y1="88" x2="180" y2="240" stroke="#1B72AB" stroke-width="3"/>
+        <line x1="440" y1="88" x2="700" y2="240" stroke="#1B72AB" stroke-width="3"/>
+        <line x1="180" y1="240" x2="700" y2="240" stroke="#1B72AB" stroke-width="3"/>
+        <rect x="330" y="24" width="220" height="64" rx="12" fill="#17669C"/>
         <text class="tfW" x="350" y="50">Private-data access</text>
         <text class="tfX" x="350" y="72">Reads what attackers want</text>
-        <rect x="70" y="240" width="220" height="64" rx="12" fill="#78350F"/>
+        <rect x="70" y="240" width="220" height="64" rx="12" fill="#17669C"/>
         <text class="tfW" x="90" y="266">Untrusted content</text>
         <text class="tfX" x="90" y="288">Text an outsider authored</text>
-        <rect x="590" y="240" width="220" height="64" rx="12" fill="#78350F"/>
+        <rect x="590" y="240" width="220" height="64" rx="12" fill="#17669C"/>
         <text class="tfW" x="610" y="266">External comms</text>
         <text class="tfX" x="610" y="288">Can send data out</text>
-        <rect x="340" y="150" width="200" height="60" rx="12" fill="#F59E0B"/>
+        <rect x="340" y="150" width="200" height="60" rx="12" fill="#F0A64B"/>
         <text class="tfT" x="360" y="176">All three together</text>
         <text class="tfXd" x="360" y="196">= exfiltration by design</text>
-        <rect x="20" y="332" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="332" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="tfN" x="44" y="344">The rule: any two legs = manageable with controls. All three = stop and redesign the system.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the lethal trifecta: count the legs before you ship, redesign if you count three</figcaption>
@@ -204,47 +204,47 @@
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The prompt lifecycle loop: draft, eval, review, ship, monitor, and traces feeding back as new eval cases">
         <style>
           .lcW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .lcT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .lcX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .lcXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .lcN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .lcT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .lcX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .lcXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .lcN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="lcArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-            <path d="M0,0 L8,4.5 L0,9 Z" fill="#78350F"/>
+            <path d="M0,0 L8,4.5 L0,9 Z" fill="#17669C"/>
           </marker>
         </defs>
-        <rect x="20" y="40" width="250" height="80" rx="12" fill="#78350F"/>
+        <rect x="20" y="40" width="250" height="80" rx="12" fill="#17669C"/>
         <text class="lcW" x="40" y="70">1 · Draft</text>
         <text class="lcX" x="40" y="92">Write or improve the prompt,</text>
         <text class="lcX" x="40" y="110">tools welcome, in a branch</text>
-        <rect x="315" y="40" width="250" height="80" rx="12" fill="#B45309"/>
+        <rect x="315" y="40" width="250" height="80" rx="12" fill="#1B72AB"/>
         <text class="lcW" x="335" y="70">2 · Eval</text>
         <text class="lcX" x="335" y="92">Suite runs in CI, scores</text>
         <text class="lcX" x="335" y="110">against the gate (session 9)</text>
-        <rect x="610" y="40" width="250" height="80" rx="12" fill="#F59E0B"/>
+        <rect x="610" y="40" width="250" height="80" rx="12" fill="#F0A64B"/>
         <text class="lcT" x="630" y="70">3 · Review</text>
         <text class="lcXd" x="630" y="92">Human reads the diff plus</text>
         <text class="lcXd" x="630" y="110">the scoreboard, then merges</text>
-        <rect x="610" y="180" width="250" height="80" rx="12" fill="#FCD34D"/>
+        <rect x="610" y="180" width="250" height="80" rx="12" fill="#FBEFA5"/>
         <text class="lcT" x="630" y="210">4 · Ship</text>
         <text class="lcXd" x="630" y="232">Version tagged, changelog</text>
         <text class="lcXd" x="630" y="250">entry, rollback ready</text>
-        <rect x="315" y="180" width="250" height="80" rx="12" fill="#B45309"/>
+        <rect x="315" y="180" width="250" height="80" rx="12" fill="#1B72AB"/>
         <text class="lcW" x="335" y="210">5 · Monitor</text>
         <text class="lcX" x="335" y="232">Watch production traces,</text>
         <text class="lcX" x="335" y="250">costs, and failure reports</text>
-        <rect x="20" y="180" width="250" height="80" rx="12" fill="#78350F"/>
+        <rect x="20" y="180" width="250" height="80" rx="12" fill="#17669C"/>
         <text class="lcW" x="40" y="210">6 · Traces to test cases</text>
         <text class="lcX" x="40" y="232">Failures become golden-set</text>
         <text class="lcX" x="40" y="250">rows - the suite grows</text>
-        <line x1="270" y1="80" x2="307" y2="80" stroke="#78350F" stroke-width="3" marker-end="url(#lcArrow)"/>
-        <line x1="565" y1="80" x2="602" y2="80" stroke="#78350F" stroke-width="3" marker-end="url(#lcArrow)"/>
-        <line x1="735" y1="120" x2="735" y2="172" stroke="#78350F" stroke-width="3" marker-end="url(#lcArrow)"/>
-        <line x1="610" y1="220" x2="573" y2="220" stroke="#78350F" stroke-width="3" marker-end="url(#lcArrow)"/>
-        <line x1="315" y1="220" x2="278" y2="220" stroke="#78350F" stroke-width="3" marker-end="url(#lcArrow)"/>
-        <line x1="145" y1="180" x2="145" y2="128" stroke="#78350F" stroke-width="3" marker-end="url(#lcArrow)"/>
-        <rect x="20" y="300" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <line x1="270" y1="80" x2="307" y2="80" stroke="#17669C" stroke-width="3" marker-end="url(#lcArrow)"/>
+        <line x1="565" y1="80" x2="602" y2="80" stroke="#17669C" stroke-width="3" marker-end="url(#lcArrow)"/>
+        <line x1="735" y1="120" x2="735" y2="172" stroke="#17669C" stroke-width="3" marker-end="url(#lcArrow)"/>
+        <line x1="610" y1="220" x2="573" y2="220" stroke="#17669C" stroke-width="3" marker-end="url(#lcArrow)"/>
+        <line x1="315" y1="220" x2="278" y2="220" stroke="#17669C" stroke-width="3" marker-end="url(#lcArrow)"/>
+        <line x1="145" y1="180" x2="145" y2="128" stroke="#17669C" stroke-width="3" marker-end="url(#lcArrow)"/>
+        <rect x="20" y="300" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="lcN" x="44" y="312">The loop never ends - which is the feature. Every lap makes the next change cheaper and safer.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the prompt lifecycle loop: draft, eval, review, ship, monitor, traces become new eval cases</figcaption>

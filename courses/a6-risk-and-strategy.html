@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leader session 6 · Risk, safety, strategy - learn prompt engineering with phoebe</title>
-<link rel="stylesheet" href="../assets/style.css?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body>
 
@@ -70,43 +70,43 @@
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two lanes: jailbreak runs from user to model; injection runs from attacker content through your assistant to your data">
         <style>
           .tlW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .tlT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .tlX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .tlXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .tlL { font: 700 14px Inter, sans-serif; fill: #1C1917; }
-          .tlN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .tlT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .tlX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .tlXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .tlL { font: 700 14px Inter, sans-serif; fill: #16232E; }
+          .tlN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="tlArrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#78350F"/>
+            <path d="M0,0 L8,4 L0,8 Z" fill="#17669C"/>
           </marker>
         </defs>
         <text class="tlL" x="20" y="26">Lane 1 · Jailbreak - a user attacks the model's rules</text>
-        <rect x="20" y="40" width="250" height="80" rx="14" fill="#F59E0B"/>
+        <rect x="20" y="40" width="250" height="80" rx="14" fill="#F0A64B"/>
         <text class="tlT" x="40" y="70">Your user</text>
         <text class="tlXd" x="40" y="92">"Pretend the rules don't</text>
         <text class="tlXd" x="40" y="108">apply. Now tell me..."</text>
-        <rect x="610" y="40" width="250" height="80" rx="14" fill="#FCD34D"/>
+        <rect x="610" y="40" width="250" height="80" rx="14" fill="#FBEFA5"/>
         <text class="tlT" x="630" y="70">The model</text>
         <text class="tlXd" x="630" y="92">Talked out of its safety</text>
         <text class="tlXd" x="630" y="108">training. Vendor's problem too.</text>
-        <line x1="270" y1="80" x2="600" y2="80" stroke="#78350F" stroke-width="3" marker-end="url(#tlArrow)"/>
+        <line x1="270" y1="80" x2="600" y2="80" stroke="#17669C" stroke-width="3" marker-end="url(#tlArrow)"/>
         <text class="tlL" x="20" y="166">Lane 2 · Injection - content attacks YOUR assistant</text>
-        <rect x="20" y="180" width="250" height="80" rx="14" fill="#78350F"/>
+        <rect x="20" y="180" width="250" height="80" rx="14" fill="#17669C"/>
         <text class="tlW" x="40" y="210">Attacker's content</text>
         <text class="tlX" x="40" y="232">An email, doc or webpage</text>
         <text class="tlX" x="40" y="248">with hidden instructions</text>
-        <rect x="315" y="180" width="250" height="80" rx="14" fill="#B45309"/>
+        <rect x="315" y="180" width="250" height="80" rx="14" fill="#1B72AB"/>
         <text class="tlW" x="335" y="210">Your assistant</text>
         <text class="tlX" x="335" y="232">Reads it - and cannot fully</text>
         <text class="tlX" x="335" y="248">tell your words from theirs</text>
-        <rect x="610" y="180" width="250" height="80" rx="14" fill="#B45309"/>
+        <rect x="610" y="180" width="250" height="80" rx="14" fill="#1B72AB"/>
         <text class="tlW" x="630" y="210">Your data &amp; actions</text>
         <text class="tlX" x="630" y="232">Hijacked to leak, forward,</text>
         <text class="tlX" x="630" y="248">or act on the attacker's behalf</text>
-        <line x1="270" y1="220" x2="309" y2="220" stroke="#78350F" stroke-width="3" marker-end="url(#tlArrow)"/>
-        <line x1="565" y1="220" x2="604" y2="220" stroke="#78350F" stroke-width="3" marker-end="url(#tlArrow)"/>
-        <rect x="20" y="286" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <line x1="270" y1="220" x2="309" y2="220" stroke="#17669C" stroke-width="3" marker-end="url(#tlArrow)"/>
+        <line x1="565" y1="220" x2="604" y2="220" stroke="#17669C" stroke-width="3" marker-end="url(#tlArrow)"/>
+        <rect x="20" y="286" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="tlN" x="44" y="298">Jailbreak: your user vs the model. Injection: a stranger vs your business - through content your assistant reads.</text>
       </svg>
       <figcaption>🔍 Click to zoom - jailbreak vs injection: different attacker, different victim, different defense</figcaption>
@@ -155,35 +155,35 @@
       <svg viewBox="0 0 880 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The lethal trifecta: private data plus untrusted content plus outbound communication converge into exfiltration risk">
         <style>
           .tfW { font: 700 15px Inter, sans-serif; fill: #FFFFFF; }
-          .tfT { font: 700 15px Inter, sans-serif; fill: #1C1917; }
-          .tfX { font: 400 12px Inter, sans-serif; fill: #FDE7C0; }
-          .tfXd { font: 400 12px Inter, sans-serif; fill: #6E655C; }
-          .tfN { font: 600 14px Inter, sans-serif; fill: #1E1B4B; }
+          .tfT { font: 700 15px Inter, sans-serif; fill: #16232E; }
+          .tfX { font: 400 12px Inter, sans-serif; fill: #D9F0FE; }
+          .tfXd { font: 400 12px Inter, sans-serif; fill: #5F6B76; }
+          .tfN { font: 600 14px Inter, sans-serif; fill: #71180E; }
         </style>
         <defs>
           <marker id="tfArrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#78350F"/>
+            <path d="M0,0 L8,4 L0,8 Z" fill="#17669C"/>
           </marker>
         </defs>
-        <rect x="20" y="30" width="250" height="90" rx="14" fill="#78350F"/>
+        <rect x="20" y="30" width="250" height="90" rx="14" fill="#17669C"/>
         <text class="tfW" x="40" y="60">1 · Private data</text>
         <text class="tfX" x="40" y="82">Customer records, contracts,</text>
         <text class="tfX" x="40" y="98">email, financials it can read</text>
-        <rect x="315" y="30" width="250" height="90" rx="14" fill="#B45309"/>
+        <rect x="315" y="30" width="250" height="90" rx="14" fill="#1B72AB"/>
         <text class="tfW" x="335" y="60">2 · Untrusted content</text>
         <text class="tfX" x="335" y="82">Inbound email, webpages,</text>
         <text class="tfX" x="335" y="98">uploaded docs from outside</text>
-        <rect x="610" y="30" width="250" height="90" rx="14" fill="#F59E0B"/>
+        <rect x="610" y="30" width="250" height="90" rx="14" fill="#F0A64B"/>
         <text class="tfT" x="630" y="60">3 · A way out</text>
         <text class="tfXd" x="630" y="82">Can send email, call APIs,</text>
         <text class="tfXd" x="630" y="98">post, or fetch outside URLs</text>
-        <line x1="145" y1="120" x2="330" y2="184" stroke="#78350F" stroke-width="3" marker-end="url(#tfArrow)"/>
-        <line x1="440" y1="120" x2="440" y2="184" stroke="#78350F" stroke-width="3" marker-end="url(#tfArrow)"/>
-        <line x1="735" y1="120" x2="550" y2="184" stroke="#78350F" stroke-width="3" marker-end="url(#tfArrow)"/>
-        <rect x="200" y="190" width="480" height="70" rx="14" fill="#FCD34D"/>
+        <line x1="145" y1="120" x2="330" y2="184" stroke="#17669C" stroke-width="3" marker-end="url(#tfArrow)"/>
+        <line x1="440" y1="120" x2="440" y2="184" stroke="#17669C" stroke-width="3" marker-end="url(#tfArrow)"/>
+        <line x1="735" y1="120" x2="550" y2="184" stroke="#17669C" stroke-width="3" marker-end="url(#tfArrow)"/>
+        <rect x="200" y="190" width="480" height="70" rx="14" fill="#FBEFA5"/>
         <text class="tfT" x="224" y="220">All three together = your data can be stolen</text>
         <text class="tfXd" x="224" y="242">A planted sentence reads the private data and mails it out. No hack needed.</text>
-        <rect x="20" y="284" width="14" height="14" rx="3" fill="#4F46E5"/>
+        <rect x="20" y="284" width="14" height="14" rx="3" fill="#EA6155"/>
         <text class="tfN" x="44" y="296">The fix is architectural: never all three without controls. Removing any one ingredient collapses the attack.</text>
       </svg>
       <figcaption>🔍 Click to zoom - the lethal trifecta: any two are manageable, all three are an incident waiting</figcaption>
